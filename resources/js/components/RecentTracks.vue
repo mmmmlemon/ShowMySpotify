@@ -1,20 +1,20 @@
 //RecentTracks
 <template>
     <div class="row justify-content-center">
-        <div class="col-12 fadeInAnimSlow" v-if="recentTracks != -1 && recentTracks != false && recentTracks != 'noTracks'">
+        <div class="col-12 fadeInAnimSlow" v-if="recentTracks != -1 && recentTracks != false">
             <!-- заголовок -->
             <h4 class="text-center">
                 <b>Последние прослушанные треки</b>&nbsp;
                 <i class="fas fa-compact-disc primaryColor"></i>
             </h4>
             <!-- вывод списка треков -->
-            <div class="col-12 col-md-10 col-lg-6">
-                <div>
+            <div class="row justify-content-center">
+                <div class="col-9">
                     <List :items="recentTracks"/>
                 </div>
             </div>
         </div>
-        <div v-else>
+        <div v-else-if="recentTracks == 'noTracks'">
             <Info infoMessage="Не удалось загрузить последние треки. Возможно вы ничего не слушали в последнее время?"/>
         </div>
  

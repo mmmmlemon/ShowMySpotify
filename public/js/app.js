@@ -85649,17 +85649,21 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "row justify-content-center" }, [
-    _vm.recentTracks != -1 &&
-    _vm.recentTracks != false &&
-    _vm.recentTracks != "noTracks"
+    _vm.recentTracks != -1 && _vm.recentTracks != false
       ? _c("div", { staticClass: "col-12 fadeInAnimSlow" }, [
           _vm._m(0),
           _vm._v(" "),
-          _c("div", { staticClass: "col-12 col-md-10 col-lg-6" }, [
-            _c("div", [_c("List", { attrs: { items: _vm.recentTracks } })], 1)
+          _c("div", { staticClass: "row justify-content-center" }, [
+            _c(
+              "div",
+              { staticClass: "col-9" },
+              [_c("List", { attrs: { items: _vm.recentTracks } })],
+              1
+            )
           ])
         ])
-      : _c(
+      : _vm.recentTracks == "noTracks"
+      ? _c(
           "div",
           [
             _c("Info", {
@@ -85671,6 +85675,7 @@ var render = function() {
           ],
           1
         )
+      : _vm._e()
   ])
 }
 var staticRenderFns = [

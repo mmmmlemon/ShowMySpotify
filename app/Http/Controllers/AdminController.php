@@ -212,67 +212,67 @@ class AdminController extends Controller
         
     }
 
-    //сохранить лого и изображения
-    public function saveLogoAndImages(Request $request)
-    {
-        if(Auth::check())
-        {
-            //валидация
-            $validated = Validator::make($request->all(),[
-                'logo' => 'image',
-                'home_img' => 'image',
-            ]);
+    // //сохранить лого и изображения (DEPRECATED)
+    // public function saveLogoAndImages(Request $request)
+    // {
+    //     if(Auth::check())
+    //     {
+    //         //валидация
+    //         $validated = Validator::make($request->all(),[
+    //             'logo' => 'image',
+    //             'home_img' => 'image',
+    //         ]);
 
-            //если валидация не прошла, то редиректим назад с ошибкой
-            if($validated->fails()) {
-                return redirect()->back()
-                            ->withErrors($validated)
-                            ->withInput();
-            }
-            else
-            {
-                //проверяем что папка storage/../system существует
-                $check = File::exists(storage_path("app/public/system"));
+    //         //если валидация не прошла, то редиректим назад с ошибкой
+    //         if($validated->fails()) {
+    //             return redirect()->back()
+    //                         ->withErrors($validated)
+    //                         ->withInput();
+    //         }
+    //         else
+    //         {
+    //             //проверяем что папка storage/../system существует
+    //             $check = File::exists(storage_path("app/public/system"));
 
-                //если папки нет, то создаем её
-                if($check != true)
-                { Storage::disk('public')->makeDirectory("system"); }
+    //             //если папки нет, то создаем её
+    //             if($check != true)
+    //             { Storage::disk('public')->makeDirectory("system"); }
 
 
-                $settings = App\Settings::all()[0];
+    //             $settings = App\Settings::all()[0];
 
-                //сохранение лого
-                if($request->logo != null)
-                {
-                    $logo = Image::make($request->logo);
-                    $logo->resize(500,500);
-                    $logo->save(storage_path('app/public/system/logo.png'));
-                }
+    //             //сохранение лого
+    //             if($request->logo != null)
+    //             {
+    //                 $logo = Image::make($request->logo);
+    //                 $logo->resize(500,500);
+    //                 $logo->save(storage_path('app/public/system/logo.png'));
+    //             }
                 
-                //сохранение картинки для главной страницы
-                if($request->home_img != null)
-                {
-                    $home = Image::make($request->home_img);
-                    $home->resize(1280,798);
-                    $home->save(storage_path('app/public/system/home.png'));
-                }
+    //             //сохранение картинки для главной страницы
+    //             if($request->home_img != null)
+    //             {
+    //                 $home = Image::make($request->home_img);
+    //                 $home->resize(1280,798);
+    //                 $home->save(storage_path('app/public/system/home.png'));
+    //             }
 
-                //сохранение стандартного юзерпика
-                if($request->user_img != null)
-                {
-                    $user = Image::make($request->user_img);
-                    $user->resize(500,500);
-                    $user->save(storage_path('app/public/system/user.png'));
-                }
+    //             //сохранение стандартного юзерпика
+    //             if($request->user_img != null)
+    //             {
+    //                 $user = Image::make($request->user_img);
+    //                 $user->resize(500,500);
+    //                 $user->save(storage_path('app/public/system/user.png'));
+    //             }
 
-                $settings->save();
+    //             $settings->save();
 
-                return redirect()->back();
-            }
-        }
-        else
-        { abort(403); }
-    }
+    //             return redirect()->back();
+    //         }
+    //     }
+    //     else
+    //     { abort(403); }
+    // }
 
     //сохранить информацию о сайте
     public function saveSiteInfo(Request $request)
