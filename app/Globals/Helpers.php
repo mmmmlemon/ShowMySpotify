@@ -413,6 +413,64 @@
                     }
 
                     return $result;
+                } else if($type == 'artistsAlltime' || $type == 'artistsMonth'){
+                    $options = null;
+                    switch($type){
+                        case 'artistsAlltime':
+                            $options = ['time_range' => 'long_term', 'limit' => 10];
+                            break;
+                        case 'artistsMonth': 
+                            $options = ['time_range' => 'short_term', 'limit' => 10];
+                            break;
+                    }
+                    
+                    $top10Artists = $api->getMyTop('artists', $options);
+                   
+                    $tracks = [];
+
+                    foreach($top10Artists->items as $artist){
+
+                        //получаем альбомы
+                        $albums = $api->getArtistAlbums($artist->id, ['limit' => 50])->items;
+
+                        $count = 0;
+                        $albumsFiltered = [];
+                        foreach($albums as $album){
+                            if($album->album_group != 'appears_on' && $album->album_group != 'single' && 
+                                $album->album_type != 'single' && $album->album_type != 'compilation'){
+                                array_push($albumsFiltered, $album);
+                            }
+                            $count++;
+                        }
+                        $countAlbums = count($albumsFiltered) - 1;
+                        if($countAlbums > 0){
+
+                            echo $artist->name ." - " . $countAlbums . "<br>";
+                            $randArray = [];
+                            
+                            for($i = 1; $i <= 5; $i++){
+                                $rand = rand(0, $countAlbums);
+                                echo $rand . "<br>";
+                                array_push($randArray, $albumsFiltered[$rand]->id);
+                            }
+                            
+                            $randAlbums = $api->getAlbums($randArray);
+
+                            foreach($randAlbums->albums as $album){
+                             
+                                $countTracks = count($album->tracks->items) - 1;
+                                
+                                array_push($tracks, $album->tracks->items[rand(0, $countTracks)]->id);
+                                
+                            }
+                        }
+              
+                    }
+
+                   shuffle($tracks);
+
+                   return $tracks;
+
                 }
        
 

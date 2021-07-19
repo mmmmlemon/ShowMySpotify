@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/test_cookies', 'TestController@test_cookies'); //тест Cookies
 // Route::get('/test_library', 'TestController@test_library'); //тест библиотеки пользователя
 
+Route::get('/test', 'TestController@test');
 
 
 //авторизация и логаут - Админ, админка
