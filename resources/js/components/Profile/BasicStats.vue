@@ -52,7 +52,7 @@
                     <FavoriteGenres v-if="decadeMonth != -1" :favoriteGenres="favoriteGenres" id="genres"/>
 
                     <!-- Самый популярный\непопулярный артист -->
-                    <AchievementItem v-if="mostPopularArtist != 'noArtists' && favoriteGenres != -1" 
+                    <AchievementItem v-if="mostPopularArtist != 'noArtists' && decadeMonth != -1" 
                                 cardTitle="Самый популярный исполнитель" cardSubtitle="На которого ты подписан" 
                                 :items="mostPopularArtist"/>
 

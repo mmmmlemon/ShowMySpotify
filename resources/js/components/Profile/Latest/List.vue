@@ -1,6 +1,6 @@
 //List
 <template>
-    <div class="row justify-content-center">
+    <div class="row justify-content-center fadeInAnimSlow">
         <!-- лоадер -->
         <div class="col-12" v-if="items == -1">
             <Loader />

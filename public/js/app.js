@@ -5387,7 +5387,12 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       } else {
-        //загружаем последние треки
+        //настройки навигации
+        if (_this.navSettings == -1) {
+          _this.$store.dispatch('getNavSettings');
+        } //загружаем последние треки
+
+
         if (_this.recentTracks == -1) {
           _this.$store.dispatch('getLatestTracks');
         }
@@ -5395,6 +5400,10 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   computed: {
+    //настройки навигации
+    navSettings: function navSettings() {
+      return this.$store.state.homePage.navSettings;
+    },
     //последние треки
     recentTracks: function recentTracks() {
       return this.$store.state.homePage.recentTracks;
@@ -82508,7 +82517,7 @@ var render = function() {
                     })
                   : _vm._e(),
                 _vm._v(" "),
-                _vm.mostPopularArtist != "noArtists" && _vm.favoriteGenres != -1
+                _vm.mostPopularArtist != "noArtists" && _vm.decadeMonth != -1
                   ? _c("AchievementItem", {
                       attrs: {
                         cardTitle: "Самый популярный исполнитель",
@@ -84275,56 +84284,60 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row justify-content-center" }, [
-    _vm.items == -1
-      ? _c(
-          "div",
-          { staticClass: "col-12" },
-          [
-            _c("Loader"),
-            _vm._v(" "),
-            _vm.items == -1
-              ? _c("h6", { staticClass: "text-center blinkingAnim" }, [
-                  _vm._v("Загружаю последние треки...")
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("p", { staticClass: "text-center font10pt " }, [
-              _vm._v("Это может занять некоторое время")
-            ])
-          ],
-          1
-        )
-      : _vm.items != -1 && _vm.items != false
-      ? _c("div", { staticClass: "сol-12 fadeInAnim marginVertical" }, [
-          _c(
+  return _c(
+    "div",
+    { staticClass: "row justify-content-center fadeInAnimSlow" },
+    [
+      _vm.items == -1
+        ? _c(
             "div",
-            { staticClass: "row justify-content-center" },
-            _vm._l(_vm.items["tracks"], function(item) {
-              return _c(
-                "div",
-                {
-                  key: item.id,
-                  staticClass:
-                    "col-11 justify-content-center paddingSides marginVertical"
-                },
-                [_c("ListItem", { attrs: { item: item } })],
-                1
-              )
-            }),
-            0
+            { staticClass: "col-12" },
+            [
+              _c("Loader"),
+              _vm._v(" "),
+              _vm.items == -1
+                ? _c("h6", { staticClass: "text-center blinkingAnim" }, [
+                    _vm._v("Загружаю последние треки...")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("p", { staticClass: "text-center font10pt " }, [
+                _vm._v("Это может занять некоторое время")
+              ])
+            ],
+            1
           )
-        ])
-      : _c(
-          "div",
-          [
-            _c("Error", {
-              attrs: { errorMessage: "Не удалось загрузить треки" }
-            })
-          ],
-          1
-        )
-  ])
+        : _vm.items != -1 && _vm.items != false
+        ? _c("div", { staticClass: "сol-12 fadeInAnim marginVertical" }, [
+            _c(
+              "div",
+              { staticClass: "row justify-content-center" },
+              _vm._l(_vm.items["tracks"], function(item) {
+                return _c(
+                  "div",
+                  {
+                    key: item.id,
+                    staticClass:
+                      "col-11 justify-content-center paddingSides marginVertical"
+                  },
+                  [_c("ListItem", { attrs: { item: item } })],
+                  1
+                )
+              }),
+              0
+            )
+          ])
+        : _c(
+            "div",
+            [
+              _c("Error", {
+                attrs: { errorMessage: "Не удалось загрузить треки" }
+              })
+            ],
+            1
+          )
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -84348,7 +84361,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "col-12" }, [
+  return _c("div", { staticClass: "col-12 goUpAnimSlow" }, [
     _c("div", { staticClass: "row justify-content-center fadeInAnim" }, [
       _c("div", { staticClass: "col-8" }, [
         _c("div", { staticClass: "row jusitify-content-center" }, [

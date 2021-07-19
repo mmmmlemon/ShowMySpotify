@@ -1,6 +1,6 @@
 //ListItem
 <template>
-    <div class="col-12">
+    <div class="col-12 goUpAnimSlow">
         <div class="row justify-content-center fadeInAnim">
             <!-- обложка альбома -->
             <div class="col-8">

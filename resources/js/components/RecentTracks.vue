@@ -34,7 +34,12 @@ export default {
                     }
                 })
 
-            } else {             
+            } else {         
+                
+                //настройки навигации
+                if(this.navSettings == -1)
+                { this.$store.dispatch('getNavSettings'); }
+
                 //загружаем последние треки
                 if(this.recentTracks == -1)
                 { this.$store.dispatch('getLatestTracks'); }
@@ -44,6 +49,11 @@ export default {
     },
 
     computed: {
+        //настройки навигации
+        navSettings: function(){
+            return this.$store.state.homePage.navSettings;
+        },
+        
         //последние треки
         recentTracks: function(){
             return this.$store.state.homePage.recentTracks;
