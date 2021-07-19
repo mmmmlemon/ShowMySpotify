@@ -25,7 +25,7 @@ class SpotifyAPIController extends Controller
     public function getHomePageUserTracksCount(Request $request)
     { 
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -82,7 +82,7 @@ class SpotifyAPIController extends Controller
     //параметры: реквест
     public function getSpotifyUsername(Request $request)
     {
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -100,7 +100,7 @@ class SpotifyAPIController extends Controller
     public function getSpotifyProfile(Request $request)
     {   
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -136,7 +136,7 @@ class SpotifyAPIController extends Controller
     public function getSpotifyUserLibrary(Request $request)
     {   
         //проверяем токен
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -426,7 +426,7 @@ class SpotifyAPIController extends Controller
             $randomTrackId = $tracks[$randNum]->id;
 
             //проверяем токен
-            // $checkToken = System::checkSpotifyAccessToken($request);
+            // $checkToken = System::setAccessToken($request);
             // //если токен действительный
             // if($checkToken != false)
             // {
@@ -542,7 +542,7 @@ class SpotifyAPIController extends Controller
     public function getFavoriteGenres(Request $request)
     {   
         //проверяем токен
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
         
         if($checkToken != false)
         {
@@ -651,7 +651,7 @@ class SpotifyAPIController extends Controller
             // $artistImageUrl = ""; //пустая строка для url картинки
 
             // //проверяем токен
-            // $checkToken = System::checkSpotifyAccessToken($request);
+            // $checkToken = System::setAccessToken($request);
 
             // if($checkToken != false)
             // {   
@@ -689,7 +689,7 @@ class SpotifyAPIController extends Controller
         // else if($type == "month") 
         // {
         //     //проверяем токен
-        //     $checkToken = System::checkSpotifyAccessToken($request);
+        //     $checkToken = System::setAccessToken($request);
 
         //     if($checkToken != false)
         //     {
@@ -920,7 +920,7 @@ class SpotifyAPIController extends Controller
         // получение треков прослушанных за последний месяц
      
         //проверяем токен
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -1026,7 +1026,7 @@ class SpotifyAPIController extends Controller
     public function getTop10Tracks(Request $request, $top10Type)
     {
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         //если токен действительный
         if($checkToken != false)
@@ -1097,7 +1097,7 @@ class SpotifyAPIController extends Controller
     public function getTop10Artists(Request $request, $top10Type)
     {
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -1214,7 +1214,7 @@ class SpotifyAPIController extends Controller
             $response['items'] = $topTen;
      
             //проверка токена
-            $checkToken = System::checkSpotifyAccessToken($request);
+            $checkToken = System::setAccessToken($request);
 
             if($checkToken != false)
             {
@@ -1289,7 +1289,7 @@ class SpotifyAPIController extends Controller
              $topTenTracks[$i-1]['count'] = $i;
            }
 
-           $checkToken = System::checkSpotifyAccessToken($request);
+           $checkToken = System::setAccessToken($request);
 
            if($checkToken != false)
            {
@@ -1348,7 +1348,7 @@ class SpotifyAPIController extends Controller
             arsort($artistsCount);
 
             //проверяем токен
-            $checkToken = System::checkSpotifyAccessToken($request);
+            $checkToken = System::setAccessToken($request);
 
             //список всех id исполнителей
             $artistIds = array_keys($artistsCount);
@@ -1426,7 +1426,7 @@ class SpotifyAPIController extends Controller
             arsort($artistsCount);
 
             //проверяем токен
-            $checkToken = System::checkSpotifyAccessToken($request);
+            $checkToken = System::setAccessToken($request);
 
             //список всех id исполнителей
             $artistIds = array_keys($artistsCount);
@@ -1474,7 +1474,7 @@ class SpotifyAPIController extends Controller
     // public function getMostListenedTrack(Request $request, $type)
     // {
     //     //проверка токена
-    //     $checkToken = System::checkSpotifyAccessToken($request);
+    //     $checkToken = System::setAccessToken($request);
 
     //     //если токен рабочий
     //     if($checkToken != false)
@@ -1556,7 +1556,7 @@ class SpotifyAPIController extends Controller
 
     //         $topTrackId = $tracksSorted[0]['id'];
 
-    //         $checkToken = System::checkSpotifyAccessToken($request);
+    //         $checkToken = System::setAccessToken($request);
 
     //         if($checkToken != false)
     //         {
@@ -1619,7 +1619,7 @@ class SpotifyAPIController extends Controller
     //         $trackIdsSorted = Helpers::sortArrayBYKey($trackIds, 'duration', $sortType);
 
     //         //проверяем токен
-    //         $checkToken = System::checkSpotifyAccessToken($request);
+    //         $checkToken = System::setAccessToken($request);
 
     //         if($checkToken != false)
     //         {
@@ -1649,7 +1649,7 @@ class SpotifyAPIController extends Controller
     // public function getMostListenedArtist(Request $request, $type)
     // {
     //     //проверка токена
-    //     $checkToken = System::checkSpotifyAccessToken($request);
+    //     $checkToken = System::setAccessToken($request);
 
     //     //если токен действительный
     //     if($checkToken != false)
@@ -1717,7 +1717,7 @@ class SpotifyAPIController extends Controller
     //         $topArtistId = array_keys($artistIds)[0];
 
     //         //провнеряем токен и получаем информацию об артисте
-    //         $checkToken = System::checkSpotifyAccessToken($request);
+    //         $checkToken = System::setAccessToken($request);
 
     //         if($checkToken != false)
     //         {
@@ -1774,7 +1774,7 @@ class SpotifyAPIController extends Controller
     //         $time = Helpers::getDurationInHours($artistIds[$topArtistId]);
 
     //         //проверяем токен и получаем инфомацию об исполнителей
-    //         $checkToken = System::checkSpotifyAccessToken($request);
+    //         $checkToken = System::setAccessToken($request);
 
     //         if($checkToken != false)
     //         {
@@ -1885,7 +1885,7 @@ class SpotifyAPIController extends Controller
     public function getLatestTracks(Request $request)
     {   
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {

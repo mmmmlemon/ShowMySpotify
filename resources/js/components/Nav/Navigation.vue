@@ -1,7 +1,7 @@
 //Navigation
 //навигация
 <template>
-    <div class="nav fadeInAnimSlow siteNavigation">
+    <div class="nav fadeInAnimSlow siteNavigation" v-if="settings !== -1">
         <nav class="navbar">
             <!-- название сайта -->
             <router-link to="/">

@@ -1,7 +1,7 @@
 //BasicStats
 <template>
     <div>
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" id="basic">
             <div class="col-12" v-if="spotifyUserLibrary == -1">
                 <Loader />
                 <h6 class="text-center blinkingAnim" v-if="spotifyUserLibrary == -1">Загружаю библиотеку пользователя...</h6>
@@ -20,10 +20,10 @@
                     </nav>
                 </div> -->
 
-                <div class="col-12 justify-content-center fadeInAnim">
+                <!-- <div class="col-12 justify-content-center fadeInAnim">
                 </div>
-            
-                <div class="row justify-content-center" id="basic">
+             -->
+                <div class="row justify-content-center">
                     <!-- треки -->
                     <LastFive :items="spotifyTracks" type="tracks"/>  
                     <!-- альбомы -->

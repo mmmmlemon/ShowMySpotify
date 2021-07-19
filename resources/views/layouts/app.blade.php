@@ -53,7 +53,7 @@
 
 {{-- BODY --}}
 <body class="dark-mode">
-    <div id="app" > 
+    <div id="app"> 
         @yield('content')
     </div>
 </body>

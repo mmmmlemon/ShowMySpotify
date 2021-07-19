@@ -19,15 +19,13 @@ class HomeController extends Controller
     {
         // $this->middleware('auth');
     }
-
-
     
     //getNavigationSettings
     //получить настройки для навигации
     public function getNavigationSettings(Request $request){
         $settings = config('settings');
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         $spotifyProfile = null;
  
@@ -49,7 +47,6 @@ class HomeController extends Controller
             //пользователь
             $spotifyProfile = ['displayName' => $api->me()->display_name, 'avatar' => $avatarUrl];
 
- 
         }
 
         $response = ['site_title' => $settings->site_title,
