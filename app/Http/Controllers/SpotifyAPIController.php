@@ -114,7 +114,7 @@ class SpotifyAPIController extends Controller
             { $avatarUrl = $profile->images[0]->url; }
             //если нет, то берем заглушку из настроек
             else
-            { $avatarUrl = asset(config('settings')->user_img); }
+            { $avatarUrl = "noAvatar"; }
 
             $response = ['spotifyUsername' => $profile->display_name, 
                          'country' => "https://www.countryflags.io/" . $profile->country . "/flat/32.png", 
@@ -1913,9 +1913,13 @@ class SpotifyAPIController extends Controller
 
             $response['tracks'] = $tracks;
 
-            $response['backgroundImage'] = $tracks[rand(0, count($tracks) - 1)]['cover'];
+            if(count($tracks) >= 5){
+                $response['backgroundImage'] = $tracks[rand(0, count($tracks) - 1)]['cover'];
 
-            return response()->json($response);
+                return response()->json($response);
+            } else{
+                return response()->json('noTracks');
+            }            
         }
         else
         { return response()->json(false); }

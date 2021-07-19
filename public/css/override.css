@@ -365,10 +365,115 @@ box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
     margin-left: 15%;
     margin-top: 5%;
     -webkit-box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
--moz-box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
-box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
+    -moz-box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
+    box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
 }
 
+/*  */
+
+/* Avatar */
+
+@keyframes avatarBaseAnim {
+    0%{
+     opacity: 0;
+     background-color: var(--dark-color-light);
+     transform: scale(0.4);
+    }
+ 
+    70%{
+     background-color: var(--main-color-highlight2);
+     transform: scale(1);
+    }
+ 
+    100%{
+     opacity: 1;
+     background-color: var(--main-color);
+    }
+ }
+ 
+.avatarBase{
+    position: relative;
+    width: 15rem;
+    height: 15rem;
+    margin: 0 auto;
+    border-radius: 100%;
+    background-color: var(--main-color);
+    -webkit-box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1);
+    -moz-box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1);
+    box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1);
+    animation: avatarBaseAnim 3s ease-in-out;
+}
+
+
+@keyframes avatarBodyAnim {
+    0%{
+        bottom: -15%;
+        height: 18%;
+    }
+
+    100%{
+        height: 48%;
+        bottom: -5%;
+    }
+}
+
+.avatarBody{
+    background-color: var(--dark-color-light);
+    width: 48%;
+    height: 48%;
+    position: absolute;
+    bottom: -5%;
+    left: 27%;
+    border-top-left-radius: 49%;
+    border-top-right-radius: 78%;
+    border-bottom-left-radius: 72%;
+    border-bottom-right-radius: 10%;
+    -webkit-box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
+    -moz-box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
+    box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
+    animation: avatarBodyAnim 2s ease-in-out;
+
+}
+
+
+@keyframes avatarHeadAnim {
+    0%{
+        transform: scale(0.01);
+        top: 80%;
+        left: 20%;
+    }
+
+    100%{
+        transform: scale(1);
+        top: 15%;
+        left: 30%;
+    }
+}
+
+.avatarHead{
+    background-color: var(--dark-color-light);
+    width: 40%;
+    height: 40%;
+    position: absolute;
+    top: 15%;
+    left: 30%;
+    border-radius: 100%;
+    -webkit-box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
+    -moz-box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
+    box-shadow: 6px 7px 0px 2px rgba(16, 91, 42, 1) inset;
+    animation: avatarHeadAnim 2s ease-in-out;
+}
+
+.avatarBuba{
+    transform: rotate(90deg);
+    font-size: 3rem;
+    color: var(--main-color);
+    top: 15%;
+    left: 25%;
+    position: absolute;
+    font-weight: bolder;
+    font-family: Arial !important;
+}
 /*  */
 
 /* HomePage */

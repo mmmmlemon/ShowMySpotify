@@ -23,6 +23,8 @@ import BackgroundImage from './components/Misc/BackgroundImage.vue';
 Vue.component('BackgroundImage', BackgroundImage);
 import Logo from './components/Misc/Logo.vue';
 Vue.component('Logo', Logo);
+import Avatar from './components/Misc/Avatar.vue';;
+Vue.component('Avatar', Avatar);
 
 import LastFive from './components/Profile/BasicStats/LastFive.vue';
 Vue.component('LastFive', LastFive);

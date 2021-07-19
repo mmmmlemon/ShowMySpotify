@@ -28,9 +28,12 @@
                     </div>
                 </div>
                 <!-- аватарка -->
-                <div class="row justify-content-center">
+                <div class="row justify-content-center" v-if="spotifyProfile.avatar !== 'noAvatar'">
                     <img :src="spotifyProfile.avatar" alt="Spotify Avatar" class="profileAvatar" @load="onAvatarLoad"
                     v-bind:class="{ invisible: !avatarLoaded, bounceInAvatarAnim: avatarLoaded }">
+                </div>
+                <div v-else>
+                    <Avatar />
                 </div>
                 <!-- вид подписки -->
                 <div class="row justify-content-center fadeInAnimSlow">
