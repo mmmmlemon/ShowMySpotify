@@ -1137,18 +1137,27 @@ class SpotifyAPIController extends Controller
                     $artistInfo['count'] = $count;
                     $artistInfo['id'] = $artist->id;
                     $artistInfo['name'] = $artist->name;
-                    $artistInfo['image'] = $artist->images[count($artist->images)-1]->url;
+
+                    if(count($artist->images) > 0){
+                        $artistInfo['image'] = $artist->images[count($artist->images)-1]->url;
+                    }
+              
                     $artistInfo['genres'] = Helpers::getArtistsGenres($artist, 5);
                     $artistInfo['url'] = $artist->external_urls->spotify;
     
                     array_push($artists, $artistInfo);
                     $count++;
                 }
+
     
                 //случайное фото исполнителя
                 $randArtistId = $artists[rand(0, count($artists) - 1)]['id'];
-    
-                $artistPhoto = $api->getArtist($randArtistId)->images[0]->url;
+                $randArtist = $api->getArtist($randArtistId);
+                $artistPhoto = null;
+                if(count($randArtist->images) > 0){
+                    $artistPhoto = $randArtist->images[0]->url;
+                }
+                
     
                 $response['items'] = $artists;
     
