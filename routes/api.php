@@ -71,5 +71,9 @@ Route::get('/get_artist_by_popularity/{type}', 'SpotifyAPIController@getArtistBy
 //RecentTracks
 Route::get('/get_latest_tracks', 'SpotifyAPIController@getLatestTracks'); //получить последние полученные треки
 
+
+//Playlists
+Route::get('/create_playlist/{type}', 'SpotifyAPIController@createPlaylist');
+
 Route::get('/clean_user_data', 'SpotifyAuthController@cleanUserData'); //очистить данные пользователя
 ?>

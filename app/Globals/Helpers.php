@@ -331,5 +331,95 @@
             shuffle($numbers);
             return array_slice($numbers, 0, $quantity);
         }
+
+
+        //getTracksForPlaylist
+        //получить треки для плейлиста
+        public static function getTracksForPlaylist($request, $type){
+
+            $checkToken = System::setAccessToken($request);
+            $tracks = null;
+            if($checkToken != false){
+
+                $api = config('spotify_api');
+
+                if($type === 'top50alltime' || $type === 'top20month'){
+                    $options = null;
+
+                    switch($type){
+                        case 'top50alltime':
+                            $options = ['time_range' => 'long_term', 'limit' => 50];
+                            break;
+                        case 'top20month':
+                            $options = ['time_range' => 'short_term', 'limit' => 20];
+                            break;
+                    }
+
+                    $tracks = $api->getMyTop('tracks', $options);
+
+                    $filtered = [];
+
+                    foreach($tracks->items as $track){
+                        array_push($filtered, $track->id);
+                    }
+
+                    return $filtered;
+                } else if($type === 'top30long' || $type === 'top30short'){
+
+                    $tracks = System::getUserLibraryJson("tracks", $request);
+                    $filtered = [];
+
+                    foreach($tracks as $track){
+                        array_push($filtered, ['id' => $track->id, 'duration' => $track->duration_ms]);
+                    }
+                    
+                    switch($type){
+                        case 'top30long':
+                            $filtered = Helpers::sortArrayByKey($filtered, 'duration', 'desc');
+                            break;
+                        case 'top30short':
+                            $filtered = Helpers::sortArrayByKey($filtered, 'duration', 'asc');
+                    } 
+                    
+                    $result = [];
+
+                    for($i = 1; $i <= 30; $i++){
+                        array_push($result, $filtered[$i-1]['id']);
+                    }
+
+                    return $result;
+
+                } else if($type == 'top30popular' || $type == 'top30unpopular'){
+
+                    $tracks = System::getUserLibraryJson("tracks", $request);
+                    $filtered = [];
+
+                    foreach($tracks as $track){
+                        array_push($filtered, ['id' => $track->id, 'popularity' => $track->popularity]);
+                    }
+                    
+                    switch($type){
+                        case 'top30popular':
+                            $filtered = Helpers::sortArrayByKey($filtered, 'popularity', 'desc');
+                            break;
+                        case 'top30unpopular':
+                            $filtered = Helpers::sortArrayByKey($filtered, 'popularity', 'asc');
+                    } 
+                    
+                    $result = [];
+
+                    for($i = 1; $i <= 30; $i++){
+                        array_push($result, $filtered[$i-1]['id']);
+                    }
+
+                    return $result;
+                }
+       
+
+            } else{ 
+                return response()->json(false);
+            }
+
+        }
     }
         

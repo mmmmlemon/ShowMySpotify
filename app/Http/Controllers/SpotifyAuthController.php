@@ -27,6 +27,7 @@ class SpotifyAuthController extends Controller
         $options = [
             'scope' => [
                 'playlist-read-private',
+                'playlist-modify-public',
                 'user-read-private',
                 'user-library-read',
                 'user-follow-read',
@@ -180,9 +181,12 @@ class SpotifyAuthController extends Controller
         $options = [
             'scope' => [
                 'playlist-read-private',
+                'playlist-modify-public',
                 'user-read-private',
                 'user-library-read',
                 'user-follow-read',
+                'user-top-read',
+                'user-read-recently-played',
             ],
         ];
 

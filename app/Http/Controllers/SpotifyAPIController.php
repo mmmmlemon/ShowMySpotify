@@ -1925,4 +1925,60 @@ class SpotifyAPIController extends Controller
         { return response()->json(false); }
     }
 
+    public function createPlaylist(Request $request, $type){
+        
+        $checkToken = System::setAccessToken($request);
+
+        if($checkToken != false){
+
+            $api = config('spotify_api');
+
+            $playlistName = null;
+
+            setlocale(LC_ALL, 'russian');
+            $date = strftime('%B \'%y');
+            $date = iconv('windows-1251', 'utf-8',  $date);
+
+            $tracks = Helpers::getTracksForPlaylist($request, $type);
+
+            // dd($tracks);
+
+            switch($type){
+                case 'top50alltime':
+                    $playlistName = "Топ 50 треков за всё время ({$date})";
+                    break;
+                case 'top20month': 
+                    $playlistName = "Топ 20 треков за месяц ({$date})";
+                    break;
+                case 'top30long': 
+                    $playlistName = "Топ 30 самых длинных ({$date})";
+                    break;
+                case 'top30short': 
+                        $playlistName = "Топ 30 самых коротких ({$date})";
+                        break;
+                case 'top30popular': 
+                    $playlistName = "Топ 30 самых популярных ({$date})";
+                    break;
+                case 'top30unpopular': 
+                        $playlistName = "Топ 30 самых непопулярных ({$date})";
+                        break;
+                default: 
+                    $playlistName = "ShowMySpotify";
+            }
+
+            $playlist = $api->createPlaylist([
+                'name' => $playlistName
+            ]);
+
+            $api->addPlaylistTracks($playlist->id, $tracks);
+
+            return true;
+
+        } else {
+            return json()->response()->json(false);
+        }
+
+
+    }
+
 }
