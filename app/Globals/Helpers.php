@@ -1,16 +1,16 @@
 <?php
 
-    namespace App\Globals;
-    use Auth;
-    use Carbon\Carbon;
-    use SpotifyWebAPI;
-    use Cookie;
-    use File;
+namespace App\Globals;
+use Auth;
+use Carbon\Carbon;
+use SpotifyWebAPI;
+use Cookie;
+use File;
 
-    //Helpers
-    //глобальные функции на разные случаи
-    class Helpers
-    {
+//Helpers
+//глобальные функции на разные случаи
+class Helpers
+{
         //pickTheWord
         //выбрать правильное окончание для словосочетания (десять минуТ, две минуТЫ, одна минуТА и т.п)
         //параметры: число для которого нужно подобрать слово с нужным окончанием, 
@@ -253,7 +253,7 @@
             {
                 $date = ""; //дата
                 $releaseDatePrecision  = ""; //тип даты, год или полная дата 
-    
+
                 //записываем дату и тип даты из объекта
                 if($itemType == "track")
                 {
@@ -315,7 +315,7 @@
                     if($i != $iMax - 1)
                     { $genres .=", "; }
                 }
-    
+
                 return $genres;
             }
             else
@@ -335,18 +335,22 @@
 
         //getTracksForPlaylist
         //получить треки для плейлиста
-        public static function getTracksForPlaylist($request, $type){
+        public static function getTracksForPlaylist($request, $type)
+        {
 
             $checkToken = System::setAccessToken($request);
             $tracks = null;
-            if($checkToken != false){
+            if($checkToken != false)
+            {
 
                 $api = config('spotify_api');
 
-                if($type === 'top50alltime' || $type === 'top20month'){
+                if($type === 'top50alltime' || $type === 'top20month')
+                {
                     $options = null;
 
-                    switch($type){
+                    switch($type)
+                    {
                         case 'top50alltime':
                             $options = ['time_range' => 'long_term', 'limit' => 50];
                             break;
@@ -364,7 +368,9 @@
                     }
 
                     return $filtered;
-                } else if($type === 'top30long' || $type === 'top30short'){
+                } 
+                else if($type === 'top30long' || $type === 'top30short')
+                {
 
                     $tracks = System::getUserLibraryJson("tracks", $request);
                     $filtered = [];
@@ -389,7 +395,9 @@
 
                     return $result;
 
-                } else if($type == 'top30popular' || $type == 'top30unpopular'){
+                } 
+                else if($type == 'top30popular' || $type == 'top30unpopular')
+                {
 
                     $tracks = System::getUserLibraryJson("tracks", $request);
                     $filtered = [];
@@ -413,7 +421,9 @@
                     }
 
                     return $result;
-                } else if($type == 'artistsAlltime' || $type == 'artistsMonth'){
+                } 
+                else if($type == 'artistsAlltime' || $type == 'artistsMonth')
+                {
                     $options = null;
                     switch($type){
                         case 'artistsAlltime':
@@ -425,59 +435,108 @@
                     }
                     
                     $top10Artists = $api->getMyTop('artists', $options);
-                   
-                    $tracks = [];
+                    
+                    $tracksForPlaylist = [];
 
-                    foreach($top10Artists->items as $artist){
-
+                    foreach($top10Artists->items as $artist)
+                    {
                         //получаем альбомы
                         $albums = $api->getArtistAlbums($artist->id, ['limit' => 50])->items;
-
                         $count = 0;
+                        //убираем синглы и сборники
                         $albumsFiltered = [];
                         foreach($albums as $album){
+                           
                             if($album->album_group != 'appears_on' && $album->album_group != 'single' && 
-                                $album->album_type != 'single' && $album->album_type != 'compilation'){
-                                array_push($albumsFiltered, $album);
-                            }
+                                $album->album_type != 'single' && $album->album_type != 'compilation' &&
+                                count($album->available_markets) >= 170)
+                            { array_push($albumsFiltered, $album); }
+
                             $count++;
                         }
-                        $countAlbums = count($albumsFiltered) - 1;
-                        if($countAlbums > 0){
-
-                            echo $artist->name ." - " . $countAlbums . "<br>";
-                            $randArray = [];
-                            
+                        
+                        //берем любые пять альбомов из списка (если их больше десяти)
+                        $randAlbums = [];
+                        if(count($albumsFiltered) > 10){
                             for($i = 1; $i <= 5; $i++){
-                                $rand = rand(0, $countAlbums);
-                                echo $rand . "<br>";
-                                array_push($randArray, $albumsFiltered[$rand]->id);
+                                $rand = rand(0, count($albumsFiltered) - 1);
+                                array_push($randAlbums, $albumsFiltered[$rand]->id);
                             }
-                            
-                            $randAlbums = $api->getAlbums($randArray);
+                            $randAlbums =  array_values(array_unique($randAlbums));
+                        }
+                        else {
+                            foreach($albumsFiltered as $album){
+                                array_push($randAlbums, $album->id);
+                            }
+                            shuffle($randAlbums);   
+                        }
 
-                            foreach($randAlbums->albums as $album){
-                             
-                                $countTracks = count($album->tracks->items) - 1;
-                                
-                                array_push($tracks, $album->tracks->items[rand(0, $countTracks)]->id);
-                                
+                        //фильтруем популярность у альбомов
+                        $albumsPopularity = [];
+                        foreach($randAlbums as $albumId){
+                            $album = $api->getAlbum($albumId);
+                            array_push($albumsPopularity, ['id'=> $album->id, 'popularity' => $album->popularity, 'name' => $album->name]);
+                        }
+                        
+                        $sortedPopularity = Helpers::sortArrayByKey($albumsPopularity, 'popularity', 'desc');
+                        
+                        echo $artist->name . " " . count($sortedPopularity) . "<br>";
+
+                        //берем первые три альбома по популярности и перемешиваем
+                        if(count($sortedPopularity) > 3)
+                        {
+                            $sortedPopularity = array_slice($sortedPopularity, 0, 3);
+                            if(count($sortedPopularity) > 0){
+                                for($i = 1; $i <= 5; $i++){
+                                    $rand = rand(0, count($sortedPopularity) - 1);
+
+                                    $tracksFromAlbum = $api->getAlbumTracks($sortedPopularity[$rand]['id']);
+    
+                                    $tracksFromAlbumSorted = [];
+                                    foreach($tracksFromAlbum->items as $track){
+                            
+                                        if($track->duration_ms > 90000){
+                                            array_push($tracksFromAlbumSorted, $track);
+                                        }
+                                    }
+                                    
+                                    $rand = rand(0, count($tracksFromAlbumSorted) - 1);
+                                    array_push($tracksForPlaylist,$tracksFromAlbumSorted[$rand]->id);
+                                }
                             }
                         }
-              
+                        else 
+                        {   
+                            if(count($sortedPopularity) > 0){
+                                for($i = 1; $i <= 5; $i++){
+                                    $rand = rand(0, count($sortedPopularity) - 1);
+
+                                    $tracksFromAlbum = $api->getAlbumTracks($sortedPopularity[$rand]['id']);
+    
+                                    $tracksFromAlbumSorted = [];
+                                    foreach($tracksFromAlbum->items as $track){
+                            
+                                        if($track->duration_ms > 90000){
+                                            array_push($tracksFromAlbumSorted, $track);
+                                        }
+                                    }
+                                    
+                                    $rand = rand(0, count($tracksFromAlbumSorted) - 1);
+                                    array_push($tracksForPlaylist,$tracksFromAlbumSorted[$rand]->id);
+                                }
+                            }
+                        }      
                     }
 
-                   shuffle($tracks);
-
-                   return $tracks;
-
-                }
-       
-
-            } else{ 
+                   return $tracksForPlaylist;
+            } 
+            else
+            { 
                 return response()->json(false);
             }
 
         }
     }
+
+}
         
