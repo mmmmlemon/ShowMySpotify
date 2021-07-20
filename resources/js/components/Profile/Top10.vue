@@ -31,7 +31,9 @@
                             cardDesc="Десять самых прослушиваемых треков за все время" 
                             :items="top10TracksAllTime"
                             listType="tracks" orientation="left" :visibleProp="true"
-                            desc="К этим песням ты возвращаешься чаще всего"/>
+                            desc="К этим песням ты возвращаешься чаще всего"
+                            playlistName="Топ 50 треков за всё время"
+                            action="top50alltime"/>
 
                 <Top10Items v-if="top10TracksMonth != 'noTracks' && top10TracksAllTime != -1"
                             loaderMessage="Загружаю Топ 10 треков за месяц..."
@@ -39,33 +41,45 @@
                             cardDesc="Десять самых прослушиваемых треков за последний месяц" 
                             :items="top10TracksMonth"
                             listType="tracks"
-                            desc="Эти песни не покидают тебя весь последний месяц"/>
+                            desc="Эти песни не покидают тебя весь последний месяц"
+                            playlistName="Топ 20 треков за месяц"
+                            action="top20month"/>
 
                 <Top10Items v-if="top10TracksMonth != -1"
                             cardTitle="Топ 10 самых длинных" 
                             cardDesc="Десять самых длинных треков в библиотеке" 
                             :items="top10TracksLong"
                             listType="tracks"
-                            desc="Самые длиииииииииииииинные песни которые тебе нравятся"/> 
+                            desc="Самые длиииииииииииииинные песни которые тебе нравятся"
+                            playlistName="Топ 30 самых длинных"
+                            action="top30long"/> 
 
                 <Top10Items v-if="top10TracksLong != -1"
                             cardTitle="Топ 10 самых коротких" 
                             cardDesc="Десять твоих самых коротких треков в библиотеке" 
                             :items="top10TracksShort"
                             listType="tracks"
-                            desc="Тви лбмые крткие псни"/>
+                            desc="Тви лбмые крткие псни"
+                            playlistName="Топ 30 самых коротких"
+                            action="top30short"/>
+
                 <Top10Items v-if="top10TracksShort != -1"
                             cardTitle="Топ 10 самых популярных" 
                             cardDesc="Десять самых популярных треков которые тебе нравятся" 
                             :items="top10PopularTracks"
                             listType="tracks"
-                            desc="Кроме тебя эти песни нравятся еще много кому"/>
+                            desc="Кроме тебя эти песни нравятся еще много кому"
+                            playlistName="Топ 30 самых популярных"
+                            action="top30popular"/>
+
                 <Top10Items v-if="top10PopularTracks != -1"
                             cardTitle="Топ 10 самых непопулярных" 
                             cardDesc="Десять самых непопулярных треков которые тебе нравятся" 
                             :items="top10UnpopularTracks"
                             listType="tracks"
-                            desc="Кроме тебя, похоже, эти песни больше никто не слушает"/>
+                            desc="Кроме тебя, похоже, эти песни больше никто не слушает"
+                            playlistName="Топ 30 самых непопулярных"
+                            action="top30unpopular"/>
 
                 <!-- топ 10 исполнители -->
                 <div class="col-12 justify-content-center" id="artists" v-if="top10UnpopularTracks != -1" v-scroll="handleScrollArtists" v-bind:class="{'zeroOpacity': visibleArtists === false}">

@@ -101,10 +101,16 @@
                                                     </div>
                                                 </div>
                                                 <hr v-if="item.count > 5 && item.count <= 10" class="goUpAnimSlow">
+
+
                                             </div>
                                         </div>
                                     </div>
                             </div>
+                            <div class="row justify-content-center goUpAnimSlow" v-if="action !== null">
+                                <button @click="createPlaylist" class="btn btn-primary-n">Создать плейлист "{{playlistName}}"</button>
+                            </div>
+                            
                         </div>
                     </div>
                     <div v-else>
@@ -134,6 +140,8 @@ export default {
         orientation: { default: 'left'},
         visibleProp: { default: false},
         desc: { default: null },
+        playlistName: { default: undefined },
+        action: { default: null },
     },
 
     computed: {
@@ -156,7 +164,16 @@ export default {
                 this.setVisible = true;
             }
             return el.getBoundingClientRect().top < 700;   
-        }
+        },
+
+        //создать плейлист
+        createPlaylist: function(){
+            axios.get(`/api/create_playlist/${this.action}`).then(response => {
+                if(response.data == true){
+                    alert('Success!');
+                }
+            })
+        },
     }
 }
 </script>

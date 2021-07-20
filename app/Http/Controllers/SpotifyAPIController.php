@@ -1987,7 +1987,7 @@ class SpotifyAPIController extends Controller
 
             $api->addPlaylistTracks($playlist->id, $tracks);
 
-            return true;
+            return response()->json(true);
 
         } else {
             return json()->response()->json(false);

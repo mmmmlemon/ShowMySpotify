@@ -5039,6 +5039,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -5354,6 +5368,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5381,6 +5401,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     desc: {
       "default": null
+    },
+    playlistName: {
+      "default": undefined
+    },
+    action: {
+      "default": null
     }
   },
   computed: {
@@ -5403,6 +5429,14 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return el.getBoundingClientRect().top < 700;
+    },
+    //создать плейлист
+    createPlaylist: function createPlaylist() {
+      axios.get("/api/create_playlist/".concat(this.action)).then(function (response) {
+        if (response.data == true) {
+          alert('Success!');
+        }
+      });
     }
   }
 });
@@ -84602,7 +84636,9 @@ var render = function() {
                       listType: "tracks",
                       orientation: "left",
                       visibleProp: true,
-                      desc: "К этим песням ты возвращаешься чаще всего"
+                      desc: "К этим песням ты возвращаешься чаще всего",
+                      playlistName: "Топ 50 треков за всё время",
+                      action: "top50alltime"
                     }
                   })
                 : _vm._e(),
@@ -84616,7 +84652,9 @@ var render = function() {
                         "Десять самых прослушиваемых треков за последний месяц",
                       items: _vm.top10TracksMonth,
                       listType: "tracks",
-                      desc: "Эти песни не покидают тебя весь последний месяц"
+                      desc: "Эти песни не покидают тебя весь последний месяц",
+                      playlistName: "Топ 20 треков за месяц",
+                      action: "top20month"
                     }
                   })
                 : _vm._e(),
@@ -84629,7 +84667,9 @@ var render = function() {
                       items: _vm.top10TracksLong,
                       listType: "tracks",
                       desc:
-                        "Самые длиииииииииииииинные песни которые тебе нравятся"
+                        "Самые длиииииииииииииинные песни которые тебе нравятся",
+                      playlistName: "Топ 30 самых длинных",
+                      action: "top30long"
                     }
                   })
                 : _vm._e(),
@@ -84642,7 +84682,9 @@ var render = function() {
                         "Десять твоих самых коротких треков в библиотеке",
                       items: _vm.top10TracksShort,
                       listType: "tracks",
-                      desc: "Тви лбмые крткие псни"
+                      desc: "Тви лбмые крткие псни",
+                      playlistName: "Топ 30 самых коротких",
+                      action: "top30short"
                     }
                   })
                 : _vm._e(),
@@ -84655,7 +84697,9 @@ var render = function() {
                         "Десять самых популярных треков которые тебе нравятся",
                       items: _vm.top10PopularTracks,
                       listType: "tracks",
-                      desc: "Кроме тебя эти песни нравятся еще много кому"
+                      desc: "Кроме тебя эти песни нравятся еще много кому",
+                      playlistName: "Топ 30 самых популярных",
+                      action: "top30popular"
                     }
                   })
                 : _vm._e(),
@@ -84669,7 +84713,9 @@ var render = function() {
                       items: _vm.top10UnpopularTracks,
                       listType: "tracks",
                       desc:
-                        "Кроме тебя, похоже, эти песни больше никто не слушает"
+                        "Кроме тебя, похоже, эти песни больше никто не слушает",
+                      playlistName: "Топ 30 самых непопулярных",
+                      action: "top30unpopular"
                     }
                   })
                 : _vm._e(),
@@ -85591,7 +85637,33 @@ var render = function() {
                                         )
                                       : _vm._e()
                                   ]
-                                )
+                                ),
+                                _vm._v(" "),
+                                _vm.action !== null
+                                  ? _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "row justify-content-center goUpAnimSlow"
+                                      },
+                                      [
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass: "btn btn-primary-n",
+                                            on: { click: _vm.createPlaylist }
+                                          },
+                                          [
+                                            _vm._v(
+                                              'Создать плейлист "' +
+                                                _vm._s(_vm.playlistName) +
+                                                '"'
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e()
                               ]
                             )
                           ]
