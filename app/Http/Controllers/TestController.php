@@ -203,7 +203,7 @@ class TestController extends Controller
         if($checkToken != false){
             $api = config('spotify_api');
 
-            dd($api->getAlbum('0MeE4qEFpCnVvWDmOu9Mgy'));
+            dd($api->getAlbum('6tOzjkT6XdSxiT9FZ54q6d'));
         }
 
     }

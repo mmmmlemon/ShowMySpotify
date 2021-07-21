@@ -332,6 +332,24 @@ class Helpers
             return array_slice($numbers, 0, $quantity);
         }
 
+        //checkCountries
+        //проверить доступность альбома в странах
+        //возващает true, если доступен в нужных странах, или false если не доступен хотя бы в одной стране
+        //параметр: альбом
+        public static function checkCountries($album){
+            $markets = $album->available_markets;
+            $checkRussia = array_search('RU', $markets);
+            $checkUkraine = array_search('UA', $markets);
+            $checkBelarus = array_search('BY', $markets);
+            $checkKazakhstan = array_search('KZ', $markets);
+
+            if($checkRussia !== false && $checkUkraine !== false && $checkBelarus !== false && $checkKazakhstan !== false){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
 
         //getTracksForPlaylist
         //получить треки для плейлиста
@@ -435,98 +453,118 @@ class Helpers
                     }
                     
                     $top10Artists = $api->getMyTop('artists', $options);
-                    
+
                     $tracksForPlaylist = [];
-
+                    //для каждого артиста делаем следующее
                     foreach($top10Artists->items as $artist)
-                    {
-                        //получаем альбомы
-                        $albums = $api->getArtistAlbums($artist->id, ['limit' => 50])->items;
-                        $count = 0;
-                        //убираем синглы и сборники
-                        $albumsFiltered = [];
-                        foreach($albums as $album){
-                           
-                            if($album->album_group != 'appears_on' && $album->album_group != 'single' && 
-                                $album->album_type != 'single' && $album->album_type != 'compilation' &&
-                                count($album->available_markets) >= 170)
-                            { array_push($albumsFiltered, $album); }
-
-                            $count++;
-                        }
+                    {   
+                        //получаем список всех альбомов
+                        $allAlbums = [];    
+                        $offset = 0;
+                        $options = ['limit' => 50, 'offset' => $offset];
+                        $allAlbums = [];
+                        $getAlbums = $api->getArtistAlbums($artist->id, $options)->items;
                         
-                        //берем любые пять альбомов из списка (если их больше десяти)
-                        $randAlbums = [];
-                        if(count($albumsFiltered) > 10){
-                            for($i = 1; $i <= 5; $i++){
-                                $rand = rand(0, count($albumsFiltered) - 1);
-                                array_push($randAlbums, $albumsFiltered[$rand]->id);
+                        while(count($getAlbums) > 0){
+                            foreach($getAlbums as $album){
+
+                                $checkCountries = Helpers::checkCountries($album);
+
+                                //выбираем только альбомы (т.е не синглы и не сборники), только
+                                //те что доступны в странах СНГ, в которых работает Spotify
+                                //и только те, у которых указан один автор
+                                if($album->album_group === 'album' && $album->album_type === 'album' &&
+                                    $checkCountries == true && count($album->artists) == 1)
+                                array_push($allAlbums, $album);
                             }
-                            $randAlbums =  array_values(array_unique($randAlbums));
-                        }
-                        else {
-                            foreach($albumsFiltered as $album){
-                                array_push($randAlbums, $album->id);
-                            }
-                            shuffle($randAlbums);   
-                        }
-
-                        //фильтруем популярность у альбомов
-                        $albumsPopularity = [];
-                        foreach($randAlbums as $albumId){
-                            $album = $api->getAlbum($albumId);
-                            array_push($albumsPopularity, ['id'=> $album->id, 'popularity' => $album->popularity, 'name' => $album->name]);
-                        }
-                        
-                        $sortedPopularity = Helpers::sortArrayByKey($albumsPopularity, 'popularity', 'desc');
-                        
-                        echo $artist->name . " " . count($sortedPopularity) . "<br>";
-
-                        //берем первые три альбома по популярности и перемешиваем
-                        if(count($sortedPopularity) > 3)
-                        {
-                            $sortedPopularity = array_slice($sortedPopularity, 0, 3);
-                            if(count($sortedPopularity) > 0){
-                                for($i = 1; $i <= 5; $i++){
-                                    $rand = rand(0, count($sortedPopularity) - 1);
-
-                                    $tracksFromAlbum = $api->getAlbumTracks($sortedPopularity[$rand]['id']);
-    
-                                    $tracksFromAlbumSorted = [];
-                                    foreach($tracksFromAlbum->items as $track){
+                            $options['offset'] += 50;
+                            $getAlbums = $api->getArtistAlbums($artist->id, $options)->items;
                             
-                                        if($track->duration_ms > 90000){
-                                            array_push($tracksFromAlbumSorted, $track);
-                                        }
-                                    }
-                                    
-                                    $rand = rand(0, count($tracksFromAlbumSorted) - 1);
-                                    array_push($tracksForPlaylist,$tracksFromAlbumSorted[$rand]->id);
-                                }
-                            }
                         }
-                        else 
+                        
+                        //если альбомов больше 20-ти
+                        //выбираем случайные десять и работаем с ним
+                        if(count($allAlbums) >= 7)
                         {   
-                            if(count($sortedPopularity) > 0){
-                                for($i = 1; $i <= 5; $i++){
-                                    $rand = rand(0, count($sortedPopularity) - 1);
+                            $gap = 10;
+                            if(count($allAlbums) >= 7 && count($allAlbums) < 20)
+                            { $gap = 7; }
+                            shuffle($allAlbums);
+                            shuffle($allAlbums);
+                            $gapBegins = rand(0, count($allAlbums) - ($gap + 1));
+                            $gapEnds = $gapBegins + 10;
+                            $albumGap = array_slice($allAlbums, $gapBegins, $gap);
+                        
+                            //перемешиваем альбомы и берем первые пять
+                            shuffle($albumGap);
 
-                                    $tracksFromAlbum = $api->getAlbumTracks($sortedPopularity[$rand]['id']);
-    
-                                    $tracksFromAlbumSorted = [];
-                                    foreach($tracksFromAlbum->items as $track){
-                            
-                                        if($track->duration_ms > 90000){
-                                            array_push($tracksFromAlbumSorted, $track);
-                                        }
+                            $fiveAlbums = array_slice($albumGap, 0, 7);
+                             
+                            //для каждого из пяти альбомов выдергиваем один трек  
+                            foreach($fiveAlbums as $album){
+                                $getTracks = $api->getAlbumTracks($album->id)->items;
+                                //берем только треки у которых длина 
+                                //2 минуты или больше (120000 мс)
+                                $allTracks = [];
+                                foreach($getTracks as $track)
+                                {
+                                    if($track->duration_ms >= 120000){
+                                        array_push($allTracks, $track);
                                     }
-                                    
-                                    $rand = rand(0, count($tracksFromAlbumSorted) - 1);
-                                    array_push($tracksForPlaylist,$tracksFromAlbumSorted[$rand]->id);
+                                }
+                                if(count($allTracks) != 0)
+                                {
+                                    $randNum = rand(0, count($allTracks)-1);
+                                    $randTrack = $allTracks[$randNum];
+                                    array_push($tracksForPlaylist, $randTrack->id);
                                 }
                             }
-                        }      
+
+                        }
+                        //если альбомов меньше 7-ми
+                        else if(count($allAlbums) < 7){
+                            //получаем все треки из альбомов и выбираем случайные пять
+                            shuffle($allAlbums);
+                            $allTracks = [];
+
+                            foreach($allAlbums as $album){
+                                $getTracks = $api->getAlbumTracks($album->id)->items;
+                                foreach($getTracks as $track){
+                                    if($track->duration_ms > 120000){
+                                        array_push($allTracks, $track);
+                                    }
+                                }
+                            }
+
+                            //если общее кол-во треков больше или равно пяти, то 
+                            //выбираем треки
+                            if(count($allTracks) >= 7){
+                                $tracks = [];
+                                while(count($tracks) != 7 )
+                                {
+                                    $rand = rand(0, count($allTracks) - 1);
+                                    $randTrackId = $allTracks[$rand]->id;
+
+                                    array_push($tracks, $randTrackId);
+
+                                    $tracks = array_values(array_unique($tracks));
+                                }
+
+                                foreach($tracks as $track){
+                                    array_push($tracksForPlaylist, $track);
+                                }
+                            }
+                          
+                        }
+                        //если альбомов ноль
+                        //такое бывает если исполнитель был удален из библиотеки Spotify
+                        else if (count($allTracks) == 0)
+                        { /*do nothing*/ }
+                        else
+                        { /*do nothing*/ }
                     }
+
+                    // dd($tracksForPlaylist);
 
                    return $tracksForPlaylist;
             } 
@@ -537,6 +575,5 @@ class Helpers
 
         }
     }
-
 }
         
