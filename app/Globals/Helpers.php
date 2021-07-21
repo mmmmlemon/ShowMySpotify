@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use SpotifyWebAPI;
 use Cookie;
 use File;
+use Image;
 
 //Helpers
 //глобальные функции на разные случаи
@@ -350,6 +351,56 @@ class Helpers
             }
         }
 
+        public static function createPlaylistCover($type, $coverType, $data)
+        {
+     
+            $templateImgPath = null;
+            switch($type)
+            {
+                case 'top50alltime':
+                    $templateImgPath = storage_path('app\public\system\top50alltime.png');
+                    break;
+                case 'top20month':
+                    $templateImgPath = storage_path('app\public\system\top20month.png');
+                    break;
+                case 'top30long':
+                    $templateImgPath = storage_path('app\public\system\top30long.png');
+                    break;
+                case 'top30short':
+                    $templateImgPath = storage_path('app\public\system\top30short.png');
+                    break;
+                case 'top30popular':
+                        $templateImgPath = storage_path('app\public\system\top30popular.png');
+                        break;
+                case 'top30unpopular':
+                    $templateImgPath = storage_path('app\public\system\top30unpopular.png');
+                    break;
+            }
+
+            $templateImg = Image::make($templateImgPath)->resize(500,500);
+
+            $coverImgPath = null;
+            switch($coverType)
+            {
+                case 'tracks':
+                    
+                    $coverImgPath = $data[rand(0,count($data)-1)]['album']->images[0]->url;
+                    break;
+                case 'artists':
+                    dd('artists');
+                    break;
+            }
+
+            $coverImg = Image::make($coverImgPath)->resize(500,500);
+            $coverImg->brightness(-28);
+
+            $coverImg->insert($templateImg, 'top-left');
+
+            $base64 = preg_replace('#data:image/[^;]+;base64,#', '', $coverImg->encode('data-url')->encoded);
+
+            return $base64;
+        }
+
 
         //getTracksForPlaylist
         //получить треки для плейлиста
@@ -382,10 +433,17 @@ class Helpers
                     $filtered = [];
 
                     foreach($tracks->items as $track){
-                        array_push($filtered, $track->id);
+                        array_push($filtered, ['id'=>$track->id, 'album'=>$track->album]);
                     }
-
-                    return $filtered;
+                    
+                    //создаём картинку для плейлиста
+                    $cover = Helpers::createPlaylistCover($type, "tracks", $filtered);
+                    $trackIds = [];
+                    foreach($filtered as $track){
+                        array_push($trackIds, $track['id']);
+                    }
+                    
+                    return ['tracks'=> $trackIds, 'cover' => $cover];
                 } 
                 else if($type === 'top30long' || $type === 'top30short')
                 {
@@ -394,7 +452,7 @@ class Helpers
                     $filtered = [];
 
                     foreach($tracks as $track){
-                        array_push($filtered, ['id' => $track->id, 'duration' => $track->duration_ms]);
+                        array_push($filtered, ['id' => $track, 'duration' => $track->duration_ms, 'album' => $track->album]);
                     }
                     
                     switch($type){
@@ -405,13 +463,20 @@ class Helpers
                             $filtered = Helpers::sortArrayByKey($filtered, 'duration', 'asc');
                     } 
                     
-                    $result = [];
+                    $selectedTracks = [];
 
                     for($i = 1; $i <= 30; $i++){
-                        array_push($result, $filtered[$i-1]['id']);
+                        array_push($selectedTracks, ['id' => $filtered[$i-1]['id']->id, 'album' => $filtered[$i-1]['album']]);
+                    }
+         
+                    $cover = Helpers::createPlaylistCover($type, "tracks", $selectedTracks);
+
+                    $trackIds = [];
+                    foreach($selectedTracks as $track){
+                        array_push($trackIds, $track['id']);
                     }
 
-                    return $result;
+                    return ['tracks'=> $trackIds, 'cover' => $cover];
 
                 } 
                 else if($type == 'top30popular' || $type == 'top30unpopular')
@@ -421,7 +486,7 @@ class Helpers
                     $filtered = [];
 
                     foreach($tracks as $track){
-                        array_push($filtered, ['id' => $track->id, 'popularity' => $track->popularity]);
+                        array_push($filtered, ['id' => $track->id, 'popularity' => $track->popularity, 'album' => $track->album]);
                     }
                     
                     switch($type){
@@ -435,10 +500,17 @@ class Helpers
                     $result = [];
 
                     for($i = 1; $i <= 30; $i++){
-                        array_push($result, $filtered[$i-1]['id']);
-                    }
+                        array_push($result, $filtered[$i-1]);
+                    }   
+          
+                    $cover = Helpers::createPlaylistCover($type, "tracks", $result);
 
-                    return $result;
+                    $trackIds = [];
+                    foreach($result as $track){
+                        array_push($trackIds, $track['id']);
+                    }
+                  
+                    return ['tracks'=> $trackIds, 'cover' => $cover];
                 } 
                 else if($type == 'artistsAlltime' || $type == 'artistsMonth')
                 {

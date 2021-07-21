@@ -1948,7 +1948,7 @@ class SpotifyAPIController extends Controller
             $date = strftime('%B \'%y');
             $date = iconv('windows-1251', 'utf-8',  $date);
 
-            $tracks = Helpers::getTracksForPlaylist($request, $type);
+            $result = Helpers::getTracksForPlaylist($request, $type);
 
             // dd($tracks);
 
@@ -1984,8 +1984,11 @@ class SpotifyAPIController extends Controller
             $playlist = $api->createPlaylist([
                 'name' => $playlistName
             ]);
-
-            $api->addPlaylistTracks($playlist->id, $tracks);
+            // dd($result);
+            $api->addPlaylistTracks($playlist->id, $result['tracks']);
+            // $imageData = base64_encode(file_get_contents('screen.png'));
+            $cover = preg_replace('#data:image/[^;]+;base64,#', '', $result['cover']);
+            $api->updatePlaylistImage($playlist->id, $cover);
 
             return response()->json(true);
 

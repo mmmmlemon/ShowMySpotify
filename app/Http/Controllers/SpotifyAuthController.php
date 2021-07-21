@@ -33,6 +33,7 @@ class SpotifyAuthController extends Controller
                 'user-follow-read',
                 'user-top-read',
                 'user-read-recently-played',
+                'ugc-image-upload',
             ],
         ];
 
@@ -187,6 +188,7 @@ class SpotifyAuthController extends Controller
                 'user-follow-read',
                 'user-top-read',
                 'user-read-recently-played',
+                'ugc-image-upload',
             ],
         ];
 
