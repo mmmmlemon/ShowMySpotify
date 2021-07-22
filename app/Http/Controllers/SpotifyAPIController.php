@@ -1972,10 +1972,13 @@ class SpotifyAPIController extends Controller
                         $playlistName = "Топ 30 самых непопулярных ({$date})";
                         break;
                 case 'artistsAlltime':
-                        $playlistName = "Треки твоих самых любимых исполнителей ({$date})";
+                        $playlistName = "Самые любимые артисты ({$date})";
                         break;
                 case 'artistsMonth':
-                    $playlistName = "Треки исполнителей за месяц ({$date})";
+                    $playlistName = "Любимые артисты за месяц ({$date})";
+                    break;
+                case 'artistsByLikes': 
+                    $playlistName = "Самые любимые артисты по лайкам ({$date})";
                     break;
                 default: 
                     $playlistName = "ShowMySpotify";

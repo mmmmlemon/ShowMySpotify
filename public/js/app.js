@@ -5053,6 +5053,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -84764,7 +84771,9 @@ var render = function() {
                         "Десять твоих самых прослушиваемых артистов за все время",
                       items: _vm.top10ArtistsAllTime,
                       listType: "artists",
-                      desc: "Эти группы и артисты никогда тебя не покидают"
+                      desc: "Эти группы и артисты никогда тебя не покидают",
+                      playlistName: "Самые любимые артисты",
+                      action: "artistsAlltime"
                     }
                   })
                 : _vm._e(),
@@ -84778,7 +84787,9 @@ var render = function() {
                         "Десять твоих самых прослушиваемых артистов за последний месяц",
                       items: _vm.top10ArtistsMonth,
                       listType: "artists",
-                      desc: "Эти группы и артисты были с тобой последний месяц"
+                      desc: "Эти группы и артисты были с тобой последний месяц",
+                      playlistName: "Любимые артисты за месяц",
+                      action: "artistsMonth"
                     }
                   })
                 : _vm._e(),
@@ -84791,7 +84802,9 @@ var render = function() {
                         "Десять артистов с наибольшим кол-вом треков в твоей библиотеке",
                       items: _vm.top10ArtistsByTracks,
                       listType: "artists",
-                      desc: "Твои любимчики по количеству добавленных треков"
+                      desc: "Твои любимчики по количеству добавленных треков",
+                      playlistName: "Любимые артисты по лайкам",
+                      action: "artistsByLikes"
                     }
                   })
                 : _vm._e(),

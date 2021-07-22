@@ -94,21 +94,28 @@
                             cardDesc="Десять твоих самых прослушиваемых артистов за все время" 
                             :items="top10ArtistsAllTime"
                             listType="artists"
-                            desc="Эти группы и артисты никогда тебя не покидают"/>
+                            desc="Эти группы и артисты никогда тебя не покидают"
+                            playlistName="Самые любимые артисты"
+                            action="artistsAlltime"/>
 
                 <Top10Items v-if="top10ArtistsAllTime != -1 && top10ArtistsMonth != 'noArtists'"
                             cardTitle="Топ 10 артистов за месяц" 
                             cardDesc="Десять твоих самых прослушиваемых артистов за последний месяц" 
                             :items="top10ArtistsMonth"
                             listType="artists"
-                            desc="Эти группы и артисты были с тобой последний месяц"/>
+                            desc="Эти группы и артисты были с тобой последний месяц"
+                            playlistName="Любимые артисты за месяц"
+                            action="artistsMonth"/>
 
                 <Top10Items v-if="top10ArtistsMonth != -1"
                             cardTitle="Топ 10 артистов по трекам" 
                             cardDesc="Десять артистов с наибольшим кол-вом треков в твоей библиотеке" 
                             :items="top10ArtistsByTracks"
                             listType="artists"
-                            desc="Твои любимчики по количеству добавленных треков"/>
+                            desc="Твои любимчики по количеству добавленных треков"
+                            playlistName="Любимые артисты по лайкам"
+                            action="artistsByLikes"/>
+
                 <Top10Items v-if="top10ArtistsByTracks != -1"
                             cardTitle="Топ 10 артистов по времени треков" 
                             cardDesc="Десять артистов с наибольшим кол-вом часов музыки в твоей библиотеке" 

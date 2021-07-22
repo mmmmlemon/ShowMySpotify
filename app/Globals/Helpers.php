@@ -375,24 +375,38 @@ class Helpers
                 case 'top30unpopular':
                     $templateImgPath = storage_path('app\public\system\top30unpopular.png');
                     break;
+                case 'artistsAlltime':
+                        $templateImgPath = storage_path('app\public\system\artistsAlltime.png');
+                        break;
+                case 'artistsMonth':
+                    $templateImgPath = storage_path('app\public\system\artistsMonth.png');
+                    break;
+                case 'artistsByLikes':
+                    $templateImgPath = storage_path('app\public\system\artistsbyLikes.png');
+                    break;
+                default:
+                    $templateImgPath = storage_path('app\public\system\playlist.png');
+                    break;
             }
 
             $templateImg = Image::make($templateImgPath)->resize(500,500);
 
             $coverImgPath = null;
+            $brightness = 0;
             switch($coverType)
             {
                 case 'tracks':
-                    
                     $coverImgPath = $data[rand(0,count($data)-1)]['album']->images[0]->url;
+                    $brightness = -28;
                     break;
                 case 'artists':
-                    dd('artists');
+                    $coverImgPath = $data[rand(0,count($data)-1)]->images[0]->url;
                     break;
+                    $brightness = -18;
             }
 
             $coverImg = Image::make($coverImgPath)->resize(500,500);
-            $coverImg->brightness(-28);
+            $coverImg->brightness($brightness);
 
             $coverImg->insert($templateImg, 'top-left');
 
@@ -561,8 +575,8 @@ class Helpers
                             $gap = 10;
                             if(count($allAlbums) >= 7 && count($allAlbums) < 20)
                             { $gap = 7; }
-                            shuffle($allAlbums);
-                            shuffle($allAlbums);
+                            // shuffle($allAlbums);
+                            // shuffle($allAlbums);
                             $gapBegins = rand(0, count($allAlbums) - ($gap + 1));
                             $gapEnds = $gapBegins + 10;
                             $albumGap = array_slice($allAlbums, $gapBegins, $gap);
@@ -619,8 +633,12 @@ class Helpers
 
                                     array_push($tracks, $randTrackId);
 
-                                    $tracks = array_values(array_unique($tracks));
+                                    unset($allTracks[$rand]);
+                                    $allTracks = array_values($allTracks);
+                                
                                 }
+
+                                $tracks = array_values(array_unique($tracks));
 
                                 foreach($tracks as $track){
                                     array_push($tracksForPlaylist, $track);
@@ -637,9 +655,89 @@ class Helpers
                     }
 
                     // dd($tracksForPlaylist);
-
-                   return $tracksForPlaylist;
+                    $cover = Helpers::createPlaylistCover($type, "artists", $top10Artists->items);
+                    return ['tracks' => $tracksForPlaylist, 'cover' => $cover];
             } 
+            else if ($type == 'artistsByLikes'){
+                $tracks = System::getUserLibraryJson("tracks", $request);
+                
+                    //если он есть
+                    if($tracks != false)
+                    {  
+                        $artists = [];
+
+                        //получаем все id исполнителей из списка треков
+                        foreach($tracks as $track)
+                        {
+                            foreach($track->artists as $artist)
+                            { array_push($artists, $artist->id); }
+                        }
+
+                        $artistsCount = [];
+
+                        //считаем сколько раз встречается каждый id
+                        foreach($artists as $artist)
+                        {
+                            if(array_key_exists($artist, $artistsCount) === false)
+                            { $artistsCount[$artist] = 1; }
+                            else
+                            { $artistsCount[$artist] += 1; }
+                        }
+                    }
+
+                    //сортировка по убыванию
+                    arsort($artistsCount);
+
+                    //берем первые десять
+                    // $top10Artists = array_slice($artistsCount, 0, 10);
+
+                    //список всех id исполнителей
+                    $top10Artists = array_slice(array_keys($artistsCount), 0, 10);
+
+                    //список всех треков по исполнителям
+                    $tracksByArtists = [];
+                    
+                    foreach($top10Artists as $artist){
+                        $tracksByArtists[$artist] = [];
+                        foreach($tracks as $track){
+                            $artistId = $track->artists[0]->id;
+                            if($artist === $artistId)
+                            { array_push($tracksByArtists[$artistId], $track->id); }
+                        }
+                    }
+
+                    //выбираем случайные треки
+                    $tracksForPlaylist = [];
+                    foreach($tracksByArtists as $tracks){
+                        //если треков больше семи
+                        if(count($tracks) > 7){
+
+                            for($i = 1; $i <= 7; $i++)
+                            {
+                                $rand = rand(0, count($tracks) - 1);
+
+                                array_push($tracksForPlaylist, $tracks[$rand]);
+                                unset($tracks[$rand]);
+                                $tracks = array_values($tracks);
+                            }
+
+                        } else if (count($tracks) <= 7){
+                            foreach($tracks as $track){
+                                array_push($tracksForPlaylist, $track);
+                            }
+                        }
+                    }    
+
+                    $artistsForCover = [];
+                    foreach($top10Artists as $artist){
+                        $artistData = $api->getArtist($artist);
+                        array_push($artistsForCover, $artistData);
+                    }
+
+                    $cover = Helpers::createPlaylistCover($type, "artists", $artistsForCover);
+
+                    return ['tracks' => $tracksForPlaylist, 'cover' => $cover];
+            }
             else
             { 
                 return response()->json(false);
