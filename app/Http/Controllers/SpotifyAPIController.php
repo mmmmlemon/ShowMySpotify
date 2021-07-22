@@ -1982,11 +1982,11 @@ class SpotifyAPIController extends Controller
                         break;
                 case 'artistsMonth':
                     $playlistName = "Любимые артисты за месяц ({$date})";
-                    $playlistDesc = "Эти группы и артисты были с тобой последний месяц 😊";
+                    $playlistDesc = "Здесь только треки от артистов которые были с тобой последний месяц 😊";
                     break;
                 case 'artistsByLikes': 
                     $playlistName = "Самые любимые артисты по лайкам ({$date})";
-                    $playlistDesc = "Твои любимчики по количеству добавленных в библиотеку треков 💖. Здесь только твои самые любимые от самых любимых.";
+                    $playlistDesc = "Твои любимчики по количеству добавленных треков 💖. Здесь только твои самые любимые от самых любимых.";
                     break;
                 default: 
                     $playlistName = "ShowMySpotify";
@@ -2003,7 +2003,7 @@ class SpotifyAPIController extends Controller
             $cover = preg_replace('#data:image/[^;]+;base64,#', '', $result['cover']);
             $api->updatePlaylistImage($playlist->id, $cover);
 
-            return response()->json(true);
+            return response()->json(['playlistUrl' => $playlist->external_urls->spotify]);
 
         } else {
             return json()->response()->json(false);

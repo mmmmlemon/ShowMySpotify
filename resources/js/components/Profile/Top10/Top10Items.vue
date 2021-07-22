@@ -107,8 +107,16 @@
                                         </div>
                                     </div>
                             </div>
-                            <div class="row justify-content-center goUpAnimSlow" v-if="action !== null">
+                            <div class="row justify-content-center goUpAnimSlow" v-if="action !== null && creatingPlaylist === null">
                                 <button @click="createPlaylist" class="btn btn-primary-n">Создать плейлист "{{playlistName}}"</button>
+                            </div>
+                            <div class="row justify-content-center blinkingAnim" v-if="creatingPlaylist === false">
+                                <h5>Создаю плейлист...</h5>
+                                <div class="greenballDiv"><div class="greenball">&nbsp;</div></div>
+                            </div>
+
+                            <div class="row justify-content-center fadeInAnimSlow" v-if="creatingPlaylist === true">
+                                <h5 class="textShadow"><b><a :href="linkToPlaylist">Открыть плейлист</a></b></h5>
                             </div>
                             
                         </div>
@@ -129,6 +137,8 @@ export default {
     data: () => {
         return {
             visible: false,
+            creatingPlaylist: null,
+            linkToPlaylist: null,
         }
     },
 
@@ -168,9 +178,11 @@ export default {
 
         //создать плейлист
         createPlaylist: function(){
+            this.creatingPlaylist = false;
             axios.get(`/api/create_playlist/${this.action}`).then(response => {
-                if(response.data == true){
-                    alert('Success!');
+                if(response.data != false){
+                    this.creatingPlaylist = true;
+                    this.linkToPlaylist = response.data.playlistUrl;
                 }
             })
         },

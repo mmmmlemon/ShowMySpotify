@@ -196,9 +196,6 @@ export default {
 
         //смена текущего таба
         this.$store.dispatch('setCurrentTab','top10');
-
-   
-  
     },
 
     

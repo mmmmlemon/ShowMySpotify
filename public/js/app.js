@@ -5381,10 +5381,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      visible: false
+      visible: false,
+      creatingPlaylist: null,
+      linkToPlaylist: null
     };
   },
   props: {
@@ -5439,9 +5449,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     //создать плейлист
     createPlaylist: function createPlaylist() {
+      var _this = this;
+
+      this.creatingPlaylist = false;
       axios.get("/api/create_playlist/".concat(this.action)).then(function (response) {
-        if (response.data == true) {
-          alert('Success!');
+        if (response.data != false) {
+          _this.creatingPlaylist = true;
+          _this.linkToPlaylist = response.data.playlistUrl;
         }
       });
     }
@@ -85652,7 +85666,8 @@ var render = function() {
                                   ]
                                 ),
                                 _vm._v(" "),
-                                _vm.action !== null
+                                _vm.action !== null &&
+                                _vm.creatingPlaylist === null
                                   ? _c(
                                       "div",
                                       {
@@ -85672,6 +85687,52 @@ var render = function() {
                                                 _vm._s(_vm.playlistName) +
                                                 '"'
                                             )
+                                          ]
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.creatingPlaylist === false
+                                  ? _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "row justify-content-center blinkingAnim"
+                                      },
+                                      [
+                                        _c("h5", [
+                                          _vm._v("Создаю плейлист...")
+                                        ]),
+                                        _vm._v(" "),
+                                        _vm._m(0)
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.creatingPlaylist === true
+                                  ? _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "row justify-content-center fadeInAnimSlow"
+                                      },
+                                      [
+                                        _c(
+                                          "h5",
+                                          { staticClass: "textShadow" },
+                                          [
+                                            _c("b", [
+                                              _c(
+                                                "a",
+                                                {
+                                                  attrs: {
+                                                    href: _vm.linkToPlaylist
+                                                  }
+                                                },
+                                                [_vm._v("Открыть плейлист")]
+                                              )
+                                            ])
                                           ]
                                         )
                                       ]
@@ -85711,7 +85772,16 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "greenballDiv" }, [
+      _c("div", { staticClass: "greenball" }, [_vm._v(" ")])
+    ])
+  }
+]
 render._withStripped = true
 
 
