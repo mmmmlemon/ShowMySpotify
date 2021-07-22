@@ -1943,6 +1943,7 @@ class SpotifyAPIController extends Controller
             $api = config('spotify_api');
 
             $playlistName = null;
+            $playlistDesc = null;
 
             setlocale(LC_ALL, 'russian');
             $date = strftime('%B \'%y');
@@ -1950,46 +1951,55 @@ class SpotifyAPIController extends Controller
 
             $result = Helpers::getTracksForPlaylist($request, $type);
 
-            // dd($tracks);
-
             switch($type){
                 case 'top50alltime':
                     $playlistName = "Топ 50 треков за всё время ({$date})";
+                    $playlistDesc = "Твой плейлист для необитаемого острова. К этим песням ты возвращаешься чаще всего 😍";
                     break;
                 case 'top20month': 
                     $playlistName = "Топ 20 треков за месяц ({$date})";
+                    $playlistDesc = "Эти песни не покидают тебя весь последний месяц 🥰";
                     break;
                 case 'top30long': 
                     $playlistName = "Топ 30 самых длинных ({$date})";
+                    $playlistDesc = "Музыка для усидчивых. Самые длинные песни которые тебе нравятся ⌛";
                     break;
                 case 'top30short': 
                         $playlistName = "Топ 30 самых коротких ({$date})";
+                        $playlistDesc = "Краткость - сестра таланта. Твои любимые короткие песни 🤏";
                         break;
                 case 'top30popular': 
                     $playlistName = "Топ 30 самых популярных ({$date})";
+                    $playlistDesc = "Популярное - не всегда плохое. Кроме тебя эти песни нравятся еще много кому 😎";
                     break;
                 case 'top30unpopular': 
                         $playlistName = "Топ 30 самых непопулярных ({$date})";
+                        $playlistDesc = "Кто все эти люди? Кроме тебя, похоже, эти песни больше никто не слушает 🤓";
                         break;
                 case 'artistsAlltime':
                         $playlistName = "Самые любимые артисты ({$date})";
+                        $playlistDesc = "Здесь только те, кого ты слушаешь чаще всего. Эти группы и артисты никогда тебя не покидают 😘";
                         break;
                 case 'artistsMonth':
                     $playlistName = "Любимые артисты за месяц ({$date})";
+                    $playlistDesc = "Эти группы и артисты были с тобой последний месяц 😊";
                     break;
                 case 'artistsByLikes': 
                     $playlistName = "Самые любимые артисты по лайкам ({$date})";
+                    $playlistDesc = "Твои любимчики по количеству добавленных в библиотеку треков 💖. Здесь только твои самые любимые от самых любимых.";
                     break;
                 default: 
                     $playlistName = "ShowMySpotify";
             }
 
             $playlist = $api->createPlaylist([
-                'name' => $playlistName
+                'name' => $playlistName,
+                'description' => $playlistDesc,
             ]);
-            // dd($result);
+
+
             $api->addPlaylistTracks($playlist->id, $result['tracks']);
-            // $imageData = base64_encode(file_get_contents('screen.png'));
+
             $cover = preg_replace('#data:image/[^;]+;base64,#', '', $result['cover']);
             $api->updatePlaylistImage($playlist->id, $cover);
 
