@@ -107,18 +107,21 @@
                                         </div>
                                     </div>
                             </div>
-                            <div class="row justify-content-center goUpAnimSlow" v-if="action !== null && creatingPlaylist === null">
-                                <button @click="createPlaylist" class="btn btn-primary-n">Создать плейлист "{{playlistName}}"</button>
-                            </div>
-                            <div class="row justify-content-center blinkingAnim" v-if="creatingPlaylist === false">
-                                <h5>Создаю плейлист...</h5>
-                                <div class="greenballDiv"><div class="greenball">&nbsp;</div></div>
-                            </div>
+                            <div class="row justify-content-center" style="height: 5rem;">
+                                <div class="row justify-content-center goUpAnimSlow" v-if="action !== null && creatingPlaylist === null">
+                                    <button @click="createPlaylist" class="btn btn-primary-n">Создать плейлист "{{playlistName}}"</button>
+                                </div>
+                                <div class="row justify-content-center" v-if="creatingPlaylist === false">
+                                    <div class="col-12 text-center ">
+                                        <h5 class="createPlaylist fadeInAnimSlow">Создаю плейлист</h5>
+                                    </div>
+                                    <div class="createPlaylistBall">&nbsp;</div>
+                                </div>
 
-                            <div class="row justify-content-center fadeInAnimSlow" v-if="creatingPlaylist === true">
-                                <h5 class="textShadow"><b><a :href="linkToPlaylist">Открыть плейлист</a></b></h5>
+                                <div class="row justify-content-center fadeInAnimSlow" v-if="creatingPlaylist === true">
+                                    <h5 class="textShadow"><b><a :href="linkToPlaylist">Открыть плейлист</a></b></h5>
+                                </div>
                             </div>
-                            
                         </div>
                     </div>
                     <div v-else>

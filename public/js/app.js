@@ -5389,6 +5389,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -85666,78 +85669,95 @@ var render = function() {
                                   ]
                                 ),
                                 _vm._v(" "),
-                                _vm.action !== null &&
-                                _vm.creatingPlaylist === null
-                                  ? _c(
-                                      "div",
-                                      {
-                                        staticClass:
-                                          "row justify-content-center goUpAnimSlow"
-                                      },
-                                      [
-                                        _c(
-                                          "button",
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "row justify-content-center",
+                                    staticStyle: { height: "5rem" }
+                                  },
+                                  [
+                                    _vm.action !== null &&
+                                    _vm.creatingPlaylist === null
+                                      ? _c(
+                                          "div",
                                           {
-                                            staticClass: "btn btn-primary-n",
-                                            on: { click: _vm.createPlaylist }
+                                            staticClass:
+                                              "row justify-content-center goUpAnimSlow"
                                           },
                                           [
-                                            _vm._v(
-                                              'Создать плейлист "' +
-                                                _vm._s(_vm.playlistName) +
-                                                '"'
+                                            _c(
+                                              "button",
+                                              {
+                                                staticClass:
+                                                  "btn btn-primary-n",
+                                                on: {
+                                                  click: _vm.createPlaylist
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  'Создать плейлист "' +
+                                                    _vm._s(_vm.playlistName) +
+                                                    '"'
+                                                )
+                                              ]
                                             )
                                           ]
                                         )
-                                      ]
-                                    )
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                _vm.creatingPlaylist === false
-                                  ? _c(
-                                      "div",
-                                      {
-                                        staticClass:
-                                          "row justify-content-center blinkingAnim"
-                                      },
-                                      [
-                                        _c("h5", [
-                                          _vm._v("Создаю плейлист...")
-                                        ]),
-                                        _vm._v(" "),
-                                        _vm._m(0)
-                                      ]
-                                    )
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                _vm.creatingPlaylist === true
-                                  ? _c(
-                                      "div",
-                                      {
-                                        staticClass:
-                                          "row justify-content-center fadeInAnimSlow"
-                                      },
-                                      [
-                                        _c(
-                                          "h5",
-                                          { staticClass: "textShadow" },
+                                      : _vm._e(),
+                                    _vm._v(" "),
+                                    _vm.creatingPlaylist === false
+                                      ? _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "row justify-content-center"
+                                          },
                                           [
-                                            _c("b", [
-                                              _c(
-                                                "a",
-                                                {
-                                                  attrs: {
-                                                    href: _vm.linkToPlaylist
-                                                  }
-                                                },
-                                                [_vm._v("Открыть плейлист")]
-                                              )
-                                            ])
+                                            _vm._m(0),
+                                            _vm._v(" "),
+                                            _c(
+                                              "div",
+                                              {
+                                                staticClass:
+                                                  "createPlaylistBall"
+                                              },
+                                              [_vm._v(" ")]
+                                            )
                                           ]
                                         )
-                                      ]
-                                    )
-                                  : _vm._e()
+                                      : _vm._e(),
+                                    _vm._v(" "),
+                                    _vm.creatingPlaylist === true
+                                      ? _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "row justify-content-center fadeInAnimSlow"
+                                          },
+                                          [
+                                            _c(
+                                              "h5",
+                                              { staticClass: "textShadow" },
+                                              [
+                                                _c("b", [
+                                                  _c(
+                                                    "a",
+                                                    {
+                                                      attrs: {
+                                                        href: _vm.linkToPlaylist
+                                                      }
+                                                    },
+                                                    [_vm._v("Открыть плейлист")]
+                                                  )
+                                                ])
+                                              ]
+                                            )
+                                          ]
+                                        )
+                                      : _vm._e()
+                                  ]
+                                )
                               ]
                             )
                           ]
@@ -85777,8 +85797,10 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "greenballDiv" }, [
-      _c("div", { staticClass: "greenball" }, [_vm._v(" ")])
+    return _c("div", { staticClass: "col-12 text-center " }, [
+      _c("h5", { staticClass: "createPlaylist fadeInAnimSlow" }, [
+        _vm._v("Создаю плейлист")
+      ])
     ])
   }
 ]
