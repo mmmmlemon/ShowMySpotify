@@ -129,9 +129,7 @@ class SpotifyAuthController extends Controller
         else
         {   
             $response = new Response(true);
-
             $response->withCookie(cookie()->forever('cookies_accepted', true));
-
             return $response;
         }
     }
@@ -167,7 +165,6 @@ class SpotifyAuthController extends Controller
         if($check == true)
         {
             Storage::disk('public')->deleteDirectory("user_libraries/".$folderName);
-
             return response()->json(true);
         }
 

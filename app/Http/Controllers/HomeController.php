@@ -23,35 +23,32 @@ class HomeController extends Controller
     //getNavigationSettings
     //получить настройки для навигации
     public function getNavigationSettings(Request $request){
+
         $settings = config('settings');
+
         //проверка токена
         $checkToken = System::setAccessToken($request);
 
-        $spotifyProfile = null;
+        $spotifyProfile = [];
  
         if($checkToken != false){
             //вызываем api, получаем профиль пользователя
             $api = config('spotify_api');
 
             //если у пользователя установлена аватарка, то записываем ссылку на неё
-            $avatarUrl = "";
-
             if(count($api->me()->images) > 0)
-            { $avatarUrl = $api->me()->images[0]->url; }
+            {  $spotifyProfile['avatar'] = $api->me()->images[0]->url; }
             else
-            {   
-                //заглушка на случай если нет аватарки
-                $avatarUrl = asset(config('settings')->user_img);
-            }
-            
+            { $spotifyProfile['avatar'] = 'noAvatar'; }
+
             //пользователь
-            $spotifyProfile = ['displayName' => $api->me()->display_name, 'avatar' => $avatarUrl];
+            $spotifyProfile['displayName'] = $api->me()->display_name;
 
         }
 
         $response = ['site_title' => $settings->site_title,
-        'checkToken' => $checkToken,
-        'spotifyProfile' => $spotifyProfile];
+                    'checkToken' => $checkToken,
+                    'spotifyProfile' => $spotifyProfile];
 
         return response()->json($response);
 
@@ -72,9 +69,7 @@ class HomeController extends Controller
         $settings = config('settings');
 
         if($settings != null)
-        {
-            return response()->json($settings->welcome);
-        }
+        { return response()->json($settings->welcome); }
         else
         { return response()->json(false); }
     }
@@ -102,9 +97,7 @@ class HomeController extends Controller
         $settings = config('settings');
 
         if($settings != null)
-        {
-            return response()->json($settings->about);
-        }
+        { return response()->json($settings->about); }
         else
         { return response()->json(false); }
     }
@@ -116,9 +109,7 @@ class HomeController extends Controller
         $settings = config('settings');
 
         if($settings != null)
-        {
-            return response()->json($settings->faq);
-        }
+        { return response()->json($settings->faq); }
         else
         { return response()->json(false); }
     }
@@ -130,9 +121,7 @@ class HomeController extends Controller
         $settings = config('settings');
 
         if($settings != null)
-        {
-            return response()->json($settings->contacts);
-        }
+        { return response()->json($settings->contacts); }
         else
         { return response()->json(false); }
     }
@@ -144,9 +133,7 @@ class HomeController extends Controller
         $settings = config('settings');
 
         if($settings != null)
-        {
-            return response()->json(asset($settings->logo_img));
-        }
+        { return response()->json(asset($settings->logo_img)); }
         else
         { return response()->json(false); }
     }
@@ -158,9 +145,7 @@ class HomeController extends Controller
         $settings = config('settings');
 
         if($settings != null)
-        {
-            return response()->json(asset($settings->home_img));
-        }
+        { return response()->json(asset($settings->home_img)); }
         else
         { return response()->json(false); } 
     }
@@ -172,9 +157,7 @@ class HomeController extends Controller
         $settings = config('settings');
 
         if($settings != null)
-        {
-            return response()->json(asset($settings->welcome_img));
-        }
+        { return response()->json(asset($settings->welcome_img)); }
         else
         { return response()->json(false); }
     }

@@ -68,10 +68,6 @@ const routes = [
                         path:'/profile/top10',
                         component: Top10
                     },
-                    {
-                        path:'/profile/achievements',
-                        component: Achievements
-                    },
                 ]
             },
             //последние треки

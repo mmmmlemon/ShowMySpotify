@@ -18,7 +18,6 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 //возвращает число - количество треков
 class SpotifyAPIController extends Controller
 {
-
     //getHomePageUserTracksCount
     //посчитать кол-во треков для вывода на главной странице сайта
     //параметры: реквест
@@ -59,7 +58,6 @@ class SpotifyAPIController extends Controller
                 foreach($spotifyUserTracks->items as $track){
                         array_push($spotifyCovers, $track->track->album->images[0]->url);
                 }
-
 
                 $spotifyCoversUnique = array_values(array_unique($spotifyCovers));
         
@@ -1934,6 +1932,10 @@ class SpotifyAPIController extends Controller
         { return response()->json(false); }
     }
 
+    //createPlaylist
+    //создаёт плейлист в соотв. с выбранным типом плейлиста
+    // возвращает ссылку на плейлист
+    // параметры, $request (Request) - реквест, $type (String) - тип плейлиста
     public function createPlaylist(Request $request, $type){
         
         $checkToken = System::setAccessToken($request);
@@ -1944,13 +1946,14 @@ class SpotifyAPIController extends Controller
 
             $playlistName = null;
             $playlistDesc = null;
-
+            
+            // устанавливаем русскую локаль чтобы в названии была локализованная дата
             setlocale(LC_ALL, 'russian');
             $date = strftime('%B \'%y');
             $date = iconv('windows-1251', 'utf-8',  $date);
 
-            $result = Helpers::getTracksForPlaylist($request, $type);
 
+            // меняем название и описание плейлиста в соотв. с типом
             switch($type){
                 case 'top50alltime':
                     $playlistName = "Топ 50 треков за всё время ({$date})";
@@ -1989,24 +1992,28 @@ class SpotifyAPIController extends Controller
                     $playlistDesc = "Твои любимчики по количеству добавленных треков 💖. Здесь только твои самые любимые от самых любимых.";
                     break;
                 default: 
-                    $playlistName = "ShowMySpotify";
+                    return response()->json(false);
             }
 
+            // получаем треки для плейлиста
+            $result = Helpers::getTracksForPlaylist($request, $type);
+
+            // создаем плейлист
             $playlist = $api->createPlaylist([
                 'name' => $playlistName,
                 'description' => $playlistDesc,
             ]);
 
-
+            // добавляем в плейлист треки
             $api->addPlaylistTracks($playlist->id, $result['tracks']);
 
-            $cover = preg_replace('#data:image/[^;]+;base64,#', '', $result['cover']);
-            $api->updatePlaylistImage($playlist->id, $cover);
+            // устанавливаем обложку
+            $api->updatePlaylistImage($playlist->id, $result['cover']);
 
             return response()->json(['playlistUrl' => $playlist->external_urls->spotify]);
 
         } else {
-            return json()->response()->json(false);
+            return response()->json(false);
         }
 
 

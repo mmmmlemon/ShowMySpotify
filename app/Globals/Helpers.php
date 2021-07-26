@@ -336,7 +336,7 @@ class Helpers
         //checkCountries
         //проверить доступность альбома в странах
         //возващает true, если доступен в нужных странах, или false если не доступен хотя бы в одной стране
-        //параметр: альбом
+        //параметр: $album (SpotifyAPI Object) - альбом
         public static function checkCountries($album){
             $markets = $album->available_markets;
             $checkRussia = array_search('RU', $markets);
@@ -351,10 +351,17 @@ class Helpers
             }
         }
 
+        // createPlaylistCover
+        // сгенерировать обложку для плейлиста
+        // возвращает String с base64 сгенерированного изображения
+        // параметры: $type (String) - тип плейлиста, $coverType (String) - тип обложки, для плейлиста по трекам или по артистам,
+        //$data (Array) - массив с треками или артистами из которого будет браться обложка
         public static function createPlaylistCover($type, $coverType, $data)
         {
      
             $templateImgPath = null;
+
+            // получаем шаблон обложки плейлиста в соотв. с типом 
             switch($type)
             {
                 case 'top50alltime':
@@ -389,10 +396,13 @@ class Helpers
                     break;
             }
 
+            // создаем Image шаблон
             $templateImg = Image::make($templateImgPath)->resize(500,500);
 
             $coverImgPath = null;
             $brightness = 0;
+
+            // получаем случайное изображении в соотв. с переданным массивом
             switch($coverType)
             {
                 case 'tracks':
@@ -408,8 +418,10 @@ class Helpers
             $coverImg = Image::make($coverImgPath)->resize(500,500);
             $coverImg->brightness($brightness);
 
+            // совмещаем шаблон и случайное изображение, шаблон накладывается поверх
             $coverImg->insert($templateImg, 'top-left');
 
+            // генерируем base64 и убираем лишнее через regexp
             $base64 = preg_replace('#data:image/[^;]+;base64,#', '', $coverImg->encode('data-url')->encoded);
 
             return $base64;
@@ -418,16 +430,22 @@ class Helpers
 
         //getTracksForPlaylist
         //получить треки для плейлиста
+        // возвращает Array с ключами 'tracks' и 'cover', где 'tracks' - вложенный массив с id треков, а
+        // 'cover' - base64 обложки для плейлиста
+        // параметры: $request(Request), $type (String) - тип плейлиста
         public static function getTracksForPlaylist($request, $type)
         {
 
             $checkToken = System::setAccessToken($request);
+
             $tracks = null;
+
             if($checkToken != false)
             {
 
                 $api = config('spotify_api');
 
+                // если тип плейлиста "50 треков за всё время" или "20 треков за месяц"
                 if($type === 'top50alltime' || $type === 'top20month')
                 {
                     $options = null;
@@ -443,7 +461,8 @@ class Helpers
                     }
 
                     $tracks = $api->getMyTop('tracks', $options);
-
+                    
+                    //получаем только id треков и информацию об альбоме
                     $filtered = [];
 
                     foreach($tracks->items as $track){
@@ -452,23 +471,29 @@ class Helpers
                     
                     //создаём картинку для плейлиста
                     $cover = Helpers::createPlaylistCover($type, "tracks", $filtered);
+
                     $trackIds = [];
+
                     foreach($filtered as $track){
                         array_push($trackIds, $track['id']);
                     }
                     
                     return ['tracks'=> $trackIds, 'cover' => $cover];
-                } 
+                }
+                // если тип плейлиста "30 самых длинных\коротких"
                 else if($type === 'top30long' || $type === 'top30short')
                 {
-
+                    // получаем все треки
                     $tracks = System::getUserLibraryJson("tracks", $request);
+
+                    // получаем id, album и duration_ms у треков
                     $filtered = [];
 
                     foreach($tracks as $track){
-                        array_push($filtered, ['id' => $track, 'duration' => $track->duration_ms, 'album' => $track->album]);
+                        array_push($filtered, ['id' => $track->id, 'duration' => $track->duration_ms, 'album' => $track->album]);
                     }
                     
+                    //в зав. от типа плейлиста сортируем по ключу duration по возрастанию или убыванию
                     switch($type){
                         case 'top30long':
                             $filtered = Helpers::sortArrayByKey($filtered, 'duration', 'desc');
@@ -477,32 +502,38 @@ class Helpers
                             $filtered = Helpers::sortArrayByKey($filtered, 'duration', 'asc');
                     } 
                     
-                    $selectedTracks = [];
-
+                    // берем первые 30 элементов и забираем только id и album
+                    $filteredSecond = [];
+                    
                     for($i = 1; $i <= 30; $i++){
-                        array_push($selectedTracks, ['id' => $filtered[$i-1]['id']->id, 'album' => $filtered[$i-1]['album']]);
+                        array_push($filteredSecond, ['id' => $filtered[$i-1]['id'], 'album' => $filtered[$i-1]['album']]);
                     }
-         
-                    $cover = Helpers::createPlaylistCover($type, "tracks", $selectedTracks);
+                    
+                    // генерируем обложку и записываем id треков
+                    $cover = Helpers::createPlaylistCover($type, "tracks", $filteredSecond);
 
                     $trackIds = [];
-                    foreach($selectedTracks as $track){
+                    foreach($filteredSecond as $track){
                         array_push($trackIds, $track['id']);
                     }
 
                     return ['tracks'=> $trackIds, 'cover' => $cover];
 
                 } 
+                // если тип плейлиста "30 самых популярных\непопулярных"
                 else if($type == 'top30popular' || $type == 'top30unpopular')
                 {
-
+                    // получаем все треки
                     $tracks = System::getUserLibraryJson("tracks", $request);
+
+                    // берем id, popularity и album
                     $filtered = [];
 
                     foreach($tracks as $track){
                         array_push($filtered, ['id' => $track->id, 'popularity' => $track->popularity, 'album' => $track->album]);
                     }
                     
+                    // сортируем по возрастанию или по убыванию в соотв. с типом плейлиста
                     switch($type){
                         case 'top30popular':
                             $filtered = Helpers::sortArrayByKey($filtered, 'popularity', 'desc');
@@ -511,21 +542,25 @@ class Helpers
                             $filtered = Helpers::sortArrayByKey($filtered, 'popularity', 'asc');
                     } 
                     
-                    $result = [];
+                    // берем первые 30 элементов
+                    $filteredSecond = [];
 
                     for($i = 1; $i <= 30; $i++){
-                        array_push($result, $filtered[$i-1]);
+                        array_push($filteredSecond,  ['id' => $filtered[$i-1]['id'], 'album' => $filtered[$i-1]['album']]);
                     }   
-          
-                    $cover = Helpers::createPlaylistCover($type, "tracks", $result);
+                    
+                    // генерируем обложку и записываем id треков
+                    $cover = Helpers::createPlaylistCover($type, "tracks", $filteredSecond);
 
                     $trackIds = [];
-                    foreach($result as $track){
+
+                    foreach($filteredSecond as $track){
                         array_push($trackIds, $track['id']);
                     }
                   
                     return ['tracks'=> $trackIds, 'cover' => $cover];
                 } 
+                // если тип плейлиста "Артисты за всё время\месяц"
                 else if($type == 'artistsAlltime' || $type == 'artistsMonth')
                 {
                     $options = null;
@@ -538,6 +573,7 @@ class Helpers
                             break;
                     }
                     
+                    // получаем топ 10 артистов
                     $top10Artists = $api->getMyTop('artists', $options);
 
                     $tracksForPlaylist = [];
@@ -654,90 +690,89 @@ class Helpers
                         { /*do nothing*/ }
                     }
 
-                    // dd($tracksForPlaylist);
                     $cover = Helpers::createPlaylistCover($type, "artists", $top10Artists->items);
                     return ['tracks' => $tracksForPlaylist, 'cover' => $cover];
-            } 
-            else if ($type == 'artistsByLikes'){
-                $tracks = System::getUserLibraryJson("tracks", $request);
-                
-                    //если он есть
-                    if($tracks != false)
-                    {  
-                        $artists = [];
-
-                        //получаем все id исполнителей из списка треков
-                        foreach($tracks as $track)
-                        {
-                            foreach($track->artists as $artist)
-                            { array_push($artists, $artist->id); }
-                        }
-
-                        $artistsCount = [];
-
-                        //считаем сколько раз встречается каждый id
-                        foreach($artists as $artist)
-                        {
-                            if(array_key_exists($artist, $artistsCount) === false)
-                            { $artistsCount[$artist] = 1; }
-                            else
-                            { $artistsCount[$artist] += 1; }
-                        }
-                    }
-
-                    //сортировка по убыванию
-                    arsort($artistsCount);
-
-                    //берем первые десять
-                    // $top10Artists = array_slice($artistsCount, 0, 10);
-
-                    //список всех id исполнителей
-                    $top10Artists = array_slice(array_keys($artistsCount), 0, 10);
-
-                    //список всех треков по исполнителям
-                    $tracksByArtists = [];
+                } 
+                // если тип плейлиста "Артисты по лайкам"
+                else if ($type == 'artistsByLikes'){
+                    $tracks = System::getUserLibraryJson("tracks", $request);
                     
-                    foreach($top10Artists as $artist){
-                        $tracksByArtists[$artist] = [];
-                        foreach($tracks as $track){
-                            $artistId = $track->artists[0]->id;
-                            if($artist === $artistId)
-                            { array_push($tracksByArtists[$artistId], $track->id); }
-                        }
-                    }
+                        //если он есть
+                        if($tracks != false)
+                        {  
+                            $artists = [];
 
-                    //выбираем случайные треки
-                    $tracksForPlaylist = [];
-                    foreach($tracksByArtists as $tracks){
-                        //если треков больше семи
-                        if(count($tracks) > 7){
-
-                            for($i = 1; $i <= 7; $i++)
+                            //получаем все id исполнителей из списка треков
+                            foreach($tracks as $track)
                             {
-                                $rand = rand(0, count($tracks) - 1);
-
-                                array_push($tracksForPlaylist, $tracks[$rand]);
-                                unset($tracks[$rand]);
-                                $tracks = array_values($tracks);
+                                foreach($track->artists as $artist)
+                                { array_push($artists, $artist->id); }
                             }
 
-                        } else if (count($tracks) <= 7){
-                            foreach($tracks as $track){
-                                array_push($tracksForPlaylist, $track);
+                            $artistsCount = [];
+
+                            //считаем сколько раз встречается каждый id
+                            foreach($artists as $artist)
+                            {
+                                if(array_key_exists($artist, $artistsCount) === false)
+                                { $artistsCount[$artist] = 1; }
+                                else
+                                { $artistsCount[$artist] += 1; }
                             }
                         }
-                    }    
 
-                    $artistsForCover = [];
-                    foreach($top10Artists as $artist){
-                        $artistData = $api->getArtist($artist);
-                        array_push($artistsForCover, $artistData);
-                    }
+                        //сортировка по убыванию
+                        arsort($artistsCount);
 
-                    $cover = Helpers::createPlaylistCover($type, "artists", $artistsForCover);
+                        //берем первые десять
+                        $top10Artists = array_slice(array_keys($artistsCount), 0, 10);
 
-                    return ['tracks' => $tracksForPlaylist, 'cover' => $cover];
-            }
+                        //список всех треков по исполнителям
+                        $tracksByArtists = [];
+                        
+                        foreach($top10Artists as $artist){
+                            $tracksByArtists[$artist] = [];
+                            foreach($tracks as $track){
+                                $artistId = $track->artists[0]->id;
+                                if($artist === $artistId)
+                                { array_push($tracksByArtists[$artistId], $track->id); }
+                            }
+                        }
+
+                        //выбираем случайные треки
+                        $tracksForPlaylist = [];
+                        foreach($tracksByArtists as $tracks){
+                            //если треков больше семи
+                            if(count($tracks) > 7){
+
+                                for($i = 1; $i <= 7; $i++)
+                                {
+                                    $rand = rand(0, count($tracks) - 1);
+
+                                    array_push($tracksForPlaylist, $tracks[$rand]);
+                                    unset($tracks[$rand]);
+                                    $tracks = array_values($tracks);
+                                }
+
+                            } else if (count($tracks) <= 7){
+                                foreach($tracks as $track){
+                                    array_push($tracksForPlaylist, $track);
+                                }
+                            }
+                        }    
+
+                        // создаем массив артистов для генерации обложки
+                        $artistsForCover = [];
+                        foreach($top10Artists as $artist){
+                            $artistData = $api->getArtist($artist);
+                            array_push($artistsForCover, $artistData);
+                        }
+
+                        // генерируем обложки
+                        $cover = Helpers::createPlaylistCover($type, "artists", $artistsForCover);
+
+                        return ['tracks' => $tracksForPlaylist, 'cover' => $cover];
+                }
             else
             { 
                 return response()->json(false);

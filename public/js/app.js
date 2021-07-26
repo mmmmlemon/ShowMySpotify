@@ -81313,13 +81313,15 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("router-link", { attrs: { to: "/profile" } }, [
-                      _c("img", {
-                        staticClass: "navSpotifyAvatar rounded-circle",
-                        attrs: {
-                          src: _vm.settings["spotifyProfile"]["avatar"],
-                          alt: "Spotify avatar"
-                        }
-                      })
+                      _vm.settings["spotifyProfile"]["avatar"] !== "noAvatar"
+                        ? _c("img", {
+                            staticClass: "navSpotifyAvatar rounded-circle",
+                            attrs: {
+                              src: _vm.settings["spotifyProfile"]["avatar"],
+                              alt: "Spotify avatar"
+                            }
+                          })
+                        : _vm._e()
                     ]),
                     _vm._v(" "),
                     _vm._m(0)
@@ -104544,9 +104546,6 @@ var routes = [{
     }, {
       path: '/profile/top10',
       component: _components_Profile_Top10_vue__WEBPACK_IMPORTED_MODULE_9__["default"]
-    }, {
-      path: '/profile/achievements',
-      component: Achievements
     }]
   }, //последние треки
   {

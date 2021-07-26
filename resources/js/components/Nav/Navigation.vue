@@ -67,7 +67,7 @@
                     </router-link>
                     <!-- юзерпик -->
                     <router-link to="/profile">
-                        <img :src="settings['spotifyProfile']['avatar']" alt="Spotify avatar" class="navSpotifyAvatar rounded-circle">
+                        <img  v-if="settings['spotifyProfile']['avatar'] !== 'noAvatar'" :src="settings['spotifyProfile']['avatar']" alt="Spotify avatar" class="navSpotifyAvatar rounded-circle">
                     </router-link>
                     <!-- кнопка выхода -->
                     <a class="nav-link" href="/spotify_logout">
