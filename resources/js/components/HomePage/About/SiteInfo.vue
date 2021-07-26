@@ -1,4 +1,5 @@
 //SiteInfo
+// About.vue - О проекте
 <template>
     <div class="fadeInAnim">
         <!-- лоадер -->

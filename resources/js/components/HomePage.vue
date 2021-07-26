@@ -1,21 +1,17 @@
 //HomePage
 <template>
     <div class="container">
+        <router-view>
+        </router-view>
         <!-- предупреждение о кукисах -->
-        <router-view></router-view>
         <Cookies />
     </div>
 </template>
 
 <script>
     export default {
-
-        data: () => {
-            return {
-                animationForLogo: true,
-            }
-        },
-
+        
+        // хуки
         created(){
             this.checkToken ().then(response => {
                 if(response === 'refresh'){
@@ -62,13 +58,16 @@
                     { this.$store.dispatch('getHomePageUserTracksCount'); }    
                         }
             });
+        },
 
-            
-
+        // данные
+        data: () => {
+            return {
+                animationForLogo: true,
+            }
         },
 
         computed: {
-
             //настройки навигации
             navSettings: function(){
                 return this.$store.state.homePage.navSettings;

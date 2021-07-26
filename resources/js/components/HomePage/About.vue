@@ -1,4 +1,5 @@
 //About
+// О проекте
 <template>
     <div>
         <!-- лоадер -->
@@ -11,7 +12,9 @@
                 <div class="col-12">
                     <!-- название сайта -->
                     <div class="row justify-content-center fadeInAnim">
-                        <h2 class="text-center siteTitleHome" v-if="siteInfo != false">{{siteInfo.siteTitle}} <b class="betaAbout">{{siteInfo.version}}</b></h2>
+                        <h2 class="text-center siteTitleHome" v-if="siteInfo != false">
+                            {{siteInfo.siteTitle}} <b class="betaAbout">{{siteInfo.version}}</b>
+                        </h2>
                     </div>
                     <!-- логотип -->
                     <div v-if="siteInfo != false" class="row justify-content-center fadeInAnim">
@@ -72,7 +75,7 @@
 
 <script>
     export default {
-
+        // хуки
         created(){
             //получить информацию о сайте
             if(this.contacts === -1)
@@ -86,6 +89,7 @@
             
         },
 
+        // данные
         computed: {
              //текущая вкладка
             currentTab: function(){

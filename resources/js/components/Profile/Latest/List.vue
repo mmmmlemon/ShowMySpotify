@@ -1,4 +1,5 @@
 //List
+// RecentTracks - список последних прослушанных треков
 <template>
     <div class="row justify-content-center fadeInAnimSlow">
         <!-- лоадер -->

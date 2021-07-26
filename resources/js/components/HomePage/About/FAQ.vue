@@ -1,4 +1,5 @@
 //FAQ
+// About.vue - FAQ
 <template>
     <div class="fadeInAnim">
         <!-- лоадер -->

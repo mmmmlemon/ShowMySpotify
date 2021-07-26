@@ -2110,12 +2110,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      animationForLogo: true
-    };
-  },
+  // хуки
   created: function created() {
     var _this = this;
 
@@ -2170,6 +2167,12 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     });
+  },
+  // данные
+  data: function data() {
+    return {
+      animationForLogo: true
+    };
   },
   computed: {
     //настройки навигации
@@ -2282,7 +2285,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  // хуки
   created: function created() {
     //получить информацию о сайте
     if (this.contacts === -1) {
@@ -2297,6 +2304,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.dispatch('getAbout');
     }
   },
+  // данные
   computed: {
     //текущая вкладка
     currentTab: function currentTab() {
@@ -2336,6 +2344,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -2398,6 +2407,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     //смена текущего таба
@@ -2422,6 +2432,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -2610,10 +2621,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  // хуки
   mounted: function mounted() {
     this.visible = true;
   },
+  // данные
   data: function data() {
     return {
       welcomeImgLoaded: false,
@@ -2621,17 +2648,6 @@ __webpack_require__.r(__webpack_exports__);
       bgStyle: 'backgroundImage invisible',
       visible: false
     };
-  },
-  methods: {
-    onWelcomeImgLoad: function onWelcomeImgLoad() {
-      this.welcomeImgLoaded = true;
-    },
-    setLogoAnimation: function setLogoAnimation(value) {
-      this.logoAnimation = value;
-    },
-    setBgStyle: function setBgStyle() {
-      this.bgStyle = 'backgroundImage fadeInAnimBg';
-    }
   },
   computed: {
     //название сайта
@@ -2665,6 +2681,18 @@ __webpack_require__.r(__webpack_exports__);
     //анимация для логотипа
     animationForLogo: function animationForLogo() {
       return this.$parent.animationForLogo;
+    }
+  },
+  // методы
+  methods: {
+    onWelcomeImgLoad: function onWelcomeImgLoad() {
+      this.welcomeImgLoaded = true;
+    },
+    setLogoAnimation: function setLogoAnimation(value) {
+      this.logoAnimation = value;
+    },
+    setBgStyle: function setBgStyle() {
+      this.bgStyle = 'backgroundImage fadeInAnimBg';
     }
   }
 });
@@ -4842,6 +4870,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     items: {
@@ -4861,6 +4890,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -5476,6 +5506,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -80127,7 +80158,11 @@ var render = function() {
                 [
                   _vm.siteInfo != false
                     ? _c("h2", { staticClass: "text-center siteTitleHome" }, [
-                        _vm._v(_vm._s(_vm.siteInfo.siteTitle) + " "),
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(_vm.siteInfo.siteTitle) +
+                            " "
+                        ),
                         _c("b", { staticClass: "betaAbout" }, [
                           _vm._v(_vm._s(_vm.siteInfo.version))
                         ])
@@ -80462,7 +80497,11 @@ var render = function() {
                 [
                   _vm.siteTitle && _vm.spotifyUsername == false
                     ? _c("h2", { staticClass: "text-center siteTitleHome" }, [
-                        _vm._v(_vm._s(_vm.siteTitle))
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(_vm.siteTitle) +
+                            "\n                    "
+                        )
                       ])
                     : _vm._e()
                 ]
@@ -80625,13 +80664,13 @@ var render = function() {
                 [
                   _vm.spotifyUsername != false
                     ? _c("h2", { staticClass: "font4vw" }, [
-                        _vm._v("Привет, "),
+                        _vm._v("\n                        Привет, "),
                         _c(
                           "b",
                           { staticStyle: { color: "var(--main-color)" } },
                           [_vm._v(_vm._s(_vm.spotifyUsername))]
                         ),
-                        _vm._v("!")
+                        _vm._v("!\n                    ")
                       ])
                     : _vm._e()
                 ]
@@ -80646,13 +80685,13 @@ var render = function() {
                     },
                     [
                       _c("h2", { staticClass: "font6vw" }, [
-                        _vm._v("Привет, "),
+                        _vm._v("\n                        Привет, "),
                         _c(
                           "b",
                           { staticStyle: { color: "var(--main-color)" } },
                           [_vm._v(_vm._s(_vm.spotifyUsername))]
                         ),
-                        _vm._v("!")
+                        _vm._v("!\n                    ")
                       ])
                     ]
                   )

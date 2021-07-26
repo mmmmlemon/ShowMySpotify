@@ -1,4 +1,5 @@
 //RecentTracks
+// Последние прослушанные треки
 <template>
     <div class="row justify-content-center">
         <div class="col-12 fadeInAnimSlow" v-if="recentTracks != -1 && recentTracks != false">

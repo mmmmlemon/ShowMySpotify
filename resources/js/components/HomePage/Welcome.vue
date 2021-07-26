@@ -1,29 +1,36 @@
 // Welcome
+// приветствие на главной странице
 <template>
     <div class="container fadeInAnim">
-        <!-- фоновая картинка -->
+
         <div class="row justify-content-center">
             <!-- если пользователь не залогинен -->
             <div class="col-12 col-sm-12 col-md-10 col-lg-10" width="20%;">
                 <div class="col-12">
+                    <!-- название сайта -->
                     <transition name="siteTitle" v-on:before-enter="setLogoAnimation(true)">
-                        <h2 class="text-center siteTitleHome" v-if="siteTitle && spotifyUsername == false">{{siteTitle}}</h2>
+                        <h2 class="text-center siteTitleHome" v-if="siteTitle && spotifyUsername == false">
+                            {{siteTitle}}
+                        </h2>
                     </transition>
-                     <transition name="logo">
+                    <!-- логотип -->
+                    <transition name="logo">
                         <div v-if="siteTitle && spotifyUsername == false">
                             <Logo :animation="logoAnimation"/>
                         </div>
                     </transition>
+                    <!-- текст приветствия -->
                     <transition name="welcome">
                         <p v-if="welcomeMessage != false && spotifyUsername == false" 
                             v-html="welcomeMessage" class="pText text-center">
                         </p>
                     </transition>
+                    
                     <transition name="welcome">
                         <hr v-if="welcomeMessage != false && spotifyUsername == false">    
                     </transition>
 
-  
+                    <!-- заманухи всякие -->
                     <div class="row justify-content-center text-center">
                         <transition name="artist">
                             <div class="col-4" v-if="welcomeMessage != false && spotifyUsername == false">
@@ -47,12 +54,14 @@
                             <div class="col-12" v-if="welcomeMessage != false && spotifyUsername == false" style="margin-top:1.5rem;">
                                    <h5 >Все это, и не только, можно узнать тут!</h5>
                             </div>
-                         
                         </transition>
                     </div>
+
                     <transition name="welcome">
                         <hr v-if="welcomeMessage != false && spotifyUsername == false" style="margin-bottom: 3rem;">    
                     </transition>
+
+                    <!-- кнопка "Войти" -->
                     <transition name="enterButton" v-on:after-enter="setLogoAnimation(false)">
                         <div class="row justify-content-center" v-if="welcomeMessage != false && spotifyUsername == false">
                             <div class="col-md-4 col-10 justify-content-center marginVertical">
@@ -62,16 +71,21 @@
                     </transition>
                 </div>
             </div>
+
             <!-- если пользователь залогинен -->
             <div class="col-12 col-sm-12 col-md-10 col-lg-10" v-if="spotifyUsername != -1 && spotifyUsername != false">
                 <div class="row justify-content-center">
                     <!-- приветствие для больших экранов -->
                     <div class="col-11 text-center d-none d-md-block fadeInAnim">
-                        <h2 v-if="spotifyUsername != false" class="font4vw">Привет, <b style="color: var(--main-color);">{{spotifyUsername}}</b>!</h2>
+                        <h2 v-if="spotifyUsername != false" class="font4vw">
+                            Привет, <b style="color: var(--main-color);">{{spotifyUsername}}</b>!
+                        </h2>
                     </div>
                     <!-- для мобилок -->
                     <div class="col-11 text-center d-sm-block d-md-none fadeInAnim" v-if="spotifyUsername != false">
-                        <h2 class="font6vw">Привет, <b style="color: var(--main-color);">{{spotifyUsername}}</b>!</h2>
+                        <h2 class="font6vw">
+                            Привет, <b style="color: var(--main-color);">{{spotifyUsername}}</b>!
+                        </h2>
                     </div>
                     
                     <!-- лоадер -->
@@ -116,9 +130,9 @@
                             Перейди в <router-link to="/profile" class="borderUnderline">свой профиль</router-link> чтобы просмотреть статистику
                         </h5>
                     </div>
-
                 </div>
 
+                <!-- случайные обложки альбомов -->
                 <div class="text-center" style="margin-top: 6rem;" v-if="spotifyUserTracksCount !== -1 && spotifyUserTracksCount['trackCount'] >= 50">
                     <div class="row justify-content-center" style="margin-left: 5%;">
                         <div class="col-2">
@@ -146,10 +160,12 @@
 <script>
     export default {
 
+        // хуки
         mounted(){
             this.visible = true;
         },
 
+        // данные
         data(){
             return {
                 welcomeImgLoaded: false,
@@ -157,17 +173,6 @@
                 bgStyle: 'backgroundImage invisible',
                 visible: false,
             }
-        },
-        methods: {
-            onWelcomeImgLoad(){
-                this.welcomeImgLoaded = true;
-            },
-            setLogoAnimation(value){
-                this.logoAnimation = value;
-            },
-            setBgStyle(){
-                this.bgStyle = 'backgroundImage fadeInAnimBg';
-            },
         },
 
         computed: {
@@ -205,5 +210,19 @@
                 return this.$parent.animationForLogo;  
             },
         },
+
+        // методы
+        methods: {
+            onWelcomeImgLoad(){
+                this.welcomeImgLoaded = true;
+            },
+            setLogoAnimation(value){
+                this.logoAnimation = value;
+            },
+            setBgStyle(){
+                this.bgStyle = 'backgroundImage fadeInAnimBg';
+            },
+        },
+
     }
 </script>
