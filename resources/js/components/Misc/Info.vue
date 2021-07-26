@@ -1,4 +1,5 @@
 //Info
+// другие сообщения (НЕ ошибки)
 <template>
     <div class="container">
             <div class="bounceInAnim" v-if="type=='normal'">

@@ -1,5 +1,5 @@
 //Navigation
-//навигация
+//навигация сайта
 <template>
     <div class="nav fadeInAnimSlow siteNavigation" v-if="settings !== -1">
         <nav class="navbar">
@@ -15,18 +15,33 @@
             <!-- навигация для больших экранов -->
             <ul class="navbar-nav d-none d-lg-flex">
                 <li class="nav-item active">
-                    <router-link to="/"><a class="nav-link">Главная</a></router-link>
+                    <router-link to="/">
+                        <a class="nav-link">
+                            Главная
+                        </a>
+                    </router-link>
                 </li>
                 <li class="nav-item active">
-                    <router-link to="/about"><a class="nav-link">О проекте</a></router-link>
+                    <router-link to="/about">
+                        <a class="nav-link">
+                            О проекте
+                        </a>
+                    </router-link>
                 </li>
                 <!-- если пользователь залогинен-->
-                <!-- @if($checkToken != false) -->
                 <li v-if="settings['checkToken'] === true" class="nav-item active">
-                    <router-link to="/profile"><a class="nav-link">Мой профиль</a></router-link>
+                    <router-link to="/profile">
+                        <a class="nav-link">
+                            Мой профиль
+                        </a>
+                    </router-link>
                 </li>
                 <li v-if="settings['checkToken'] === true" class="nav-item active">
-                    <router-link to="/recentTracks"><a class="nav-link">Последние треки</a></router-link>
+                    <router-link to="/recentTracks">
+                        <a class="nav-link">
+                            Последние треки
+                        </a>
+                    </router-link>
                 </li>
                 <!-- тесты -->
                 <!-- <li class="nav-item active">
@@ -38,13 +53,17 @@
             <!-- если пользователь незалогинен -->
             <!-- кнопка входа на сайт -->
             <div v-if="settings['checkToken'] === false" class="form-inline d-none d-lg-flex ml-auto"> 
-                <a href="/spotify_login" class="btn btn-primary-n btn-rounded">Войти через Spotify</a>
+                <a href="/spotify_login" class="btn btn-primary-n btn-rounded">
+                    Войти через Spotify
+                </a>
             </div>
             <!-- если залогинен -->
             <div v-else class="form-inline d-none d-lg-flex ml-auto" style="margin-right:1%;"> 
                     <!-- юзернейм -->
                     <router-link to="/profile" class="">
-                        <a class="nav-link">{{settings['spotifyProfile']['displayName']}}</a>
+                        <a class="nav-link">
+                            {{settings['spotifyProfile']['displayName']}}
+                        </a>
                     </router-link>
                     <!-- юзерпик -->
                     <router-link to="/profile">
@@ -67,17 +86,25 @@
                     <!-- дропдаун -->
                     <div class="dropdown-menu dropdown-menu-right w-200" aria-labelledby="navbar-dropdown-toggle-btn-1">
                         <router-link to="/">
-                            <a class="dropdown-item">Главная</a>
+                            <a class="dropdown-item">
+                                Главная
+                            </a>
                         </router-link>
                         <router-link to="/about">
-                            <a class="dropdown-item">О проекте</a>
+                            <a class="dropdown-item">
+                                О проекте
+                            </a>
                         </router-link>
                         <!-- если пользователь залогинен -->
                         <router-link v-if="settings['checkToken'] != false" to="/profile">
-                            <a class="dropdown-item">Мой профиль</a>
+                            <a class="dropdown-item">
+                                Мой профиль
+                            </a>
                         </router-link>
                         <router-link v-if="settings['checkToken'] != false" to="/recentTracks">
-                            <a class="dropdown-item">Последние треки</a>
+                            <a class="dropdown-item">
+                                Последние треки
+                            </a>
                         </router-link>
                         <!-- тесты -->
                         <!--<router-link to="/tests">
@@ -88,7 +115,9 @@
                         
                         <!-- если пользователь незалогинен -->
                         <div v-if="settings['checkToken'] == false" class="dropdown-content">
-                            <a href="/spotify_login" class="btn btn-primary-n btn-block btn-rounded">Войти через Spotify</a>
+                            <a href="/spotify_login" class="btn btn-primary-n btn-block btn-rounded">
+                                Войти через Spotify
+                            </a>
                         </div>    
                         <div v-else class="dropdown-content">
                             <!-- юзернейм -->
@@ -103,14 +132,11 @@
                     </div>
                 </div> 
             </div>
-
         </nav>
     </div>
 </template>
 <script>
  export default {
-
-
 
      computed: {
          settings: function(){

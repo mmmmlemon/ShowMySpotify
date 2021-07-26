@@ -1,4 +1,5 @@
 //YearsDecades
+// BasicStats.vue - графики десятилетий и годов
 <template>
     <div class="col-12 fadeInAnim" v-scroll="handleScroll" v-bind:class="{'zeroOpacity': visible === false}">
         <div class="row justify-content-center">

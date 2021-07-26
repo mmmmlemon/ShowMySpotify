@@ -1,4 +1,5 @@
 //HoursAndMinutes
+// BasicStats.vue - часы и минуты
 <template>
     <div class="col-11 fadeInAnim marginVertical" v-scroll="handleScroll" v-bind:class="{'zeroOpacity': visible === false}">
         <div class="justify-content-center" v-if="visible === true">
@@ -53,6 +54,7 @@
 </template>
 
 <script>
+
 export default {
     data: () => {
         return {

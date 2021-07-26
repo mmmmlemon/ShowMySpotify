@@ -1,4 +1,5 @@
 //BackgroundImage
+// компонент подставляющий фоновую картинку в любой div элемент
 <template>
     <div :class="bgStyle" :style="{backgroundImage: `url('${backgroundImageUrl}')`}">
     </div>

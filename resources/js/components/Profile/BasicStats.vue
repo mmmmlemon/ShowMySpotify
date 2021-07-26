@@ -1,4 +1,5 @@
 //BasicStats
+// раздел "Общее"
 <template>
     <div>
         <div class="row justify-content-center" id="basic">
@@ -10,19 +11,7 @@
             </div>
             <div v-else-if="spotifyUserLibrary != -1 && spotifyUserLibrary['result'] != false 
                 && spotifyUserLibrary['result'] != 'libraryError'" class="row justify-content-center">
-                <!-- навигация -->
-                <!-- <div class="row justify-content-center fadeInAnim" style="margin-top:5%;">
-                    <nav class="justify-content-center">
-                        <ul class="breadcrumb text-center">
-                            <li class="breadcrumb-item"><a href="#basic">Общее</a></li>
-                            <li class="breadcrumb-item"><a href="#genres">Жанры и годы</a></li>
-                        </ul>
-                    </nav>
-                </div> -->
 
-                <!-- <div class="col-12 justify-content-center fadeInAnim">
-                </div>
-             -->
                 <div class="row justify-content-center">
                     <!-- треки -->
                     <LastFive :items="spotifyTracks" type="tracks"/>  
@@ -54,11 +43,11 @@
                     <!-- Самый популярный\непопулярный артист -->
                     <AchievementItem v-if="mostPopularArtist != 'noArtists' && decadeMonth != -1" 
                                 cardTitle="Самый популярный исполнитель" cardSubtitle="На которого ты подписан" 
-                                :items="mostPopularArtist"/>
+                                :item="mostPopularArtist"/>
 
                     <AchievementItem v-if="mostPopularArtist != -1 && leastPopularArtist != 'noArtists'" 
                                     cardTitle="Самый непопулярный исполнитель" cardSubtitle="На которого ты подписан" 
-                                    :items="leastPopularArtist" orientation="right"/>
+                                    :item="leastPopularArtist" orientation="right"/>
                                     
                 </div>     
             </div>
@@ -87,10 +76,7 @@
 
 <script>
 export default {
-   
     created(){
-
-        var url = window.location.href;
 
         this.checkToken().then(response => {
             if(response === 'refresh'){

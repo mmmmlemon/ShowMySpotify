@@ -1,4 +1,5 @@
 //Cookies
+// всплывающее окно с предупреждением о Cookies
 <template>
     <div v-if="cookiesVisible != -1" style="z-index: 1;" class="row text-center cookiesCard justify-content-center fadeInAnimSlow" v-bind:class="{invisible: cookiesVisible === false}">
         <div class="col-12">

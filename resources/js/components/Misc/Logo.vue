@@ -1,4 +1,5 @@
 //Logo
+// логотип сайта
 <template>
 <div class="logoDiv">
     <div class="logoBase" :style="logoBaseAnim">

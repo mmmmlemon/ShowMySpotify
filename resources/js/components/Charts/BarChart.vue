@@ -1,3 +1,5 @@
+// BarChart
+// график для данных по годам, десятилетиям и жанрам
 <script>
 import { HorizontalBar } from 'vue-chartjs'
 

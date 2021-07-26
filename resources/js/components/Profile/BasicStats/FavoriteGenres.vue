@@ -1,12 +1,17 @@
 //FavoriteGenres
+// BasicStats.vue - график любимых жанров
 <template>
     <div class="col-12 col-md-12 fadeInAnim marginVertical" v-scroll="handleScroll" v-bind:class="{'zeroOpacity': visible === false}">
         <div class="row justify-content-center">
             <!-- лоадер -->
             <div v-if="favoriteGenres == -1">
                 <Loader />
-                <h6 class="text-center blinkingAnim">Анализирую треки...</h6>
-                <p class="text-center">Это может занять некоторое время</p>
+                <h6 class="text-center blinkingAnim">
+                    Анализирую треки...
+                </h6>
+                <p class="text-center">
+                    Это может занять некоторое время
+                </p>
             </div>
             <!-- ошибка -->
             <div v-else-if="favoriteGenres == false">
@@ -22,16 +27,19 @@
                     <div class="col-12 text-center">
                         <h5>А еще в последний месяц ты больше всего слушаешь</h5>
                     </div>
+                    <!-- жанр 1 -->
                     <div class="col-12 col-md-3 paddingSides">
                         <h3 class="text-center borderUnderline mainColorHighlight2">
                             {{Object.keys(favoriteGenres)[0]}}
                         </h3>
                     </div>
+                    <!-- жанр 2 -->
                     <div class="col-12 col-md-3 paddingSides">
                          <h3 class="text-center borderUnderline mainColorHighlight2">
                             {{Object.keys(favoriteGenres)[1]}}
                         </h3>
                     </div>
+                    <!-- жанр 3 -->
                     <div class="col-12 col-md-3 paddingSides">
                          <h3 class="text-center borderUnderline mainColorHighlight2">
                             {{Object.keys(favoriteGenres)[2]}}
@@ -43,8 +51,7 @@
                         <BarChart :favoriteGenres="favoriteGenres" :backgroundColor="backgroundColor" :styles="style" label="Песен этого жанра за месяц"/>
                     </div>
                 </div>
-              
-
+            
             </div>
             <!-- ошибка -->
             <div v-else>
@@ -56,6 +63,7 @@
 
 <script>
 export default {
+
     data: () => {
         return {
             //цвета для графика
@@ -66,6 +74,7 @@ export default {
             visible: false,
         }
     },
+    
     props: {
         //любимые жанры
         favoriteGenres: { default: -1 },

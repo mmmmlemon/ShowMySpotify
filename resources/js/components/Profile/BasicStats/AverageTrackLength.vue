@@ -1,4 +1,5 @@
 //AverageTrackLength
+// BasicStats.vue - средняя длина трека
 <template>
     <div class="row justify-content-center marginVertical" v-scroll="handleScroll" v-bind:class="{'zeroOpacity': visible === false}">
         <!-- средняя длина трека -->
@@ -19,7 +20,9 @@
                 <div class="col-12 col-md-8 slideRight">
                     <h3 class="text-right paddingSides">
                         Средняя продолжительность трека - 
-                        <b class="mainColorHighlight2 borderUnderline colorFadeIn">{{tracksMode}}</b>
+                        <b class="mainColorHighlight2 borderUnderline colorFadeIn">
+                            {{tracksMode}}
+                        </b>
                     </h3>
                 </div>
             </div>

@@ -1,4 +1,5 @@
-//Logo
+//Avatar
+// стандартный аватар для пользователей у которых его нет
 <template>
 <div class="logoDiv fadeInAnimSlow">
     <div class="avatarBase" :style="logoBaseAnim">
@@ -19,37 +20,5 @@ export default {
    props: {
        animation: {type: Boolean, default: true},
    },
-
-
-//    computed: {
-//         logoBaseAnim: function(){
-//             if(this.animation == true){
-//                 return `animation: logoBaseAnim 2.5s ease-in-out;`;
-//             }
-//             else
-//             { return ``; }
-//         },
-//         logoGraphOneAnim: function(){
-//            if(this.animation == true){
-//                return `animation: logoGraphOneAnim 2.5s ease-in-out;`;
-//            }
-//            else
-//            { return ``; }
-//        },
-//         logoGraphTwoAnim: function(){
-//            if(this.animation == true){
-//                return `animation: logoGraphTwoAnim 2.6s ease-in-out;;`;
-//            }
-//            else
-//            { return ``; }
-//        },
-//         logoGraphThreeAnim: function(){
-//            if(this.animation == true){
-//                return `animation: logoGraphThreeAnim 2.7s ease-in-out;`;
-//            }
-//            else
-//            { return ``; }
-//        },
-//    }
 }
 </script>

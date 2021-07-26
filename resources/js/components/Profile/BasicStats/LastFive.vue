@@ -1,4 +1,5 @@
 //LastFive
+// BasicStats.vue - общее кол-во треков \ альбомов \ подписок на артистов и пять случайных для отображения
 <template>
     <div class="col-11 col-md-11 col-lg-4" style="margin-bottom: 1.5rem;">
         <div class="row justify-content-center">

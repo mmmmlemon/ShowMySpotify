@@ -1,4 +1,5 @@
-//ArtistsCounr
+//ArtistsCount
+// BasicStats.vue - счетчик кол-ва артистов
 <template>
     <div class="col-11 justify-content-center marginVertical" v-scroll="handleScroll" v-bind:class="{'zeroOpacity': visible === false}">
         <div class="row justify-content-center">
@@ -14,8 +15,12 @@
             <div v-else-if="uniqueArtists != -1 && uniqueArtists != false && visible === true" class="col-12 paddingSides goUpAnimSlow">
                 <div class="row justify-content-center">
                     <div class="col-12">
-                        <h3 class="text-center">В твоей библиотеке есть треки от</h3>
-                        <h1 class="text-center borderUnderline mainColorHighlight2 colorFadeIn">{{uniqueArtists['countArtists']}}</h1>
+                        <h3 class="text-center">
+                            В твоей библиотеке есть треки от
+                        </h3>
+                        <h1 class="text-center borderUnderline mainColorHighlight2 colorFadeIn">
+                            {{uniqueArtists['countArtists']}}
+                        </h1>
                     </div>
                 </div>
 
@@ -29,6 +34,7 @@
 </template>
 <script>
 export default {
+
     data: () => {
         return {
             visible: false,

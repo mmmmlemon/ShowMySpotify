@@ -1997,6 +1997,8 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   "extends": vue_chartjs__WEBPACK_IMPORTED_MODULE_1__["HorizontalBar"],
@@ -2724,43 +2726,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     animation: {
       type: Boolean,
       "default": true
     }
-  } //    computed: {
-  //         logoBaseAnim: function(){
-  //             if(this.animation == true){
-  //                 return `animation: logoBaseAnim 2.5s ease-in-out;`;
-  //             }
-  //             else
-  //             { return ``; }
-  //         },
-  //         logoGraphOneAnim: function(){
-  //            if(this.animation == true){
-  //                return `animation: logoGraphOneAnim 2.5s ease-in-out;`;
-  //            }
-  //            else
-  //            { return ``; }
-  //        },
-  //         logoGraphTwoAnim: function(){
-  //            if(this.animation == true){
-  //                return `animation: logoGraphTwoAnim 2.6s ease-in-out;;`;
-  //            }
-  //            else
-  //            { return ``; }
-  //        },
-  //         logoGraphThreeAnim: function(){
-  //            if(this.animation == true){
-  //                return `animation: logoGraphThreeAnim 2.7s ease-in-out;`;
-  //            }
-  //            else
-  //            { return ``; }
-  //        },
-  //    }
-
+  }
 });
 
 /***/ }),
@@ -2774,6 +2747,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -2801,6 +2775,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -2872,6 +2847,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     errorMessage: {
@@ -2896,6 +2872,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -2947,6 +2924,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
@@ -2960,6 +2938,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -3045,6 +3024,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
@@ -3058,6 +3038,34 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3332,279 +3340,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Profile/Achievements.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Profile/Achievements.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  mounted: function mounted() {
-    var _this = this;
-
-    //прокручиваем страницу к якорю, если в url есть якорь
-    var anchor = this.$router.currentRoute.hash.replace("#", "");
-
-    if (anchor) {
-      var el = document.getElementById(anchor);
-
-      if (el != null) {
-        this.$nextTick(function () {
-          return window.document.getElementById(anchor).scrollIntoView();
-        });
-      }
-    } //смена текущего таба
-
-
-    this.$store.dispatch('setCurrentTab', 'achievements'); //получить библиотеку пользователя, если нужно
-
-    if (this.spotifyUserLibrary == -1) {
-      this.$store.dispatch('getSpotifyUserLibrary').then(function (response) {
-        if (_this.spotifyUserLibrary['result'] == true) {
-          _this.getAllData();
-        }
-      }, function (error) {
-        console.log("Error: Couldn't load user's Spotify library.");
-      });
-    } else {
-      this.getAllData();
-    }
-  },
-  methods: {
-    getAllData: function getAllData() {
-      //самый прослушиваемый трек
-      if (this.mostListenedTrack == -1) {
-        this.$store.dispatch('getMostListenedTrack', 'alltime');
-      }
-
-      ; //самый прослушиваемый трек за месяц
-
-      if (this.mostListenedTrack == -1) {
-        this.$store.dispatch('getMostListenedTrack', 'month');
-      }
-
-      ; //самый популярный трек
-
-      if (this.mostPopularTrack == -1) {
-        this.$store.dispatch('getTrackByPopularity', 'popular');
-      } //самый непопулярный трек
-
-
-      if (this.leastPopularTrack == -1) {
-        this.$store.dispatch('getTrackByPopularity', 'unpopular');
-      } //самый длинный трек
-
-
-      if (this.longestTrack == -1) {
-        this.$store.dispatch('getTrackByDuration', 'long');
-      } //самый короткий трек
-
-
-      if (this.shortestTrack == -1) {
-        this.$store.dispatch('getTrackByDuration', 'short');
-      } //самый слушаемый артист
-
-
-      if (this.mostListenedArtist == -1) {
-        this.$store.dispatch('getMostListenedArtist', 'alltime');
-      } //самый слушаемый артист за месяц
-
-
-      if (this.mostListenedArtistMonth == -1) {
-        this.$store.dispatch('getMostListenedArtist', 'month');
-      } //артист с наибольшим кол-вом треков
-
-
-      if (this.topArtistByTracks == -1) {
-        this.$store.dispatch('getArtistByTracks');
-      } //артист с наибольшим кол-вом времени треков
-
-
-      if (this.topArtistByTime == -1) {
-        this.$store.dispatch('getArtistByTime');
-      } //cамый популярный артист, из подписок
-
-
-      if (this.mostPopularArtist == -1) {
-        this.$store.dispatch('getArtistByPopularity', 'popular');
-      } //cамый непопулярный артист, из подписок
-
-
-      if (this.mostPopularArtist == -1) {
-        this.$store.dispatch('getArtistByPopularity', 'unpopular');
-      }
-    }
-  },
-  computed: {
-    spotifyUserLibrary: function spotifyUserLibrary() {
-      return this.$store.state.profilePage.spotifyUserLibrary; // return true;
-    },
-    mostListenedTrack: function mostListenedTrack() {
-      return this.$store.state.profilePage.mostListenedTrack;
-    },
-    mostListenedTrackMonth: function mostListenedTrackMonth() {
-      return this.$store.state.profilePage.mostListenedTrackMonth;
-    },
-    mostPopularTrack: function mostPopularTrack() {
-      return this.$store.state.profilePage.mostPopularTrack;
-    },
-    leastPopularTrack: function leastPopularTrack() {
-      return this.$store.state.profilePage.leastPopularTrack;
-    },
-    longestTrack: function longestTrack() {
-      return this.$store.state.profilePage.longestTrack;
-    },
-    shortestTrack: function shortestTrack() {
-      return this.$store.state.profilePage.shortestTrack;
-    },
-    mostListenedArtist: function mostListenedArtist() {
-      return this.$store.state.profilePage.mostListenedArtist;
-    },
-    mostListenedArtistMonth: function mostListenedArtistMonth() {
-      return this.$store.state.profilePage.mostListenedArtistMonth;
-    },
-    topArtistByTracks: function topArtistByTracks() {
-      return this.$store.state.profilePage.topArtistByTracks;
-    },
-    topArtistByTime: function topArtistByTime() {
-      return this.$store.state.profilePage.topArtistByTime;
-    },
-    mostPopularArtist: function mostPopularArtist() {
-      return this.$store.state.profilePage.mostPopularArtist;
-    },
-    leastPopularArtist: function leastPopularArtist() {
-      return this.$store.state.profilePage.leastPopularArtist;
-    }
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Profile/Achievements/AchievementItem.vue?vue&type=script&lang=js&":
 /*!***********************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Profile/Achievements/AchievementItem.vue?vue&type=script&lang=js& ***!
@@ -3614,6 +3349,44 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3718,7 +3491,7 @@ __webpack_require__.r(__webpack_exports__);
     cardSubtitle: {
       "default": ''
     },
-    items: {
+    item: {
       "default": -1
     }
   },
@@ -3833,22 +3606,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
 
-    var url = window.location.href;
     this.checkToken().then(function (response) {
       if (response === 'refresh') {
         var url = window.location.href;
@@ -4074,6 +3835,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4120,6 +3886,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -4253,6 +4022,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4317,6 +4093,7 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+//
 //
 //
 //
@@ -4561,6 +4338,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4596,6 +4374,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -5090,6 +4869,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     var _this = this;
@@ -5286,6 +5066,53 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -81387,7 +81214,11 @@ var render = function() {
                 { staticClass: "nav-item active" },
                 [
                   _c("router-link", { attrs: { to: "/" } }, [
-                    _c("a", { staticClass: "nav-link" }, [_vm._v("Главная")])
+                    _c("a", { staticClass: "nav-link" }, [
+                      _vm._v(
+                        "\n                        Главная\n                    "
+                      )
+                    ])
                   ])
                 ],
                 1
@@ -81398,7 +81229,11 @@ var render = function() {
                 { staticClass: "nav-item active" },
                 [
                   _c("router-link", { attrs: { to: "/about" } }, [
-                    _c("a", { staticClass: "nav-link" }, [_vm._v("О проекте")])
+                    _c("a", { staticClass: "nav-link" }, [
+                      _vm._v(
+                        "\n                        О проекте\n                    "
+                      )
+                    ])
                   ])
                 ],
                 1
@@ -81411,7 +81246,9 @@ var render = function() {
                     [
                       _c("router-link", { attrs: { to: "/profile" } }, [
                         _c("a", { staticClass: "nav-link" }, [
-                          _vm._v("Мой профиль")
+                          _vm._v(
+                            "\n                        Мой профиль\n                    "
+                          )
                         ])
                       ])
                     ],
@@ -81426,7 +81263,9 @@ var render = function() {
                     [
                       _c("router-link", { attrs: { to: "/recentTracks" } }, [
                         _c("a", { staticClass: "nav-link" }, [
-                          _vm._v("Последние треки")
+                          _vm._v(
+                            "\n                        Последние треки\n                    "
+                          )
                         ])
                       ])
                     ],
@@ -81446,7 +81285,11 @@ var render = function() {
                         staticClass: "btn btn-primary-n btn-rounded",
                         attrs: { href: "/spotify_login" }
                       },
-                      [_vm._v("Войти через Spotify")]
+                      [
+                        _vm._v(
+                          "\n                Войти через Spotify\n            "
+                        )
+                      ]
                     )
                   ]
                 )
@@ -81460,7 +81303,11 @@ var render = function() {
                     _c("router-link", { attrs: { to: "/profile" } }, [
                       _c("a", { staticClass: "nav-link" }, [
                         _vm._v(
-                          _vm._s(_vm.settings["spotifyProfile"]["displayName"])
+                          "\n                        " +
+                            _vm._s(
+                              _vm.settings["spotifyProfile"]["displayName"]
+                            ) +
+                            "\n                    "
                         )
                       ])
                     ]),
@@ -81493,20 +81340,26 @@ var render = function() {
                   [
                     _c("router-link", { attrs: { to: "/" } }, [
                       _c("a", { staticClass: "dropdown-item" }, [
-                        _vm._v("Главная")
+                        _vm._v(
+                          "\n                            Главная\n                        "
+                        )
                       ])
                     ]),
                     _vm._v(" "),
                     _c("router-link", { attrs: { to: "/about" } }, [
                       _c("a", { staticClass: "dropdown-item" }, [
-                        _vm._v("О проекте")
+                        _vm._v(
+                          "\n                            О проекте\n                        "
+                        )
                       ])
                     ]),
                     _vm._v(" "),
                     _vm.settings["checkToken"] != false
                       ? _c("router-link", { attrs: { to: "/profile" } }, [
                           _c("a", { staticClass: "dropdown-item" }, [
-                            _vm._v("Мой профиль")
+                            _vm._v(
+                              "\n                            Мой профиль\n                        "
+                            )
                           ])
                         ])
                       : _vm._e(),
@@ -81514,7 +81367,9 @@ var render = function() {
                     _vm.settings["checkToken"] != false
                       ? _c("router-link", { attrs: { to: "/recentTracks" } }, [
                           _c("a", { staticClass: "dropdown-item" }, [
-                            _vm._v("Последние треки")
+                            _vm._v(
+                              "\n                            Последние треки\n                        "
+                            )
                           ])
                         ])
                       : _vm._e(),
@@ -81530,7 +81385,11 @@ var render = function() {
                                 "btn btn-primary-n btn-block btn-rounded",
                               attrs: { href: "/spotify_login" }
                             },
-                            [_vm._v("Войти через Spotify")]
+                            [
+                              _vm._v(
+                                "\n                            Войти через Spotify\n                        "
+                              )
+                            ]
                           )
                         ])
                       : _c(
@@ -81881,327 +81740,6 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Profile/Achievements.vue?vue&type=template&id=ec2f0c56&":
-/*!***********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Profile/Achievements.vue?vue&type=template&id=ec2f0c56& ***!
-  \***********************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row justify-content-center" }, [
-    _vm.spotifyUserLibrary == -1
-      ? _c(
-          "div",
-          { staticClass: "col-12" },
-          [
-            _c("Loader"),
-            _vm._v(" "),
-            _vm.spotifyUserLibrary == -1
-              ? _c("h6", { staticClass: "text-center blinkingAnim" }, [
-                  _vm._v("Загружаю библиотеку пользователя...")
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.spotifyUserLibrary == true
-              ? _c("h6", { staticClass: "text-center blinkingAnim" }, [
-                  _vm._v("Анализирую треки...")
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("p", { staticClass: "text-center font10pt" }, [
-              _vm._v("Это может занять около минуты")
-            ])
-          ],
-          1
-        )
-      : _vm.spotifyUserLibrary != -1 &&
-        _vm.spotifyUserLibrary["result"] != false
-      ? _c("div", { staticClass: "col-12" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _vm._m(1),
-          _vm._v(" "),
-          _vm._m(2),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "row justify-content-center" },
-            [
-              _vm.mostListenedTrack != "noTracks"
-                ? _c("AchievementItem", {
-                    attrs: {
-                      cardTitle: "Самый прослушиваемый трек",
-                      cardSubtitle: "За всё время",
-                      items: _vm.mostListenedTrack
-                    }
-                  })
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.mostListenedTrack != -1 &&
-              _vm.mostListenedTrackMonth != "noTracks"
-                ? _c("AchievementItem", {
-                    attrs: {
-                      cardTitle: "Самый прослушиваемый трек",
-                      cardSubtitle: "За месяц",
-                      items: _vm.mostListenedTrackMonth
-                    }
-                  })
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.mostListenedTrackMonth != -1
-                ? _c("AchievementItem", {
-                    attrs: {
-                      cardTitle: "Самый популярный трек",
-                      cardSubtitle: "Который тебе нравится",
-                      items: _vm.mostPopularTrack
-                    }
-                  })
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.mostPopularTrack != -1
-                ? _c("AchievementItem", {
-                    attrs: {
-                      cardTitle: "Самый непопулярный трек",
-                      cardSubtitle: "Который тебе нравится",
-                      items: _vm.leastPopularTrack
-                    }
-                  })
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.leastPopularTrack != -1
-                ? _c("AchievementItem", {
-                    attrs: {
-                      cardTitle: "Самый длинный трек",
-                      cardSubtitle: "Который тебе нравится",
-                      items: _vm.longestTrack
-                    }
-                  })
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.longestTrack != -1
-                ? _c("AchievementItem", {
-                    attrs: {
-                      cardTitle: "Самый короткий трек",
-                      cardSubtitle: "Который тебе нравится",
-                      items: _vm.shortestTrack
-                    }
-                  })
-                : _vm._e()
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _vm.shortestTrack != -1
-            ? _c(
-                "div",
-                {
-                  staticClass: "col-12 justify-content-center fadeInAnim",
-                  attrs: { id: "artists" }
-                },
-                [_vm._m(3)]
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.shortestTrack != -1
-            ? _c(
-                "div",
-                { staticClass: "row justify-content-center" },
-                [
-                  _vm.shortestTrack != -1 &&
-                  _vm.mostListenedArtist != "noArtists"
-                    ? _c("AchievementItem", {
-                        attrs: {
-                          cardTitle: "Самый слушаемый исполнитель",
-                          cardSubtitle: "За всё время",
-                          items: _vm.mostListenedArtist
-                        }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.mostListenedArtist != -1 &&
-                  _vm.mostListenedArtistMonth != "noArtists"
-                    ? _c("AchievementItem", {
-                        attrs: {
-                          cardTitle: "Самый слушаемый исполнитель",
-                          cardSubtitle: "За месяц",
-                          items: _vm.mostListenedArtistMonth
-                        }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.mostListenedArtistMonth != -1
-                    ? _c("AchievementItem", {
-                        attrs: {
-                          cardTitle: "Исполнитель",
-                          cardSubtitle: "С наибольшим кол-вом треков",
-                          items: _vm.topArtistByTracks
-                        }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.topArtistByTracks != -1
-                    ? _c("AchievementItem", {
-                        attrs: {
-                          cardTitle: "Исполнитель",
-                          cardSubtitle: "С наибольшим кол-вом времени треков",
-                          items: _vm.topArtistByTime
-                        }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.topArtistByTime != -1 &&
-                  _vm.mostPopularArtist != "noArtists"
-                    ? _c("AchievementItem", {
-                        attrs: {
-                          cardTitle: "Самый популярный исполнитель",
-                          cardSubtitle: "На которого ты подписан",
-                          items: _vm.mostPopularArtist
-                        }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.mostPopularArtist != -1 &&
-                  _vm.leastPopularArtist != "noArtists"
-                    ? _c("AchievementItem", {
-                        attrs: {
-                          cardTitle: "Самый непопулярный исполнитель",
-                          cardSubtitle: "На которого ты подписан",
-                          items: _vm.leastPopularArtist
-                        }
-                      })
-                    : _vm._e()
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
-          _vm.leastPopularArtist != -1
-            ? _c(
-                "div",
-                { staticClass: "row justify-content-center fadeInAnim" },
-                [
-                  _c("router-link", { attrs: { to: "/profile#top" } }, [
-                    _c(
-                      "button",
-                      { staticClass: "btn btn-primary marginBottomMedium" },
-                      [
-                        _vm._v(
-                          '\n                    Перейти к "Общее"\n                    '
-                        ),
-                        _c("i", { staticClass: "fas fas fa-chart-bar" })
-                      ]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("br"),
-                  _c("br")
-                ],
-                1
-              )
-            : _vm._e()
-        ])
-      : _vm.spotifyUserLibrary == false
-      ? _c(
-          "div",
-          [
-            _c("Error", {
-              attrs: {
-                errorMessage: "Не удалось загрузить библиотеку пользователя"
-              }
-            })
-          ],
-          1
-        )
-      : _c(
-          "div",
-          [
-            _c("Info", {
-              attrs: { infoMessage: _vm.spotifyUserLibrary["errorMsg"] }
-            })
-          ],
-          1
-        )
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-12 fadeInAnimSlow" }, [
-      _c("h5", { staticClass: "text-center" }, [
-        _c("b", [_vm._v("Особо отличившиеся")]),
-        _vm._v(" \n                "),
-        _c("i", { staticClass: "fas fa-award primaryColor" })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "row justify-content-center font10pt fadeInAnim" },
-      [
-        _c("nav", { staticClass: "justify-content-center" }, [
-          _c("ul", { staticClass: "breadcrumb" }, [
-            _c("li", { staticClass: "breadcrumb-item" }, [
-              _c("a", { attrs: { href: "#tracks" } }, [_vm._v("Треки")])
-            ]),
-            _vm._v(" "),
-            _c("li", { staticClass: "breadcrumb-item" }, [
-              _c("a", { attrs: { href: "#artists" } }, [_vm._v("Исполнители")])
-            ])
-          ])
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "col-12 justify-content-center fadeInAnim",
-        attrs: { id: "tracks" }
-      },
-      [
-        _c("h3", { staticClass: "text-center" }, [
-          _vm._v("\n                Треки\n                "),
-          _c("i", { staticClass: "fas fa-compact-disc primaryColor" })
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h3", { staticClass: "text-center" }, [
-      _vm._v("\n                Исполнители\n                "),
-      _c("i", { staticClass: "fas fa-users primaryColor" })
-    ])
-  }
-]
-render._withStripped = true
-
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Profile/Achievements/AchievementItem.vue?vue&type=template&id=37fc9108&":
 /*!***************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Profile/Achievements/AchievementItem.vue?vue&type=template&id=37fc9108& ***!
@@ -82233,9 +81771,9 @@ var render = function() {
       staticStyle: { "margin-top": "3rem" }
     },
     [
-      _vm.items == -1
+      _vm.item == -1
         ? _c("div", [_c("Loader")], 1)
-        : _vm.items == false
+        : _vm.item == false
         ? _c(
             "div",
             [
@@ -82248,7 +81786,7 @@ var render = function() {
             ],
             1
           )
-        : _vm.items != -1 || _vm.items != false
+        : _vm.item != -1 || _vm.item != false
         ? _c("div", {}, [
             _vm.orientation === "left" && _vm.visible === true
               ? _c(
@@ -82276,7 +81814,7 @@ var render = function() {
                       [
                         _c("img", {
                           staticClass: "rounded-circle achievementIcon",
-                          attrs: { src: _vm.items["image"], alt: "" }
+                          attrs: { src: _vm.item["image"], alt: "" }
                         })
                       ]
                     ),
@@ -82296,16 +81834,22 @@ var render = function() {
                               {
                                 attrs: {
                                   target: "_blank",
-                                  href: _vm.items["url"]
+                                  href: _vm.item["url"]
                                 }
                               },
-                              [_vm._v(_vm._s(_vm.items["title"]))]
+                              [
+                                _vm._v(
+                                  "\n                        " +
+                                    _vm._s(_vm.item["title"]) +
+                                    "\n                    "
+                                )
+                              ]
                             )
                           ])
                         ]
                       ),
                       _vm._v(" "),
-                      _vm.items["additionalInfo"]
+                      _vm.item["additionalInfo"]
                         ? _c(
                             "p",
                             {
@@ -82314,23 +81858,28 @@ var render = function() {
                             },
                             [
                               _c("b", [
-                                _vm._v(_vm._s(_vm.items["additionalInfo"]))
+                                _vm._v(_vm._s(_vm.item["additionalInfo"]))
                               ])
                             ]
                           )
                         : _vm._e(),
                       _vm._v(" "),
                       _c("h6", {}, [
-                        _vm.items["album"]
+                        _vm.item["album"]
                           ? _c(
                               "a",
                               {
                                 attrs: {
                                   target: "_blank",
-                                  href: _vm.items["url"]
+                                  href: _vm.item["url"]
                                 }
                               },
-                              [_vm._v(_vm._s(_vm.items["album"]))]
+                              [
+                                _vm._v(
+                                  "\n                    " +
+                                    _vm._s(_vm.item["album"])
+                                )
+                              ]
                             )
                           : _vm._e()
                       ]),
@@ -82342,24 +81891,29 @@ var render = function() {
                           {
                             staticClass: "borderUnderline mainColorHighlight2"
                           },
-                          [_vm._v(_vm._s(_vm.items["trackCount"]))]
+                          [
+                            _vm._v(
+                              "\n                    " +
+                                _vm._s(_vm.item["trackCount"])
+                            )
+                          ]
                         ),
-                        _vm._v(" этого исполнителя.")
+                        _vm._v(" этого исполнителя.\n                ")
                       ]),
                       _vm._v(" "),
-                      _vm.items["selectedTrack"] != null
+                      _vm.item["selectedTrack"] != null
                         ? _c("h6", [
-                            _vm._v("Например, "),
+                            _vm._v("\n                    Например, "),
                             _c("b", { staticClass: "textShadow" }, [
                               _c(
                                 "a",
                                 {
                                   attrs: {
                                     target: "_blank",
-                                    href: _vm.items["trackUrl"]
+                                    href: _vm.item["trackUrl"]
                                   }
                                 },
-                                [_vm._v(_vm._s(_vm.items["selectedTrack"]))]
+                                [_vm._v(_vm._s(_vm.item["selectedTrack"]))]
                               )
                             ])
                           ])
@@ -82404,16 +81958,16 @@ var render = function() {
                               {
                                 attrs: {
                                   target: "_blank",
-                                  href: _vm.items["url"]
+                                  href: _vm.item["url"]
                                 }
                               },
-                              [_vm._v(_vm._s(_vm.items["title"]))]
+                              [_vm._v(_vm._s(_vm.item["title"]))]
                             )
                           ])
                         ]
                       ),
                       _vm._v(" "),
-                      _vm.items["additionalInfo"]
+                      _vm.item["additionalInfo"]
                         ? _c(
                             "p",
                             {
@@ -82422,51 +81976,56 @@ var render = function() {
                             },
                             [
                               _c("b", [
-                                _vm._v(_vm._s(_vm.items["additionalInfo"]))
+                                _vm._v(_vm._s(_vm.item["additionalInfo"]))
                               ])
                             ]
                           )
                         : _vm._e(),
                       _vm._v(" "),
                       _c("h6", {}, [
-                        _vm.items["album"]
+                        _vm.item["album"]
                           ? _c(
                               "a",
                               {
                                 attrs: {
                                   target: "_blank",
-                                  href: _vm.items["url"]
+                                  href: _vm.item["url"]
                                 }
                               },
-                              [_vm._v(_vm._s(_vm.items["album"]))]
+                              [
+                                _vm._v(
+                                  "\n                    " +
+                                    _vm._s(_vm.item["album"])
+                                )
+                              ]
                             )
                           : _vm._e()
                       ]),
                       _vm._v(" "),
                       _c("h5", [
-                        _vm._v("Тебе нравятся "),
+                        _vm._v("\n                    Тебе нравятся "),
                         _c(
                           "b",
                           {
                             staticClass: "borderUnderline mainColorHighlight2"
                           },
-                          [_vm._v(_vm._s(_vm.items["trackCount"]))]
+                          [_vm._v(_vm._s(_vm.item["trackCount"]))]
                         ),
-                        _vm._v(" этого исполнителя.")
+                        _vm._v(" этого исполнителя.\n                ")
                       ]),
                       _vm._v(" "),
                       _c("h6", [
-                        _vm._v("Например, "),
+                        _vm._v("\n                    Например, "),
                         _c("b", { staticClass: "textShadow" }, [
                           _c(
                             "a",
                             {
                               attrs: {
                                 target: "_blank",
-                                href: _vm.items["trackUrl"]
+                                href: _vm.item["trackUrl"]
                               }
                             },
-                            [_vm._v(_vm._s(_vm.items["selectedTrack"]))]
+                            [_vm._v(_vm._s(_vm.item["selectedTrack"]))]
                           )
                         ])
                       ])
@@ -82478,7 +82037,7 @@ var render = function() {
                       [
                         _c("img", {
                           staticClass: "rounded-circle achievementIcon",
-                          attrs: { src: _vm.items["image"], alt: "" }
+                          attrs: { src: _vm.item["image"], alt: "" }
                         })
                       ]
                     )
@@ -82512,7 +82071,7 @@ var render = function() {
                       [
                         _c("img", {
                           staticClass: "rounded-circle achievementIcon",
-                          attrs: { src: _vm.items["image"], alt: "" }
+                          attrs: { src: _vm.item["image"], alt: "" }
                         })
                       ]
                     ),
@@ -82532,16 +82091,21 @@ var render = function() {
                               {
                                 attrs: {
                                   target: "_blank",
-                                  href: _vm.items["url"]
+                                  href: _vm.item["url"]
                                 }
                               },
-                              [_vm._v(_vm._s(_vm.items["title"]))]
+                              [
+                                _vm._v(
+                                  "\n                    " +
+                                    _vm._s(_vm.item["title"])
+                                )
+                              ]
                             )
                           ])
                         ]
                       ),
                       _vm._v(" "),
-                      _vm.items["additionalInfo"]
+                      _vm.item["additionalInfo"]
                         ? _c(
                             "p",
                             {
@@ -82550,51 +82114,56 @@ var render = function() {
                             },
                             [
                               _c("b", [
-                                _vm._v(_vm._s(_vm.items["additionalInfo"]))
+                                _vm._v(_vm._s(_vm.item["additionalInfo"]))
                               ])
                             ]
                           )
                         : _vm._e(),
                       _vm._v(" "),
                       _c("h6", { staticClass: "text-center" }, [
-                        _vm.items["album"]
+                        _vm.item["album"]
                           ? _c(
                               "a",
                               {
                                 attrs: {
                                   target: "_blank",
-                                  href: _vm.items["url"]
+                                  href: _vm.item["url"]
                                 }
                               },
-                              [_vm._v(_vm._s(_vm.items["album"]))]
+                              [
+                                _vm._v(
+                                  "\n                    " +
+                                    _vm._s(_vm.item["album"])
+                                )
+                              ]
                             )
                           : _vm._e()
                       ]),
                       _vm._v(" "),
                       _c("h5", { staticClass: "text-center" }, [
-                        _vm._v("Тебе нравятся "),
+                        _vm._v("\n                    Тебе нравятся "),
                         _c(
                           "b",
                           {
                             staticClass: "borderUnderline mainColorHighlight2"
                           },
-                          [_vm._v(_vm._s(_vm.items["trackCount"]))]
+                          [_vm._v(_vm._s(_vm.item["trackCount"]))]
                         ),
-                        _vm._v(" этого исполнителя.")
+                        _vm._v(" этого исполнителя.\n                ")
                       ]),
                       _vm._v(" "),
                       _c("h6", { staticClass: "text-center" }, [
-                        _vm._v("Например, "),
+                        _vm._v("\n                    Например, "),
                         _c("b", { staticClass: "textShadow" }, [
                           _c(
                             "a",
                             {
                               attrs: {
                                 target: "_blank",
-                                href: _vm.items["trackUrl"]
+                                href: _vm.item["trackUrl"]
                               }
                             },
-                            [_vm._v(_vm._s(_vm.items["selectedTrack"]))]
+                            [_vm._v(_vm._s(_vm.item["selectedTrack"]))]
                           )
                         ])
                       ])
@@ -82609,7 +82178,7 @@ var render = function() {
               _c("Error", {
                 attrs: {
                   type: "x-small",
-                  errorMessage: "Нечего показывать. Параметр items пустой."
+                  errorMessage: "Нечего показывать. Параметр item пустой."
                 }
               })
             ],
@@ -82746,7 +82315,7 @@ var render = function() {
                         attrs: {
                           cardTitle: "Самый популярный исполнитель",
                           cardSubtitle: "На которого ты подписан",
-                          items: _vm.mostPopularArtist
+                          item: _vm.mostPopularArtist
                         }
                       })
                     : _vm._e(),
@@ -82757,7 +82326,7 @@ var render = function() {
                         attrs: {
                           cardTitle: "Самый непопулярный исполнитель",
                           cardSubtitle: "На которого ты подписан",
-                          items: _vm.leastPopularArtist,
+                          item: _vm.leastPopularArtist,
                           orientation: "right"
                         }
                       })
@@ -82898,7 +82467,9 @@ var render = function() {
               _c("div", { staticClass: "row justify-content-center" }, [
                 _c("div", { staticClass: "col-12" }, [
                   _c("h3", { staticClass: "text-center" }, [
-                    _vm._v("В твоей библиотеке есть треки от")
+                    _vm._v(
+                      "\n                        В твоей библиотеке есть треки от\n                    "
+                    )
                   ]),
                   _vm._v(" "),
                   _c(
@@ -82907,7 +82478,13 @@ var render = function() {
                       staticClass:
                         "text-center borderUnderline mainColorHighlight2 colorFadeIn"
                     },
-                    [_vm._v(_vm._s(_vm.uniqueArtists["countArtists"]))]
+                    [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(_vm.uniqueArtists["countArtists"]) +
+                          "\n                    "
+                      )
+                    ]
                   )
                 ])
               ])
@@ -82993,7 +82570,13 @@ var render = function() {
                       staticClass:
                         "mainColorHighlight2 borderUnderline colorFadeIn"
                     },
-                    [_vm._v(_vm._s(_vm.tracksMode))]
+                    [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(_vm.tracksMode) +
+                          "\n                    "
+                      )
+                    ]
                   )
                 ])
               ])
@@ -83075,11 +82658,13 @@ var render = function() {
                 _c("Loader"),
                 _vm._v(" "),
                 _c("h6", { staticClass: "text-center blinkingAnim" }, [
-                  _vm._v("Анализирую треки...")
+                  _vm._v("\n                Анализирую треки...\n            ")
                 ]),
                 _vm._v(" "),
                 _c("p", { staticClass: "text-center" }, [
-                  _vm._v("Это может занять некоторое время")
+                  _vm._v(
+                    "\n                Это может занять некоторое время\n            "
+                  )
                 ])
               ],
               1
@@ -85070,7 +84655,13 @@ var render = function() {
                               "text-left": _vm.orientation === "right"
                             }
                           },
-                          [_vm._v(_vm._s(_vm.cardDesc))]
+                          [
+                            _vm._v(
+                              "\n            " +
+                                _vm._s(_vm.cardDesc) +
+                                "\n        "
+                            )
+                          ]
                         )
                       : _vm._e(),
                     _vm._v(" "),
@@ -85078,7 +84669,9 @@ var render = function() {
                     _vm._v(" "),
                     _vm.desc != null
                       ? _c("p", { staticClass: "goUpAnimSlow text-center" }, [
-                          _vm._v(_vm._s(_vm.desc))
+                          _vm._v(
+                            "\n            " + _vm._s(_vm.desc) + "\n        "
+                          )
                         ])
                       : _vm._e(),
                     _vm._v(" "),
@@ -85160,11 +84753,11 @@ var render = function() {
                                                                     },
                                                                     [
                                                                       _vm._v(
-                                                                        "\n                                                " +
+                                                                        "\n                                            " +
                                                                           _vm._s(
                                                                             item.count
                                                                           ) +
-                                                                          "\n                                             "
+                                                                          "\n                                            "
                                                                       )
                                                                     ]
                                                                   ),
@@ -85282,7 +84875,7 @@ var render = function() {
                                                                             },
                                                                             [
                                                                               _vm._v(
-                                                                                "\n                                                    " +
+                                                                                "\n                                                " +
                                                                                   _vm._s(
                                                                                     item.album
                                                                                   ) +
@@ -85290,7 +84883,7 @@ var render = function() {
                                                                                   _vm._s(
                                                                                     item.album_year
                                                                                   ) +
-                                                                                  ")\n                                                "
+                                                                                  ")\n                                            "
                                                                               )
                                                                             ]
                                                                           )
@@ -85373,11 +84966,11 @@ var render = function() {
                                                                         },
                                                                         [
                                                                           _vm._v(
-                                                                            "\n                                                    " +
+                                                                            "\n                                                " +
                                                                               _vm._s(
                                                                                 item.genres
                                                                               ) +
-                                                                              "\n                                            "
+                                                                              "\n                                        "
                                                                           )
                                                                         ]
                                                                       )
@@ -85461,11 +85054,11 @@ var render = function() {
                                                                     },
                                                                     [
                                                                       _vm._v(
-                                                                        "\n                                                    " +
+                                                                        "\n                                            " +
                                                                           _vm._s(
                                                                             item.count
                                                                           ) +
-                                                                          "\n                                                "
+                                                                          "\n                                        "
                                                                       )
                                                                     ]
                                                                   ),
@@ -85583,7 +85176,7 @@ var render = function() {
                                                                             },
                                                                             [
                                                                               _vm._v(
-                                                                                "\n                                                        " +
+                                                                                "\n                                                " +
                                                                                   _vm._s(
                                                                                     item.album
                                                                                   ) +
@@ -85591,7 +85184,7 @@ var render = function() {
                                                                                   _vm._s(
                                                                                     item.album_year
                                                                                   ) +
-                                                                                  ")\n                                                    "
+                                                                                  ")\n                                            "
                                                                               )
                                                                             ]
                                                                           )
@@ -85674,11 +85267,11 @@ var render = function() {
                                                                         },
                                                                         [
                                                                           _vm._v(
-                                                                            "\n                                                    " +
+                                                                            "\n                                            " +
                                                                               _vm._s(
                                                                                 item.genres
                                                                               ) +
-                                                                              "\n                                                "
+                                                                              "\n                                        "
                                                                           )
                                                                         ]
                                                                       )
@@ -103907,75 +103500,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/Profile/Achievements.vue":
-/*!**********************************************************!*\
-  !*** ./resources/js/components/Profile/Achievements.vue ***!
-  \**********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Achievements_vue_vue_type_template_id_ec2f0c56___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Achievements.vue?vue&type=template&id=ec2f0c56& */ "./resources/js/components/Profile/Achievements.vue?vue&type=template&id=ec2f0c56&");
-/* harmony import */ var _Achievements_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Achievements.vue?vue&type=script&lang=js& */ "./resources/js/components/Profile/Achievements.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _Achievements_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _Achievements_vue_vue_type_template_id_ec2f0c56___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _Achievements_vue_vue_type_template_id_ec2f0c56___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Profile/Achievements.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/Profile/Achievements.vue?vue&type=script&lang=js&":
-/*!***********************************************************************************!*\
-  !*** ./resources/js/components/Profile/Achievements.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Achievements_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Achievements.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Profile/Achievements.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Achievements_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Profile/Achievements.vue?vue&type=template&id=ec2f0c56&":
-/*!*****************************************************************************************!*\
-  !*** ./resources/js/components/Profile/Achievements.vue?vue&type=template&id=ec2f0c56& ***!
-  \*****************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Achievements_vue_vue_type_template_id_ec2f0c56___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Achievements.vue?vue&type=template&id=ec2f0c56& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Profile/Achievements.vue?vue&type=template&id=ec2f0c56&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Achievements_vue_vue_type_template_id_ec2f0c56___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Achievements_vue_vue_type_template_id_ec2f0c56___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
 /***/ "./resources/js/components/Profile/Achievements/AchievementItem.vue":
 /*!**************************************************************************!*\
   !*** ./resources/js/components/Profile/Achievements/AchievementItem.vue ***!
@@ -104962,16 +104486,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Profile_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/Profile.vue */ "./resources/js/components/Profile.vue");
 /* harmony import */ var _components_Profile_BasicStats_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/Profile/BasicStats.vue */ "./resources/js/components/Profile/BasicStats.vue");
 /* harmony import */ var _components_Profile_Top10_vue__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/Profile/Top10.vue */ "./resources/js/components/Profile/Top10.vue");
-/* harmony import */ var _components_Profile_Achievements_vue__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./components/Profile/Achievements.vue */ "./resources/js/components/Profile/Achievements.vue");
-/* harmony import */ var _components_RecentTracks_vue__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./components/RecentTracks.vue */ "./resources/js/components/RecentTracks.vue");
-/* harmony import */ var _components_HomePage_About_FAQ_vue__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./components/HomePage/About/FAQ.vue */ "./resources/js/components/HomePage/About/FAQ.vue");
-/* harmony import */ var _components_HomePage_About_Contacts_vue__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./components/HomePage/About/Contacts.vue */ "./resources/js/components/HomePage/About/Contacts.vue");
-/* harmony import */ var _components_HomePage_About_SiteInfo_vue__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./components/HomePage/About/SiteInfo.vue */ "./resources/js/components/HomePage/About/SiteInfo.vue");
-/* harmony import */ var _components_Misc_NotFound_vue__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./components/Misc/NotFound.vue */ "./resources/js/components/Misc/NotFound.vue");
+/* harmony import */ var _components_RecentTracks_vue__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./components/RecentTracks.vue */ "./resources/js/components/RecentTracks.vue");
+/* harmony import */ var _components_HomePage_About_FAQ_vue__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./components/HomePage/About/FAQ.vue */ "./resources/js/components/HomePage/About/FAQ.vue");
+/* harmony import */ var _components_HomePage_About_Contacts_vue__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./components/HomePage/About/Contacts.vue */ "./resources/js/components/HomePage/About/Contacts.vue");
+/* harmony import */ var _components_HomePage_About_SiteInfo_vue__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./components/HomePage/About/SiteInfo.vue */ "./resources/js/components/HomePage/About/SiteInfo.vue");
+/* harmony import */ var _components_Misc_NotFound_vue__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./components/Misc/NotFound.vue */ "./resources/js/components/Misc/NotFound.vue");
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
-
 
 
 
@@ -105000,13 +104522,13 @@ var routes = [{
       component: _components_HomePage_About_vue__WEBPACK_IMPORTED_MODULE_6__["default"],
       children: [{
         path: '/about',
-        component: _components_HomePage_About_SiteInfo_vue__WEBPACK_IMPORTED_MODULE_14__["default"]
+        component: _components_HomePage_About_SiteInfo_vue__WEBPACK_IMPORTED_MODULE_13__["default"]
       }, {
         path: '/about/faq',
-        component: _components_HomePage_About_FAQ_vue__WEBPACK_IMPORTED_MODULE_12__["default"]
+        component: _components_HomePage_About_FAQ_vue__WEBPACK_IMPORTED_MODULE_11__["default"]
       }, {
         path: '/about/contacts',
-        component: _components_HomePage_About_Contacts_vue__WEBPACK_IMPORTED_MODULE_13__["default"]
+        component: _components_HomePage_About_Contacts_vue__WEBPACK_IMPORTED_MODULE_12__["default"]
       }]
     }, {
       path: 'tests',
@@ -105024,16 +104546,16 @@ var routes = [{
       component: _components_Profile_Top10_vue__WEBPACK_IMPORTED_MODULE_9__["default"]
     }, {
       path: '/profile/achievements',
-      component: _components_Profile_Achievements_vue__WEBPACK_IMPORTED_MODULE_10__["default"]
+      component: Achievements
     }]
   }, //последние треки
   {
     path: '/recentTracks',
-    component: _components_RecentTracks_vue__WEBPACK_IMPORTED_MODULE_11__["default"]
+    component: _components_RecentTracks_vue__WEBPACK_IMPORTED_MODULE_10__["default"]
   }, {
     path: '/404',
     name: '404',
-    component: _components_Misc_NotFound_vue__WEBPACK_IMPORTED_MODULE_15__["default"]
+    component: _components_Misc_NotFound_vue__WEBPACK_IMPORTED_MODULE_14__["default"]
   }, {
     path: '/',
     redirect: window.location.href

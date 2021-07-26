@@ -1,4 +1,4 @@
-//Achievements
+//Achievements (DEPRECATED)
 <template>
     <div class="row justify-content-center">
         <!-- лоадер -->

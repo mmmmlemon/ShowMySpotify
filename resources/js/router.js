@@ -12,7 +12,6 @@ import About from './components/HomePage/About.vue';
 import Profile from './components/Profile.vue';
 import BasicStats from './components/Profile/BasicStats.vue';
 import Top10 from './components/Profile/Top10.vue';
-import Achievements from './components/Profile/Achievements.vue';
 import RecentTracks from './components/RecentTracks.vue';
 import Faq from './components/HomePage/About/FAQ.vue';
 import Contacts from './components/HomePage/About/Contacts.vue';
