@@ -14,7 +14,8 @@
         // хуки
         created(){
             this.checkToken ().then(response => {
-                if(response === true)
+                console.log(response)
+                if(response === true || response === false)
                 {
                     if(this.navSettings == -1)
                     { this.$store.dispatch('getNavSettings'); }

@@ -8,6 +8,7 @@ use Cookie;
 use Carbon\Carbon;
 use File;
 use Storage;
+use App;
 use Illuminate\Http\Response;
 
 //авторизация в Spotify API и выход
@@ -68,6 +69,11 @@ class SpotifyAuthController extends Controller
         Cookie::queue('spotify_refresh_token', $refreshToken, 60*24*30);
         //случайное имя папки куда будут записываться JSON'ы с библиотекой пользователя
         Cookie::queue('rand_name', $randName, 60*24*30); 
+
+        // +1 к счетчику
+        $settings = App\Settings::all()[0];
+        $settings->login_count += 1;
+        $settings->save();
 
         //редирект на главную
         return redirect('/');

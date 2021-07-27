@@ -2119,7 +2119,9 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     this.checkToken().then(function (response) {
-      if (response === true) {
+      console.log(response);
+
+      if (response === true || response === false) {
         if (_this.navSettings == -1) {
           _this.$store.dispatch('getNavSettings');
         } //получить фоновое изображение
