@@ -14,20 +14,8 @@
         // хуки
         created(){
             this.checkToken ().then(response => {
-                if(response === 'refresh'){
-                    var url = window.location.href;
-                    var indexOfAnchor = url.indexOf('#');
-                    if(indexOfAnchor != -1)
-                    {var url = url.slice(0, indexOfAnchor);}
-                    axios.get('/refresh_token').then(response => {
-                        if(response.data = true){
-                            
-                            window.location.replace(url);
-                        }
-                    })
-
-                } else {
-     
+                if(response === true)
+                {
                     if(this.navSettings == -1)
                     { this.$store.dispatch('getNavSettings'); }
 
@@ -56,7 +44,7 @@
                     //получить кол-во треков в библиотеке для сообщения на главной странице
                     if(this.spotifyUserTracksCount == -1)
                     { this.$store.dispatch('getHomePageUserTracksCount'); }    
-                        }
+                }
             });
         },
 

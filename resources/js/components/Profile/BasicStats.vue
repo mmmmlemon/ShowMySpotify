@@ -1,8 +1,8 @@
 //BasicStats
 // раздел "Общее"
-<template>
+<template id="basic">
     <div>
-        <div class="row justify-content-center" id="basic">
+        <div class="row justify-content-center" >
             <div class="col-12" v-if="spotifyUserLibrary == -1">
                 <Loader />
                 <h6 class="text-center blinkingAnim" v-if="spotifyUserLibrary == -1">Загружаю библиотеку пользователя...</h6>
@@ -60,8 +60,8 @@
         </div>
         <br>
         <div class="row justify-content-center" style="margin-top: 2rem;" v-scroll="handleScroll" v-bind:class="{'zeroOpacity': visibleButton === false}">
-            <router-link to="/profile/top10#top">
-                <button class="btn btn-lg btn-primary-n goUpAnimSlow" v-if="visibleButton && leastPopularArtist != -1">
+            <router-link to="/profile/top10">
+                <button class="btn btn-lg btn-primary-n goUpAnimSlow" v-if="visibleButton && leastPopularArtist != -1" @click="scrollMeTo()">
                     Перейти к <b>Топ-10</b>
                 </button>
             </router-link>
@@ -79,21 +79,8 @@ export default {
     created(){
 
         this.checkToken().then(response => {
-            if(response === 'refresh'){
-            var url = window.location.href;
-            var indexOfAnchor = url.indexOf('#');
-            if(indexOfAnchor != -1)
-            {var url = url.slice(0, indexOfAnchor);}
-
-            axios.get('/refresh_token').then(response => {
-                if(response.data = true){
-                    
-                    window.location.replace(url);
-                }
-            });
-
-            } else{
-  
+            if(response === true)
+            {
                 //получаем библиотеку пользователя, если она еще не загружена
                 if(this.spotifyUserLibrary == -1)
                 {
@@ -132,9 +119,13 @@ export default {
     },
 
     methods: {
+        scrollMeTo() {
+            window.scrollTo(0, 0);
+        },
         //получить все необходимые данные для этой страницы
         getAllData: function()
         {
+
             //получить треки
             if(this.spotifyTracks == -1)
             { this.$store.dispatch('getSpotifyTracks'); }
@@ -164,13 +155,23 @@ export default {
             { this.$store.dispatch('getYearsAndDecades'); }
 
             //года и десятилетия - месяц
-            if(this.decadeMonth == -1)
-            { this.$store.dispatch('getDecadeMonth'); }
-
+            this.checkToken ().then(response => {
+                if(response === true)
+                { 
+                    if(this.decadeMonth == -1)
+                    { this.$store.dispatch('getDecadeMonth'); }
+                }
+            })
+           
             //любимые жанры
-            if(this.favoriteGenres == -1)
-            { this.$store.dispatch('getFavoriteGenres') };
-
+            this.checkToken ().then(response => {
+                if(response === true)
+                { 
+                    if(this.favoriteGenres == -1)
+                    { this.$store.dispatch('getFavoriteGenres') };
+                }
+            })
+ 
             //cамый популярный артист, из подписок
             if(this.mostPopularArtist == -1)
             { this.$store.dispatch('getArtistByPopularity', 'popular'); }

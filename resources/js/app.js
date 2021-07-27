@@ -97,7 +97,16 @@ const CheckTokenPlugin = {
            if(response.data == 'yesToken'){
              return true;
            } else if(response.data == 'refreshToken'){
-              return 'refresh';
+              var url = window.location.href;
+              var indexOfAnchor = url.indexOf('#');
+              if(indexOfAnchor != -1)
+              {var url = url.slice(0, indexOfAnchor);}
+              axios.get('/refresh_token').then(response => {
+                  if(response.data = true){
+                      
+                      window.location.replace(url);
+                  }
+              });
            } else{
              //if 'noToken'
              return false;
@@ -107,6 +116,7 @@ const CheckTokenPlugin = {
       }
     },
   }
+
   Vue.use(CheckTokenPlugin)
 
 

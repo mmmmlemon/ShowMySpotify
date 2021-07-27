@@ -3,7 +3,7 @@
 <template>
     <div>
         <Navigation />
-        <router-view></router-view>
+        <router-view style="margin-top: 5%;"></router-view>
     </div>
 </template>
 <script>

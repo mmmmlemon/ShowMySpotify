@@ -12,7 +12,7 @@
            <Error errorMessage="Не удалось загрузить профиль пользователя"/>
         </div>
         <!-- профиль -->
-        <div class="container" id="top" v-if="spotifyProfile != -1 && spotifyProfile != false">
+        <div class="container"  v-if="spotifyProfile != -1 && spotifyProfile != false">
             <div class="col-12">   
                 <!-- юзернейм и ссылка на профиль -->
                 <div class="row justify-content-center fadeInAnim">

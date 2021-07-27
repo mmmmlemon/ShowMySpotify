@@ -1,7 +1,7 @@
 //Top10
 // Раздел "Топ 10"
-<template>
-   <div id="top10">
+<template id="top10">
+   <div>
         <div class="row justify-content-center">
             <div class="col-12" v-if="spotifyUserLibrary == -1">
                 <Loader />
@@ -134,8 +134,8 @@
         </div>
         <br>
         <div class="row justify-content-center" style="margin-top: 2rem;" v-scroll="handleScroll" v-bind:class="{'zeroOpacity': visibleButton === false}">
-            <router-link to="/profile#basic">
-                <button class="btn btn-lg btn-primary-n goUpAnimSlow" v-if="visibleButton === true && top10ArtistsByTime != -1">
+            <router-link to="/profile">
+                <button class="btn btn-lg btn-primary-n goUpAnimSlow" v-if="visibleButton === true && top10ArtistsByTime != -1" @click="scrollMeTo()">
                     Перейти к <b>Общее</b>
                 </button>
             </router-link>
@@ -150,19 +150,8 @@ export default {
 
     created(){
         this.checkToken().then(response => {
-            if(response === 'refresh'){
-                var url = window.location.href;
-                var indexOfAnchor = url.indexOf('#');
-                if(indexOfAnchor != -1)
-                {var url = url.slice(0, indexOfAnchor);}
-                axios.get('/refresh_token').then(response => {
-                    if(response.data = true){
-                        
-                        window.location.replace(url);
-                    }
-                });
-
-            } else{
+            if(response === true)
+            {
                 //получаем библиотеку пользователя, если она еще не загружена
                 //получаем библиотеку пользователя и статистику
                 if(this.spotifyUserLibrary == -1)
@@ -208,14 +197,27 @@ export default {
     },
 
     methods: {
-        getAllData: function(){
+        scrollMeTo() {
+            window.scrollTo(0,0);
+        },
+        getAllData: function(){          
             //топ 10 треков за всё время
-            if(this.top10TracksAllTime == -1)
-            { this.$store.dispatch('getTop10Tracks', 'alltime'); }
+            this.checkToken ().then(response => {
+                if(response === true)
+                { 
+                    if(this.top10TracksAllTime == -1)
+                    { this.$store.dispatch('getTop10Tracks', 'alltime'); }
+                }
+            });
 
             //топ 10 треков за месяц
-            if(this.top10TracksAllTime == -1)
-            { this.$store.dispatch('getTop10Tracks', 'month'); }
+            this.checkToken ().then(response => {
+                if(response === true)
+                { 
+                    if(this.top10TracksAllTime == -1)
+                    { this.$store.dispatch('getTop10Tracks', 'month'); }
+                }
+            });
 
             //топ 10 длинных треков
             if(this.top10TracksLong == -1)
@@ -233,13 +235,24 @@ export default {
             if(this.top10UnpopularTracks == -1)
             { this.$store.dispatch('getTop10TracksByPopularity', 'unpopular'); }
 
+
             //топ 10 артистов за все время
-            if(this.top10ArtistsAllTime == -1)
-            { this.$store.dispatch('getTop10Artists', 'alltime'); }
+            this.checkToken ().then(response => {
+                if(response === true)
+                { 
+                    if(this.top10ArtistsAllTime == -1)
+                    { this.$store.dispatch('getTop10Artists', 'alltime'); }
+                }
+            });
 
             //топ 10 артистов за месяц
-            if(this.top10ArtistsMonth == -1)
-            { this.$store.dispatch('getTop10Artists', 'month'); }
+            this.checkToken ().then(response => {
+                if(response === true)
+                { 
+                   if(this.top10ArtistsMonth == -1)
+                   { this.$store.dispatch('getTop10Artists', 'month'); }
+                }
+            });
 
             //топ 10 артистов по кол-ву треков
             if(this.top10ArtistsByTracks == -1)

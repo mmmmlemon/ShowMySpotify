@@ -2119,20 +2119,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     this.checkToken().then(function (response) {
-      if (response === 'refresh') {
-        var url = window.location.href;
-        var indexOfAnchor = url.indexOf('#');
-
-        if (indexOfAnchor != -1) {
-          var url = url.slice(0, indexOfAnchor);
-        }
-
-        axios.get('/refresh_token').then(function (response) {
-          if (response.data = true) {
-            window.location.replace(url);
-          }
-        });
-      } else {
+      if (response === true) {
         if (_this.navSettings == -1) {
           _this.$store.dispatch('getNavSettings');
         } //получить фоновое изображение
@@ -3611,20 +3598,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     this.checkToken().then(function (response) {
-      if (response === 'refresh') {
-        var url = window.location.href;
-        var indexOfAnchor = url.indexOf('#');
-
-        if (indexOfAnchor != -1) {
-          var url = url.slice(0, indexOfAnchor);
-        }
-
-        axios.get('/refresh_token').then(function (response) {
-          if (response.data = true) {
-            window.location.replace(url);
-          }
-        });
-      } else {
+      if (response === true) {
         //получаем библиотеку пользователя, если она еще не загружена
         if (_this.spotifyUserLibrary == -1) {
           //если запрос выполнился, то выполняем загружаем остальные данные, если нет, то не делаем ничего
@@ -3660,8 +3634,13 @@ __webpack_require__.r(__webpack_exports__);
     this.$store.dispatch('setCurrentTab', 'basicStats');
   },
   methods: {
+    scrollMeTo: function scrollMeTo() {
+      window.scrollTo(0, 0);
+    },
     //получить все необходимые данные для этой страницы
     getAllData: function getAllData() {
+      var _this2 = this;
+
       //получить треки
       if (this.spotifyTracks == -1) {
         this.$store.dispatch('getSpotifyTracks');
@@ -3698,16 +3677,23 @@ __webpack_require__.r(__webpack_exports__);
       } //года и десятилетия - месяц
 
 
-      if (this.decadeMonth == -1) {
-        this.$store.dispatch('getDecadeMonth');
-      } //любимые жанры
+      this.checkToken().then(function (response) {
+        if (response === true) {
+          if (_this2.decadeMonth == -1) {
+            _this2.$store.dispatch('getDecadeMonth');
+          }
+        }
+      }); //любимые жанры
 
+      this.checkToken().then(function (response) {
+        if (response === true) {
+          if (_this2.favoriteGenres == -1) {
+            _this2.$store.dispatch('getFavoriteGenres');
+          }
 
-      if (this.favoriteGenres == -1) {
-        this.$store.dispatch('getFavoriteGenres');
-      }
-
-      ; //cамый популярный артист, из подписок
+          ;
+        }
+      }); //cамый популярный артист, из подписок
 
       if (this.mostPopularArtist == -1) {
         this.$store.dispatch('getArtistByPopularity', 'popular');
@@ -4875,20 +4861,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     this.checkToken().then(function (response) {
-      if (response === 'refresh') {
-        var url = window.location.href;
-        var indexOfAnchor = url.indexOf('#');
-
-        if (indexOfAnchor != -1) {
-          var url = url.slice(0, indexOfAnchor);
-        }
-
-        axios.get('/refresh_token').then(function (response) {
-          if (response.data = true) {
-            window.location.replace(url);
-          }
-        });
-      } else {
+      if (response === true) {
         //получаем библиотеку пользователя, если она еще не загружена
         //получаем библиотеку пользователя и статистику
         if (_this.spotifyUserLibrary == -1) {
@@ -4930,17 +4903,28 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    scrollMeTo: function scrollMeTo() {
+      window.scrollTo(0, 0);
+    },
     getAllData: function getAllData() {
+      var _this2 = this;
+
       //топ 10 треков за всё время
-      if (this.top10TracksAllTime == -1) {
-        this.$store.dispatch('getTop10Tracks', 'alltime');
-      } //топ 10 треков за месяц
+      this.checkToken().then(function (response) {
+        if (response === true) {
+          if (_this2.top10TracksAllTime == -1) {
+            _this2.$store.dispatch('getTop10Tracks', 'alltime');
+          }
+        }
+      }); //топ 10 треков за месяц
 
-
-      if (this.top10TracksAllTime == -1) {
-        this.$store.dispatch('getTop10Tracks', 'month');
-      } //топ 10 длинных треков
-
+      this.checkToken().then(function (response) {
+        if (response === true) {
+          if (_this2.top10TracksAllTime == -1) {
+            _this2.$store.dispatch('getTop10Tracks', 'month');
+          }
+        }
+      }); //топ 10 длинных треков
 
       if (this.top10TracksLong == -1) {
         this.$store.dispatch('getTop10TracksByLength', 'long');
@@ -4962,15 +4946,21 @@ __webpack_require__.r(__webpack_exports__);
       } //топ 10 артистов за все время
 
 
-      if (this.top10ArtistsAllTime == -1) {
-        this.$store.dispatch('getTop10Artists', 'alltime');
-      } //топ 10 артистов за месяц
+      this.checkToken().then(function (response) {
+        if (response === true) {
+          if (_this2.top10ArtistsAllTime == -1) {
+            _this2.$store.dispatch('getTop10Artists', 'alltime');
+          }
+        }
+      }); //топ 10 артистов за месяц
 
-
-      if (this.top10ArtistsMonth == -1) {
-        this.$store.dispatch('getTop10Artists', 'month');
-      } //топ 10 артистов по кол-ву треков
-
+      this.checkToken().then(function (response) {
+        if (response === true) {
+          if (_this2.top10ArtistsMonth == -1) {
+            _this2.$store.dispatch('getTop10Artists', 'month');
+          }
+        }
+      }); //топ 10 артистов по кол-ву треков
 
       if (this.top10ArtistsByTracks == -1) {
         this.$store.dispatch('getTop10ArtistsByTracks');
@@ -5362,20 +5352,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     this.checkToken().then(function (response) {
-      if (response === 'refresh') {
-        var url = window.location.href;
-        var indexOfAnchor = url.indexOf('#');
-
-        if (indexOfAnchor != -1) {
-          var url = url.slice(0, indexOfAnchor);
-        }
-
-        axios.get('/refresh_token').then(function (response) {
-          if (response.data = true) {
-            window.location.replace(url);
-          }
-        });
-      } else {
+      if (response === true) {
         //настройки навигации
         if (_this.navSettings == -1) {
           _this.$store.dispatch('getNavSettings');
@@ -79912,7 +79889,15 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_c("Navigation"), _vm._v(" "), _c("router-view")], 1)
+  return _c(
+    "div",
+    [
+      _c("Navigation"),
+      _vm._v(" "),
+      _c("router-view", { staticStyle: { "margin-top": "5%" } })
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -81524,7 +81509,7 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _vm.spotifyProfile != -1 && _vm.spotifyProfile != false
-        ? _c("div", { staticClass: "container", attrs: { id: "top" } }, [
+        ? _c("div", { staticClass: "container" }, [
             _c("div", { staticClass: "col-12" }, [
               _c(
                 "div",
@@ -82212,156 +82197,149 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c(
-      "div",
-      { staticClass: "row justify-content-center", attrs: { id: "basic" } },
-      [
-        _vm.spotifyUserLibrary == -1
-          ? _c(
+    _c("div", { staticClass: "row justify-content-center" }, [
+      _vm.spotifyUserLibrary == -1
+        ? _c(
+            "div",
+            { staticClass: "col-12" },
+            [
+              _c("Loader"),
+              _vm._v(" "),
+              _vm.spotifyUserLibrary == -1
+                ? _c("h6", { staticClass: "text-center blinkingAnim" }, [
+                    _vm._v("Загружаю библиотеку пользователя...")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.spotifyUserLibrary == true
+                ? _c("h6", { staticClass: "text-center blinkingAnim" }, [
+                    _vm._v("Анализирую треки...")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("p", { staticClass: "text-center font10pt" }, [
+                _vm._v("Это может занять около минуты")
+              ])
+            ],
+            1
+          )
+        : _vm.spotifyUserLibrary != -1 &&
+          _vm.spotifyUserLibrary["result"] != false &&
+          _vm.spotifyUserLibrary["result"] != "libraryError"
+        ? _c("div", { staticClass: "row justify-content-center" }, [
+            _c(
               "div",
-              { staticClass: "col-12" },
+              { staticClass: "row justify-content-center" },
               [
-                _c("Loader"),
+                _c("LastFive", {
+                  attrs: { items: _vm.spotifyTracks, type: "tracks" }
+                }),
                 _vm._v(" "),
-                _vm.spotifyUserLibrary == -1
-                  ? _c("h6", { staticClass: "text-center blinkingAnim" }, [
-                      _vm._v("Загружаю библиотеку пользователя...")
-                    ])
+                _vm.spotifyTracks != -1
+                  ? _c("LastFive", {
+                      attrs: { items: _vm.spotifyAlbums, type: "albums" }
+                    })
                   : _vm._e(),
                 _vm._v(" "),
-                _vm.spotifyUserLibrary == true
-                  ? _c("h6", { staticClass: "text-center blinkingAnim" }, [
-                      _vm._v("Анализирую треки...")
-                    ])
+                _vm.spotifyAlbums != -1
+                  ? _c("LastFive", {
+                      attrs: { items: _vm.spotifyArtists, type: "artists" }
+                    })
                   : _vm._e(),
                 _vm._v(" "),
-                _c("p", { staticClass: "text-center font10pt" }, [
-                  _vm._v("Это может занять около минуты")
-                ])
+                _vm.spotifyArtists !== -1 &&
+                _vm.spotifyAlbums != -1 &&
+                _vm.spotifyTracks != -1
+                  ? _c("HoursAndMinutes", {
+                      attrs: { userLibraryTime: _vm.userLibraryTime }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.userLibraryTime !== -1
+                  ? _c("AverageTrackLength", {
+                      attrs: { id: "tracks", tracksMode: _vm.tracksMode }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.tracksMode != -1
+                  ? _c("ArtistsCount", {
+                      attrs: { uniqueArtists: _vm.uniqueArtists }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.uniqueArtists != -1
+                  ? _c("YearsAndDecades", {
+                      attrs: {
+                        yearsAndDecades: _vm.yearsAndDecades,
+                        type: "alltime"
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.uniqueArtists != -1
+                  ? _c("YearsAndDecades", {
+                      attrs: { yearsAndDecades: _vm.decadeMonth, type: "month" }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.decadeMonth != -1
+                  ? _c("FavoriteGenres", {
+                      attrs: {
+                        favoriteGenres: _vm.favoriteGenres,
+                        id: "genres"
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.mostPopularArtist != "noArtists" && _vm.decadeMonth != -1
+                  ? _c("AchievementItem", {
+                      attrs: {
+                        cardTitle: "Самый популярный исполнитель",
+                        cardSubtitle: "На которого ты подписан",
+                        item: _vm.mostPopularArtist
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.mostPopularArtist != -1 &&
+                _vm.leastPopularArtist != "noArtists"
+                  ? _c("AchievementItem", {
+                      attrs: {
+                        cardTitle: "Самый непопулярный исполнитель",
+                        cardSubtitle: "На которого ты подписан",
+                        item: _vm.leastPopularArtist,
+                        orientation: "right"
+                      }
+                    })
+                  : _vm._e()
               ],
               1
             )
-          : _vm.spotifyUserLibrary != -1 &&
-            _vm.spotifyUserLibrary["result"] != false &&
-            _vm.spotifyUserLibrary["result"] != "libraryError"
-          ? _c("div", { staticClass: "row justify-content-center" }, [
-              _c(
-                "div",
-                { staticClass: "row justify-content-center" },
-                [
-                  _c("LastFive", {
-                    attrs: { items: _vm.spotifyTracks, type: "tracks" }
-                  }),
-                  _vm._v(" "),
-                  _vm.spotifyTracks != -1
-                    ? _c("LastFive", {
-                        attrs: { items: _vm.spotifyAlbums, type: "albums" }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.spotifyAlbums != -1
-                    ? _c("LastFive", {
-                        attrs: { items: _vm.spotifyArtists, type: "artists" }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.spotifyArtists !== -1 &&
-                  _vm.spotifyAlbums != -1 &&
-                  _vm.spotifyTracks != -1
-                    ? _c("HoursAndMinutes", {
-                        attrs: { userLibraryTime: _vm.userLibraryTime }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.userLibraryTime !== -1
-                    ? _c("AverageTrackLength", {
-                        attrs: { id: "tracks", tracksMode: _vm.tracksMode }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.tracksMode != -1
-                    ? _c("ArtistsCount", {
-                        attrs: { uniqueArtists: _vm.uniqueArtists }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.uniqueArtists != -1
-                    ? _c("YearsAndDecades", {
-                        attrs: {
-                          yearsAndDecades: _vm.yearsAndDecades,
-                          type: "alltime"
-                        }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.uniqueArtists != -1
-                    ? _c("YearsAndDecades", {
-                        attrs: {
-                          yearsAndDecades: _vm.decadeMonth,
-                          type: "month"
-                        }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.decadeMonth != -1
-                    ? _c("FavoriteGenres", {
-                        attrs: {
-                          favoriteGenres: _vm.favoriteGenres,
-                          id: "genres"
-                        }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.mostPopularArtist != "noArtists" && _vm.decadeMonth != -1
-                    ? _c("AchievementItem", {
-                        attrs: {
-                          cardTitle: "Самый популярный исполнитель",
-                          cardSubtitle: "На которого ты подписан",
-                          item: _vm.mostPopularArtist
-                        }
-                      })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.mostPopularArtist != -1 &&
-                  _vm.leastPopularArtist != "noArtists"
-                    ? _c("AchievementItem", {
-                        attrs: {
-                          cardTitle: "Самый непопулярный исполнитель",
-                          cardSubtitle: "На которого ты подписан",
-                          item: _vm.leastPopularArtist,
-                          orientation: "right"
-                        }
-                      })
-                    : _vm._e()
-                ],
-                1
-              )
-            ])
-          : _vm.spotifyUserLibrary["result"] == false
-          ? _c(
-              "div",
-              [
-                _c("Error", {
-                  attrs: {
-                    errorMessage: "Не удалось загрузить библиотеку пользователя"
-                  }
-                })
-              ],
-              1
-            )
-          : _vm.spotifyUserLibrary["result"] == "libraryError"
-          ? _c(
-              "div",
-              [
-                _c("Info", {
-                  attrs: { infoMessage: _vm.spotifyUserLibrary["errorMsg"] }
-                })
-              ],
-              1
-            )
-          : _vm._e()
-      ]
-    ),
+          ])
+        : _vm.spotifyUserLibrary["result"] == false
+        ? _c(
+            "div",
+            [
+              _c("Error", {
+                attrs: {
+                  errorMessage: "Не удалось загрузить библиотеку пользователя"
+                }
+              })
+            ],
+            1
+          )
+        : _vm.spotifyUserLibrary["result"] == "libraryError"
+        ? _c(
+            "div",
+            [
+              _c("Info", {
+                attrs: { infoMessage: _vm.spotifyUserLibrary["errorMsg"] }
+              })
+            ],
+            1
+          )
+        : _vm._e()
+    ]),
     _vm._v(" "),
     _c("br"),
     _vm._v(" "),
@@ -82381,11 +82359,18 @@ var render = function() {
         staticStyle: { "margin-top": "2rem" }
       },
       [
-        _c("router-link", { attrs: { to: "/profile/top10#top" } }, [
+        _c("router-link", { attrs: { to: "/profile/top10" } }, [
           _vm.visibleButton && _vm.leastPopularArtist != -1
             ? _c(
                 "button",
-                { staticClass: "btn btn-lg btn-primary-n goUpAnimSlow" },
+                {
+                  staticClass: "btn btn-lg btn-primary-n goUpAnimSlow",
+                  on: {
+                    click: function($event) {
+                      return _vm.scrollMeTo()
+                    }
+                  }
+                },
                 [
                   _vm._v("\n                Перейти к "),
                   _c("b", [_vm._v("Топ-10")])
@@ -84247,7 +84232,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { attrs: { id: "top10" } }, [
+  return _c("div", [
     _c("div", { staticClass: "row justify-content-center" }, [
       _vm.spotifyUserLibrary == -1
         ? _c(
@@ -84508,11 +84493,18 @@ var render = function() {
         staticStyle: { "margin-top": "2rem" }
       },
       [
-        _c("router-link", { attrs: { to: "/profile#basic" } }, [
+        _c("router-link", { attrs: { to: "/profile" } }, [
           _vm.visibleButton === true && _vm.top10ArtistsByTime != -1
             ? _c(
                 "button",
-                { staticClass: "btn btn-lg btn-primary-n goUpAnimSlow" },
+                {
+                  staticClass: "btn btn-lg btn-primary-n goUpAnimSlow",
+                  on: {
+                    click: function($event) {
+                      return _vm.scrollMeTo()
+                    }
+                  }
+                },
                 [
                   _vm._v("\n                 Перейти к "),
                   _c("b", [_vm._v("Общее")])
@@ -102216,7 +102208,18 @@ var CheckTokenPlugin = {
         if (response.data == 'yesToken') {
           return true;
         } else if (response.data == 'refreshToken') {
-          return 'refresh';
+          var url = window.location.href;
+          var indexOfAnchor = url.indexOf('#');
+
+          if (indexOfAnchor != -1) {
+            var url = url.slice(0, indexOfAnchor);
+          }
+
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/refresh_token').then(function (response) {
+            if (response.data = true) {
+              window.location.replace(url);
+            }
+          });
         } else {
           //if 'noToken'
           return false;
