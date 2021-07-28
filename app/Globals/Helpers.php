@@ -530,7 +530,8 @@ class Helpers
                     $filtered = [];
 
                     foreach($tracks as $track){
-                        array_push($filtered, ['id' => $track->id, 'popularity' => $track->popularity, 'album' => $track->album]);
+                        if(count($track->album->available_markets) > 0)
+                        {array_push($filtered, ['id' => $track->id, 'popularity' => $track->popularity, 'album' => $track->album]); }
                     }
                     
                     // сортируем по возрастанию или по убыванию в соотв. с типом плейлиста

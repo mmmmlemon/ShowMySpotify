@@ -1261,17 +1261,21 @@ class SpotifyAPIController extends Controller
 
            foreach($tracks as $track)
            {    
-               $trackInfo = [];
-               $trackInfo['id'] =  $track->id;
-               $trackInfo['popularity'] = $track->popularity;
-               $trackInfo['image'] = $track->album->images[count($track->album->images) - 1]->url;
-               $trackInfo['name'] = Helpers::getFullNameOfItem($track, "fullname");
-               $trackInfo['url'] = $track->external_urls->spotify;
-               $trackInfo['album'] = $track->album->name;
-               $trackInfo['album_url'] = $track->album->external_urls->spotify;
-               $trackInfo['album_year'] = Helpers::getItemReleaseDate($track, "track", "short");
-
-               array_push($tracksClean, $trackInfo);
+               if(count($track->album->available_markets) > 0)
+               {
+                $trackInfo = [];
+                $trackInfo['id'] =  $track->id;
+                $trackInfo['popularity'] = $track->popularity;
+                $trackInfo['image'] = $track->album->images[count($track->album->images) - 1]->url;
+                $trackInfo['name'] = Helpers::getFullNameOfItem($track, "fullname");
+                $trackInfo['url'] = $track->external_urls->spotify;
+                $trackInfo['album'] = $track->album->name;
+                $trackInfo['album_url'] = $track->album->external_urls->spotify;
+                $trackInfo['album_year'] = Helpers::getItemReleaseDate($track, "track", "short");
+ 
+                array_push($tracksClean, $trackInfo);
+               }
+        
            }
 
            //сортировка по ключу popularity
