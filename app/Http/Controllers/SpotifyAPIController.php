@@ -1948,9 +1948,9 @@ class SpotifyAPIController extends Controller
             $playlistDesc = null;
             
             // устанавливаем русскую локаль чтобы в названии была локализованная дата
-            setlocale(LC_ALL, 'russian');
-            $date = strftime('%B \'%y');
-            $date = iconv('windows-1251', 'utf-8',  $date);
+            setlocale(LC_ALL, 'ru_RU.utf8');
+            $date = strftime('%h \'%y');
+            // $date = iconv('windows-1251', 'utf-8',  $date);
 
 
             // меняем название и описание плейлиста в соотв. с типом

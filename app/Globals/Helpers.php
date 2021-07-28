@@ -365,34 +365,34 @@ class Helpers
             switch($type)
             {
                 case 'top50alltime':
-                    $templateImgPath = storage_path('app\public\system\top50alltime.png');
+                    $templateImgPath = storage_path('app/public/system/top50alltime.png');
                     break;
                 case 'top20month':
-                    $templateImgPath = storage_path('app\public\system\top20month.png');
+                    $templateImgPath = storage_path('app/public/system/top20month.png');
                     break;
                 case 'top30long':
-                    $templateImgPath = storage_path('app\public\system\top30long.png');
+                    $templateImgPath = storage_path('app/public/system/top30long.png');
                     break;
                 case 'top30short':
-                    $templateImgPath = storage_path('app\public\system\top30short.png');
+                    $templateImgPath = storage_path('app/public/system/top30short.png');
                     break;
                 case 'top30popular':
-                        $templateImgPath = storage_path('app\public\system\top30popular.png');
+                        $templateImgPath = storage_path('app/public/system/top30popular.png');
                         break;
                 case 'top30unpopular':
-                    $templateImgPath = storage_path('app\public\system\top30unpopular.png');
+                    $templateImgPath = storage_path('app/public/system/top30unpopular.png');
                     break;
                 case 'artistsAlltime':
-                        $templateImgPath = storage_path('app\public\system\artistsAlltime.png');
+                        $templateImgPath = storage_path('app/public/system/artistsAlltime.png');
                         break;
                 case 'artistsMonth':
-                    $templateImgPath = storage_path('app\public\system\artistsMonth.png');
+                    $templateImgPath = storage_path('app/public/system/artistsMonth.png');
                     break;
                 case 'artistsByLikes':
-                    $templateImgPath = storage_path('app\public\system\artistsbyLikes.png');
+                    $templateImgPath = storage_path('app/public/system/artistsByLikes.png');
                     break;
                 default:
-                    $templateImgPath = storage_path('app\public\system\playlist.png');
+                    $templateImgPath = storage_path('app/public/system/playlist.png');
                     break;
             }
 
