@@ -1,4 +1,5 @@
 //RecentTracks
+// Последние прослушанные треки
 <template>
     <div class="row justify-content-center">
         <div class="col-12 fadeInAnimSlow" v-if="recentTracks != -1 && recentTracks != false">
@@ -7,25 +8,45 @@
                 <b>Последние прослушанные треки</b>&nbsp;
                 <i class="fas fa-compact-disc primaryColor"></i>
             </h4>
-        </div>
-        <!-- вывод списка треков -->
-        <div class="col-12 col-md-10 col-lg-6">
-            <div>
-                <List :items="recentTracks"/>
+            <!-- вывод списка треков -->
+            <div class="row justify-content-center">
+                <div class="col-9">
+                    <List :items="recentTracks"/>
+                </div>
             </div>
         </div>
+        <div v-else-if="recentTracks == 'noTracks'">
+            <Info infoMessage="Не удалось загрузить последние треки. Возможно вы ничего не слушали в последнее время?"/>
+        </div>
+ 
     </div>
  
 </template>
 <script>
 export default {
-    mounted(){
-        //загружаем последние треки
-        if(this.recentTracks == -1)
-        { this.$store.dispatch('getLatestTracks'); }
+
+    created(){
+        this.checkToken ().then(response => {
+            if(response === true)
+            {
+                //настройки навигации
+                if(this.navSettings == -1)
+                { this.$store.dispatch('getNavSettings'); }
+
+                //загружаем последние треки
+                if(this.recentTracks == -1)
+                { this.$store.dispatch('getLatestTracks'); }
+            }
+        });
+
     },
 
     computed: {
+        //настройки навигации
+        navSettings: function(){
+            return this.$store.state.homePage.navSettings;
+        },
+        
         //последние треки
         recentTracks: function(){
             return this.$store.state.homePage.recentTracks;

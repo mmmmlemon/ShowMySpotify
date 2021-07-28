@@ -1,4 +1,5 @@
 //Contacts
+// About.vue - Контакты
 <template>
     <div class="fadeInAnim">
         <!-- лоадер -->
@@ -22,9 +23,6 @@ export default {
     mounted(){
         //смена текущего таба
         this.$store.dispatch('setCurrentTab','contacts');
-
-        //получить информацию о сайте
-        this.$store.dispatch('getContacts');
     },
 
     computed: {

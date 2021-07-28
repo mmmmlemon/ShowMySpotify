@@ -8,6 +8,7 @@ use Cookie;
 use Carbon\Carbon;
 use File;
 use Storage;
+use App;
 use Illuminate\Http\Response;
 
 //авторизация в Spotify API и выход
@@ -27,11 +28,13 @@ class SpotifyAuthController extends Controller
         $options = [
             'scope' => [
                 'playlist-read-private',
+                'playlist-modify-public',
                 'user-read-private',
                 'user-library-read',
                 'user-follow-read',
                 'user-top-read',
                 'user-read-recently-played',
+                'ugc-image-upload',
             ],
         ];
 
@@ -66,6 +69,11 @@ class SpotifyAuthController extends Controller
         Cookie::queue('spotify_refresh_token', $refreshToken, 60*24*30);
         //случайное имя папки куда будут записываться JSON'ы с библиотекой пользователя
         Cookie::queue('rand_name', $randName, 60*24*30); 
+
+        // +1 к счетчику
+        $settings = App\Settings::all()[0];
+        $settings->login_count += 1;
+        $settings->save();
 
         //редирект на главную
         return redirect('/');
@@ -127,10 +135,84 @@ class SpotifyAuthController extends Controller
         else
         {   
             $response = new Response(true);
-
             $response->withCookie(cookie()->forever('cookies_accepted', true));
-
             return $response;
         }
+    }
+
+    //checkToken
+    //проверка токена
+    public function checkSpotifyToken(Request $request){
+
+        $token = $request->cookie('spotify_access_token');
+
+        if($token == null){
+            return response()->json('noToken');
+        } else{
+            
+            $tokenExpiration = $request->cookie('spotify_access_expiration');
+            
+            if(Carbon::now() >= $tokenExpiration){
+                return response()->json('refreshToken');
+            } else {
+                return response()->json('yesToken');
+            }
+        }
+    }
+    
+    //refreshToken
+    public function refreshToken(Request $request){
+        //получаем имя папки с данными пользователя из Cookies
+        $folderName = $request->cookie('rand_name');
+
+        //проверяем что папка существует
+        $check = File::exists(storage_path("app/public/user_libraries/".$folderName));
+
+        if($check == true)
+        {
+            Storage::disk('public')->deleteDirectory("user_libraries/".$folderName);
+            return response()->json(true);
+        }
+
+        //создаем новую сессию Spotify API
+        $session = new SpotifyWebAPI\Session(
+            config('settings')->spotify_client_id,
+            config('settings')->spotify_client_secret,
+            config('settings')->spotify_redirect_uri
+        );
+        
+        //задаем опции
+        $options = [
+            'scope' => [
+                'playlist-read-private',
+                'playlist-modify-public',
+                'user-read-private',
+                'user-library-read',
+                'user-follow-read',
+                'user-top-read',
+                'user-read-recently-played',
+                'ugc-image-upload',
+            ],
+        ];
+
+        //обновляем токен, рефреш токен и время действия токена
+        $session->refreshAccessToken($request->cookie('spotify_refresh_token'));
+        $newAccessToken = $session->getAccessToken();
+        $newRefreshToken = $session->getRefreshToken();
+        $accessExpiration = Carbon::now()->addMinutes(50);
+        $chars = "ABCDEFG";
+        $randName = $chars[rand(0, 6)] . rand(0,9) . $chars[rand(0, 6)] . rand(0,9) . $chars[rand(0, 6)] . rand(0,9);
+        
+        //записывем новые токены в куки
+        Cookie::queue('spotify_access_token',  $newAccessToken, 60*24*30*12);
+        Cookie::queue('spotify_refresh_token', $newRefreshToken, 60*24*30*12);
+        Cookie::queue('spotify_access_expiration', $accessExpiration, 60*24*30*12);
+        Cookie::queue('rand_name', $randName, 60*24*30);
+
+        //устанавливаем новый токен в сессию
+        config('spotify_api')->setAccessToken($newAccessToken);
+
+        //возвращаем пользователя назад
+        return redirect()->back();
     }
 }

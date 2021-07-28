@@ -195,4 +195,16 @@ class TestController extends Controller
         else
         { return response()->json(false); }
     }
+
+    public function test(Request $request){
+
+        $checkToken = System::setAccessToken($request);
+
+        if($checkToken != false){
+            $api = config('spotify_api');
+
+            dd($api->getAlbum('6tOzjkT6XdSxiT9FZ54q6d'));
+        }
+
+    }
 }

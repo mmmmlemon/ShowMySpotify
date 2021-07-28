@@ -19,6 +19,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//Spotify Token Check
+Route::get('/check_token', 'SpotifyAuthController@checkSpotifyToken');
+
+//Navigation
+Route::get('/get_nav_settings', 'HomeController@getNavigationSettings'); //настройки навигации
+
 //HomePage
 Route::get('/get_welcome_message', 'HomeController@getWelcomeMessage'); //получить welcome msg
 Route::get('/check_cookies', 'SpotifyAuthController@checkCookies'); //проверить куки
@@ -45,7 +51,8 @@ Route::get('/get_average_track_length', 'SpotifyAPIController@getAverageLengthOf
 Route::get('/generate_bg_image', 'SpotifyAPIController@generateBackgroundImage'); //генерация фонового изображения для профиля
 Route::get('/get_favorite_genres', 'SpotifyAPIController@getFavoriteGenres'); //получить любимые жанры пользователя (10 шт.)
 Route::get('/get_unique_artists', 'SpotifyAPIController@getUniqueArtists'); //посчитать исполнителей
-Route::get('/get_years_and_decades/{type}', 'SpotifyAPIController@getYearsAndDecades'); //посчитать годы и десятилетия
+Route::get('/get_years_and_decades', 'SpotifyAPIController@getYearsAndDecades'); //посчитать годы и десятилетия
+Route::get('/get_decade_month', 'SpotifyAPIController@getDecadeMonth'); //посчитать десятилетия за месяц
 //Top10
 Route::get('/get_top10_tracks/{top10Type}', 'SpotifyAPIController@getTop10Tracks'); //получить топ 10 треков
 Route::get('/get_top10_artists/{top10Artists}', 'SpotifyAPIController@getTop10Artists'); //получить топ 10 треков
@@ -63,6 +70,10 @@ Route::get('/get_artist_by_time', 'SpotifyAPIController@getArtistByTime'); //п�
 Route::get('/get_artist_by_popularity/{type}', 'SpotifyAPIController@getArtistByPopularity'); //получать самого популярного или непопулярного артиста из подписок
 //RecentTracks
 Route::get('/get_latest_tracks', 'SpotifyAPIController@getLatestTracks'); //получить последние полученные треки
+
+
+//Playlists
+Route::get('/create_playlist/{type}', 'SpotifyAPIController@createPlaylist');
 
 Route::get('/clean_user_data', 'SpotifyAuthController@cleanUserData'); //очистить данные пользователя
 ?>

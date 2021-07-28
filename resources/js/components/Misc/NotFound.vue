@@ -1,4 +1,5 @@
 //404 - Not Found Page
+// Страница 404
 <template>
     <div class="text-center">
         <br><br>

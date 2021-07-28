@@ -1,14 +1,49 @@
+// BarChart
+// график для данных по годам, десятилетиям и жанрам
 <script>
-import { Bar } from 'vue-chartjs'
+import { HorizontalBar } from 'vue-chartjs'
 
 export default {
-  extends: Bar,
+  extends: HorizontalBar,
   data: () => ({
-    chartData: null,
-    options: {
-      responsive: true,
-      maintainAspectRatio: false
-    }
+  chartData: null,
+   options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: { display: false },
+        scales: {
+          yAxes: [{
+            gridLines: {
+              display: false,
+            },
+            scaleLabel: {
+              display: true,
+            },
+            ticks: {
+              fontFamily: 'Montserrat',
+              fontColor: '#e8e6e6',
+              fontSize: 16,
+              padding: 0,
+            },
+          }],
+          xAxes: [{
+            gridLines: {
+              width: 2,
+            },
+            scaleLabel: {
+              display: true,
+              labelString: 'Кол-во',
+              fontColor: '#1ea74c',
+              fontSize: 12,
+            },
+            ticks: {
+              fontFamily: 'Montserrat',
+              fontColor: '#1ea74c',
+              fontSize: 14,
+            },
+          }]
+        }
+      }
   }),
   props: {
       favoriteGenres: { default: -1 },
@@ -17,7 +52,6 @@ export default {
   },
 
   async mounted () {
-    
     //получаем заголовки и значения
     var keys = Object.keys(this.favoriteGenres);
     var values = Object.values(this.favoriteGenres);

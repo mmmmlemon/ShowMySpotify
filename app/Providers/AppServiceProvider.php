@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Request $request)
     {
+
         //получение настроек сайта из БД
         $settings = App\Settings::all()[0];
         config(['settings' => $settings]);

@@ -1,4 +1,5 @@
 //SiteInfo
+// About.vue - О проекте
 <template>
     <div class="fadeInAnim">
         <!-- лоадер -->
@@ -22,9 +23,6 @@ export default {
     mounted(){
         //смена текущего таба
         this.$store.dispatch('setCurrentTab','about');
-
-        //получить информацию о сайте
-        this.$store.dispatch('getAbout');
     },
 
     computed: {

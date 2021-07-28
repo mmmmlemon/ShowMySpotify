@@ -1,4 +1,5 @@
 //Error
+// сообщение об ошибке
 <template>
     <div class="container">
         <!-- обычная ошибка -->

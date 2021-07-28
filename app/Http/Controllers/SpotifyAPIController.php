@@ -24,7 +24,7 @@ class SpotifyAPIController extends Controller
     public function getHomePageUserTracksCount(Request $request)
     { 
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -35,19 +35,40 @@ class SpotifyAPIController extends Controller
            $offset = 0; //смещение
            //получаем первые 50 треков из библиотеки, со смещением 0
            $spotifyUserTracks = $api->getMySavedTracks(['limit'=> 50, 'offset' => $offset]); 
-
+           $spotifyUserTracksCount += count($spotifyUserTracks->items);
            //пока смещение меньше 100, прибавляем кол-во полученные треков 
            //и получаем следующие 50 с новым смещением
            //итого максимум будет 150 треков, в зависимости от кол-ва треков
            //будет выводиться разное сообщение на главной странице
-           while($offset <= 100)
+           while($offset <= 100 && $spotifyUserTracks->next != null)
            {
                 $spotifyUserTracksCount += count($spotifyUserTracks->items);
                 $offset += 50;
-                $spotifyUserTracks = $api->getMySavedTracks(['limit' => 50, 'offset' => $offset]);
+                $result = $api->getMySavedTracks(['limit' => 50, 'offset' => $offset]);
+                if(count($result->items) >= 20){
+                    $spotifyUserTracks = $result;
+                }
            }
 
-           return response()->json($spotifyUserTracksCount);
+           $tracks = [];
+           if($spotifyUserTracksCount >= 50)
+           {    
+                //убираем дупликаты обложек (в залайканых песнях обложки могут повторяться)
+                $spotifyCovers = [];
+                foreach($spotifyUserTracks->items as $track){
+                        array_push($spotifyCovers, $track->track->album->images[0]->url);
+                }
+
+                $spotifyCoversUnique = array_values(array_unique($spotifyCovers));
+        
+                $len = count($spotifyCoversUnique);
+                $randomNumbers =  Helpers::randomNumbers(0, $len-1, 5);
+                for($i = 0; $i <= 4; $i++){
+                        array_push($tracks, $spotifyCoversUnique[$randomNumbers[$i]]);
+                }
+           }
+
+           return response()->json(['trackCount'=>$spotifyUserTracksCount,'trackCovers'=> $tracks]);
         }
         else
         { return response()->json(false); }
@@ -59,7 +80,7 @@ class SpotifyAPIController extends Controller
     //параметры: реквест
     public function getSpotifyUsername(Request $request)
     {
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -77,7 +98,7 @@ class SpotifyAPIController extends Controller
     public function getSpotifyProfile(Request $request)
     {   
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -91,7 +112,7 @@ class SpotifyAPIController extends Controller
             { $avatarUrl = $profile->images[0]->url; }
             //если нет, то берем заглушку из настроек
             else
-            { $avatarUrl = asset(config('settings')->user_img); }
+            { $avatarUrl = "noAvatar"; }
 
             $response = ['spotifyUsername' => $profile->display_name, 
                          'country' => "https://www.countryflags.io/" . $profile->country . "/flat/32.png", 
@@ -113,7 +134,7 @@ class SpotifyAPIController extends Controller
     public function getSpotifyUserLibrary(Request $request)
     {   
         //проверяем токен
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -142,6 +163,18 @@ class SpotifyAPIController extends Controller
 
                 $options['offset'] += 50;
                 $spotifyMyTracks = $api->getMySavedTracks($options)->items;
+            }
+
+            $options['offset'] = 0;
+
+            //получаем все альбомы
+            while(count($spotifyMyAlbums) > 0)
+            {
+                foreach($spotifyMyAlbums as $item)
+                { array_push($spotifyUserAlbums, $item->album); }
+
+                $options['offset'] += 50;
+                $spotifyMyAlbums = $api->getMySavedAlbums($options)->items;
             }
 
             //считаем количество треков
@@ -369,17 +402,21 @@ class SpotifyAPIController extends Controller
             $overallMonths = floor($overallDays / 30); //общее кол-во месяцев (кол-во дней / 30 дней)
 
             //вычисляем какое слово нужно подставить в конец (1 минуТА, 2 минуТЫ и т.п)
-            $overallMinutes .= " " . Helpers::pickTheWord($overallMinutes, "минут", "минута", "минуты");
+            $overallMinutesWord = " " . Helpers::pickTheWord($overallMinutes, "минут", "минута", "минуты");
             
             //аналогично для остальных измерений, если они больше нуля
+            $overallHoursWord = null;
+            $overallDaysWord = null;
+            $overallMonthsWord = null;
+
             if($overallHours > 0)
-            {  $overallHours .= " " . Helpers::pickTheWord($overallHours, "часов", "час", "часа"); }
+            {  $overallHoursWord .= " " . Helpers::pickTheWord($overallHours, "часов", "час", "часа"); }
             
             if($overallDays > 0)
-            {  $overallDays .= " " . Helpers::pickTheWord($overallDays, "дней", "день", "дня"); }
+            {  $overallDaysWord .= " " . Helpers::pickTheWord($overallDays, "дней", "день", "дня"); }
             
             if($overallMonths > 0)
-            {  $overallMonths .= " " . Helpers::pickTheWord($overallMonths, "месяцев", "месяц", "месяца"); }
+            {  $overallMonthsWord .= " " . Helpers::pickTheWord($overallMonths, "месяцев", "месяц", "месяца"); }
 
             //получить случайное изображение с обложкой альбома для фоновой картинки
             //получаем случайный трек из файла
@@ -387,20 +424,25 @@ class SpotifyAPIController extends Controller
             $randomTrackId = $tracks[$randNum]->id;
 
             //проверяем токен
-            $checkToken = System::checkSpotifyAccessToken($request);
-            //если токен действительный
-            if($checkToken != false)
-            {
-                //делаем запрос к Spotify API и получаем обложку трека
-                $api = config('spotify_api');
-                $coverImageUrl = $api->getTrack($randomTrackId)->album->images[0]->url;
-            }   
+            // $checkToken = System::setAccessToken($request);
+            // //если токен действительный
+            // if($checkToken != false)
+            // {
+            //     //делаем запрос к Spotify API и получаем обложку трека
+            //     $api = config('spotify_api');
+            //     $coverImageUrl = $api->getTrack($randomTrackId)->album->images[0]->url;
+            // }   
 
             $response = ['overallMinutes' => $overallMinutes, 
                          'overallHours' => $overallHours,
                          'overallDays' => $overallDays, 
-                         'overallMonths' => $overallMonths, 
-                         'coverImageUrl' => $coverImageUrl];
+                         'overallMonths' => $overallMonths,
+                         'overallMinutesWord' => $overallMinutesWord,
+                         'overallHoursWord' => $overallHoursWord,
+                         'overallDaysWord' => $overallDaysWord,
+                         'overallMonthsWord' => '$overallMonthsWord',
+                        //  'coverImageUrl' => $coverImageUrl
+                        ];
 
             return response()->json($response);
         }
@@ -412,6 +454,7 @@ class SpotifyAPIController extends Controller
     //получить пять самых длинных и коротких треков из библиотеки
     //возвращает JSON с треками
     //параметры: реквест
+    //ВЫРЕЗАНО
     public function getFiveLongestAndShortestTracks(Request $request)
     {
         //получаем все треки
@@ -427,7 +470,7 @@ class SpotifyAPIController extends Controller
                 $trackInfo = [];
                 $trackInfo['id'] = $track->id;
                 $trackInfo['duration'] = Helpers::getTrackDuration($track->duration_ms);
-                $trackInfo['cover'] = $track->album->images[count($track->album->images) - 1]->url;
+                // $trackInfo['cover'] = $track->album->images[count($track->album->images) - 1]->url;
                 $trackInfo['name'] = Helpers::getFullNameOfItem($track, "fullname");
                 $trackInfo['url'] = $track->external_urls->spotify;
                 array_push($tracksClean, $trackInfo);
@@ -497,7 +540,7 @@ class SpotifyAPIController extends Controller
     public function getFavoriteGenres(Request $request)
     {   
         //проверяем токен
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
         
         if($checkToken != false)
         {
@@ -602,23 +645,25 @@ class SpotifyAPIController extends Controller
             //подставляем подходящее слово
             $countArtists = $count . " " . Helpers::pickTheWord($count, "различных исполнителей", "исполнителя", "разных исполнителей");
             
-            //получаем случайное фото исполнителя для фоновой картинки
-            $artistImageUrl = ""; //пустая строка для url картинки
+            // //получаем случайное фото исполнителя для фоновой картинки
+            // $artistImageUrl = ""; //пустая строка для url картинки
 
-            //проверяем токен
-            $checkToken = System::checkSpotifyAccessToken($request);
+            // //проверяем токен
+            // $checkToken = System::setAccessToken($request);
 
-            if($checkToken != false)
-            {   
-                //случайный id исполнителя из массива
-                $randArtistId = $artistsArray[rand(0, $count - 1)];
+            // if($checkToken != false)
+            // {   
+            //     //случайный id исполнителя из массива
+            //     $randArtistId = $artistsArray[rand(0, $count - 1)];
 
-                //получаем api
-                $api = config('spotify_api');
-                $artistImageUrl = $api->getArtist($randArtistId)->images[0]->url;
-            }
+            //     //получаем api
+            //     $api = config('spotify_api');
+            //     $artistImageUrl = $api->getArtist($randArtistId)->images[0]->url;
+            // }
 
-            $response = ['countArtists' => $countArtists, 'artistImageUrl' => $artistImageUrl];
+            $response = ['countArtists' => $countArtists, 
+                            // 'artistImageUrl' => $artistImageUrl
+                        ];
 
             return response()->json($response);
         }
@@ -629,59 +674,56 @@ class SpotifyAPIController extends Controller
     //getYearsAndDecades
     //посчитать любимые года и десятилетия по всем трекам или по трекам за последний месяц
     //возращает JSON с годами и десятилетиями для графика
-    //параметры: реквест, type - "alltime" и "month"
-    public function getYearsAndDecades(Request $request, $type = "alltime")
+    //параметры: реквест
+    public function getYearsAndDecades(Request $request)
     {
         //массив в который будут записаны треки
         $tracks = [];
-        
-        //получение всех треков из библиотеки
-        if($type == "alltime")
-        {
-            //открываем файл с треками
-            $tracks = System::getUserLibraryJson("tracks", $request);
-        }
+    
+        //открываем файл с треками
+        $tracks = System::getUserLibraryJson("tracks", $request);
+
         //получение треков прослушанных за последний месяц
-        else if($type == "month") 
-        {
-            //проверяем токен
-            $checkToken = System::checkSpotifyAccessToken($request);
+        // else if($type == "month") 
+        // {
+        //     //проверяем токен
+        //     $checkToken = System::setAccessToken($request);
 
-            if($checkToken != false)
-            {
-                //получаем api
-                $api = config('spotify_api');
+        //     if($checkToken != false)
+        //     {
+        //         //получаем api
+        //         $api = config('spotify_api');
 
-                //смещение для получения треков
-                $offset = 0;
+        //         //смещение для получения треков
+        //         $offset = 0;
                 
-                //пока смещение меньше 49, будем добавлять в массив треки 
-                //(можно получить только 98 последних треков)
-                //(больше не позволяет Spotify API, хз почему именно 98)
-                while($offset < 49)
-                {
-                    //получаем треки
-                    $tracksApi = $api->getMyTop('tracks', ['limit' => 49, 'time_range' => 'short_term', 'offset' => $offset])->items;
+        //         //пока смещение меньше 49, будем добавлять в массив треки 
+        //         //(можно получить только 98 последних треков)
+        //         //(больше не позволяет Spotify API, хз почему именно 98)
+        //         while($offset < 49)
+        //         {
+        //             //получаем треки
+        //             $tracksApi = $api->getMyTop('tracks', ['limit' => 49, 'time_range' => 'short_term', 'offset' => $offset])->items;
 
-                    //если треки есть
-                    if($tracksApi != null)
-                    {   
-                        foreach($tracksApi as $track)
-                        { array_push($tracks, $track); }
-                    }
+        //             //если треки есть
+        //             if($tracksApi != null)
+        //             {   
+        //                 foreach($tracksApi as $track)
+        //                 { array_push($tracks, $track); }
+        //             }
 
-                    $offset += 49;  
-                }
+        //             $offset += 49;  
+        //         }
 
-                //если треков меньше десяти, то возвращаем false
-                if(count($tracks) < 10)
-                { return response()->json(false); }
-            }
-            else
-            { return response()->json(false); }
-        }
-        else
-        { return response()->json(false); }
+        //         //если треков меньше десяти, то возвращаем false
+        //         if(count($tracks) < 10)
+        //         { return response()->json(false); }
+        //     }
+        //     else
+        //     { return response()->json(false); }
+        // }
+        // else
+        // { return response()->json(false); }
  
         //если он есть
         if($tracks != false && $tracks != null)
@@ -742,7 +784,7 @@ class SpotifyAPIController extends Controller
             }
             
             //сортируем десятилетия по возрастанию
-            ksort($countDecades);
+            arsort($countDecades);
 
             $response = ['countYears' => $countYears, 'countDecades' => $countDecades];
 
@@ -750,10 +792,15 @@ class SpotifyAPIController extends Controller
             //цвета для графика десятилетий
             $decadeColors = [];
             $offset = 0;
+            $min = 330;
+            $max = 360;
             for($i = 0; $i < 10; $i++)
             {   
-                array_push($decadeColors, Helpers::randomHslColor($offset));
+                array_push($decadeColors, Helpers::randomHslColor($min, $max));
                 $offset += 60;
+
+                $min -= 30;
+                $max -= 30;
             }
 
             $response['decadeColors'] = $decadeColors;
@@ -784,7 +831,7 @@ class SpotifyAPIController extends Controller
             $maxYear = key($countYears);
             arsort($countDecades);
             $maxDecade = key($countDecades);
-            
+
             $response['maxYear'] = $maxYear;
             $response['maxDecade'] = $maxDecade;
 
@@ -794,10 +841,178 @@ class SpotifyAPIController extends Controller
             $response['maxDecadeSongs'] = $maxDecadeSongs;
             $response['maxYearSongs'] = $maxYearSongs;
 
+            //процент песен эпохи от общего кол-ва
+            $allTracks = count($tracks);
+
+            $percent = intval(floor($countDecades[key($countDecades)] / ($allTracks / 100)));
+
+            //ищем топ трек топ года
+            $sortedTopTracks = [];
+            foreach($tracks as $track){
+                $year= intval(Helpers::getItemReleaseDate($track, "track","short"));    
+                    if($year === $maxYear){
+                    array_push($sortedTopTracks, ['cover' => $track->album->images[0]->url,
+                                                    'trackName' => Helpers::getFullNameOfItem($track),
+                                                    'url' => $track->external_urls->spotify]);
+                }
+            }
+
+            $songOfYear = $sortedTopTracks[rand(0, count($sortedTopTracks) - 1)];
+
+            //картинки
+            //5 случайных обложек из десятилетия
+            //получаем все обложки треков из десятилетия
+            $sortedTrackCovers = [];
+            foreach($tracks as $track){
+
+                $year= intval(Helpers::getItemReleaseDate($track, "track","short"));
+                
+                $decade = intval(substr($year, 0, 3) . "0");
+
+                if($decade === $maxDecade){
+                    array_push($sortedTrackCovers , $track->album->images[0]->url);
+                }
+            }
+
+            $sortedTrackCovers = array_values(array_unique($sortedTrackCovers));
+
+            //удаляем обложку которая будет в топ треке года
+            $key = array_search($songOfYear['cover'], $sortedTrackCovers);
+            unset($sortedTrackCovers[$key]);
+            $sortedTrackCovers =  array_values($sortedTrackCovers);
+            
+            //получаем семь случайных чисел
+            $randNums = Helpers::randomNumbers(0, count($sortedTrackCovers) - 1, 7);
+
+            $covers = [];
+            
+            if(count($sortedTrackCovers) >= 10){
+                for($i = 0; $i <= 6; $i++){
+                    array_push($covers, $sortedTrackCovers[$randNums[$i]]);
+                }
+            }
+            else{
+                $covers = null;
+            }
+            //записываем пять случайных обложек
+          
+            $response['covers'] = $covers;
+            $response['percent'] = $percent;
+
+            $response['songOfYear'] = $songOfYear;
+
             return response()->json($response);
         }   
         else
         { return response()->json(false); }
+    }
+
+    //getDecadeMonth
+    //посчитать любимую эпоху за месяц
+    //возвращает json с эпохой
+    //параметр: реквест
+    public function getDecadeMonth(Request $request){
+        //массив в который будут записаны треки
+        $tracks = [];
+    
+        // получение треков прослушанных за последний месяц
+     
+        //проверяем токен
+        $checkToken = System::setAccessToken($request);
+
+        if($checkToken != false)
+        {
+            //получаем api
+            $api = config('spotify_api');
+
+            //смещение для получения треков
+            $offset = 0;
+            
+            //пока смещение меньше 49, будем добавлять в массив треки 
+            //(можно получить только 98 последних треков)
+            //(больше не позволяет Spotify API, хз почему именно 98)
+            while($offset < 98)
+            {
+                //получаем треки
+                $tracksApi = $api->getMyTop('tracks', ['limit' => 49, 'time_range' => 'short_term', 'offset' => $offset])->items;
+
+                //если треки есть
+                if($tracksApi != null)
+                {   
+                    foreach($tracksApi as $track)
+                    { array_push($tracks, $track); }
+                }
+
+                $offset += 49;  
+            }
+
+            //если треков меньше десяти, то возвращаем false
+            if(count($tracks) < 10)
+            { return response()->json("noTracks"); }
+        }
+        else
+        { return response()->json(false); }
+
+        //если он есть
+        if($tracks != false && $tracks != null)
+        {  
+             //массив для всех десятилетий
+             $allDecades = [];
+              
+             //запись всех десятилетий в массив
+             foreach($tracks as $track)
+             {
+                 //получить год из даты выхода трека
+                 $year = Helpers::getItemReleaseDate($track, "track", "short");
+                 $decade = intval(substr($year, 0, 3) . "0");
+                 array_push($allDecades, $decade); 
+             }
+
+            //подсчет кол-ва всех десятилетий
+            $countDecades = [];
+
+             foreach($allDecades as $decade)
+             {   
+                 $findDecade = array_key_exists($decade , $countDecades);
+                 if($findDecade == false)
+                 { $countDecades[$decade ] = 1; }
+                 else
+                 { $countDecades[$decade ] += 1; }
+             }
+
+             arsort($countDecades);
+
+             if(count($countDecades) >= 3){
+            
+                $maxDecade = key($countDecades);
+                $maxDecadeSongs = $countDecades[$maxDecade] . " " . Helpers::pickTheWord($countDecades[key($countDecades)], "песен", "песня", "песни");
+                $word = Helpers::pickTheWord($countDecades[key($countDecades)], "прошло", "прошла", "прошло");
+                //случайная песня
+                $sortedTracks = [];
+                foreach($tracks as $track){
+                    $year = Helpers::getItemReleaseDate($track, "track", "short");
+                    $decade = intval(substr($year, 0, 3) . "0");
+                    if($decade == $maxDecade){
+                        array_push($sortedTracks, [
+                            'trackName' => Helpers::getFullNameOfItem($track, "fullname"),
+                            'cover' => $track->album->images[0]->url,
+                            'year' => $year,
+                            'url' => $track->external_urls->spotify,
+                        ]);
+                    }
+                }
+
+                $top10Tracks = array_slice($sortedTracks, 0, 15);
+
+                $randTrack = $top10Tracks[rand(0, 9)];
+                
+                $response = ['max' => $maxDecade, 'maxSongs'=> $maxDecadeSongs, 
+                            'word'=>$word, 'maxSong'=>$randTrack];
+
+                return response()->json($response);
+             }
+        }
+
     }
 
     // ТОП 10
@@ -809,7 +1024,7 @@ class SpotifyAPIController extends Controller
     public function getTop10Tracks(Request $request, $top10Type)
     {
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         //если токен действительный
         if($checkToken != false)
@@ -848,7 +1063,7 @@ class SpotifyAPIController extends Controller
                     $trackInfo['count'] = $count;
                     $trackInfo['id'] = $track->id;
                     $trackInfo['name'] = Helpers::getFullNameOfItem($track, "fullname");
-                    $trackInfo['image'] = $track->album->images[count($track->album->images)-1]->url;
+                    $trackInfo['image'] = $track->album->images[2]->url;
                     $trackInfo['url'] = $track->external_urls->spotify;
                     $trackInfo['album'] = $track->album->name;
                     $trackInfo['album_url'] = $track->album->external_urls->spotify;
@@ -858,9 +1073,8 @@ class SpotifyAPIController extends Controller
                     $count++;
                 }
 
-                //случайная обложка
+                // случайная обложка
                 $randTrackId = $tracks[rand(0, count($tracks) - 1)]['id'];
-
                 $albumCover = $api->getTrack($randTrackId)->album->images[0]->url;
 
                 $response = [];
@@ -881,7 +1095,7 @@ class SpotifyAPIController extends Controller
     public function getTop10Artists(Request $request, $top10Type)
     {
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -921,18 +1135,27 @@ class SpotifyAPIController extends Controller
                     $artistInfo['count'] = $count;
                     $artistInfo['id'] = $artist->id;
                     $artistInfo['name'] = $artist->name;
-                    $artistInfo['image'] = $artist->images[count($artist->images)-1]->url;
+
+                    if(count($artist->images) > 0){
+                        $artistInfo['image'] = $artist->images[count($artist->images)-1]->url;
+                    }
+              
                     $artistInfo['genres'] = Helpers::getArtistsGenres($artist, 5);
                     $artistInfo['url'] = $artist->external_urls->spotify;
     
                     array_push($artists, $artistInfo);
                     $count++;
                 }
+
     
                 //случайное фото исполнителя
                 $randArtistId = $artists[rand(0, count($artists) - 1)]['id'];
-    
-                $artistPhoto = $api->getArtist($randArtistId)->images[0]->url;
+                $randArtist = $api->getArtist($randArtistId);
+                $artistPhoto = null;
+                if(count($randArtist->images) > 0){
+                    $artistPhoto = $randArtist->images[0]->url;
+                }
+                
     
                 $response['items'] = $artists;
     
@@ -998,7 +1221,7 @@ class SpotifyAPIController extends Controller
             $response['items'] = $topTen;
      
             //проверка токена
-            $checkToken = System::checkSpotifyAccessToken($request);
+            $checkToken = System::setAccessToken($request);
 
             if($checkToken != false)
             {
@@ -1038,17 +1261,21 @@ class SpotifyAPIController extends Controller
 
            foreach($tracks as $track)
            {    
-               $trackInfo = [];
-               $trackInfo['id'] =  $track->id;
-               $trackInfo['popularity'] = $track->popularity;
-               $trackInfo['image'] = $track->album->images[count($track->album->images) - 1]->url;
-               $trackInfo['name'] = Helpers::getFullNameOfItem($track, "fullname");
-               $trackInfo['url'] = $track->external_urls->spotify;
-               $trackInfo['album'] = $track->album->name;
-               $trackInfo['album_url'] = $track->album->external_urls->spotify;
-               $trackInfo['album_year'] = Helpers::getItemReleaseDate($track, "track", "short");
-
-               array_push($tracksClean, $trackInfo);
+               if(count($track->album->available_markets) > 0)
+               {
+                $trackInfo = [];
+                $trackInfo['id'] =  $track->id;
+                $trackInfo['popularity'] = $track->popularity;
+                $trackInfo['image'] = $track->album->images[count($track->album->images) - 1]->url;
+                $trackInfo['name'] = Helpers::getFullNameOfItem($track, "fullname");
+                $trackInfo['url'] = $track->external_urls->spotify;
+                $trackInfo['album'] = $track->album->name;
+                $trackInfo['album_url'] = $track->album->external_urls->spotify;
+                $trackInfo['album_year'] = Helpers::getItemReleaseDate($track, "track", "short");
+ 
+                array_push($tracksClean, $trackInfo);
+               }
+        
            }
 
            //сортировка по ключу popularity
@@ -1073,7 +1300,7 @@ class SpotifyAPIController extends Controller
              $topTenTracks[$i-1]['count'] = $i;
            }
 
-           $checkToken = System::checkSpotifyAccessToken($request);
+           $checkToken = System::setAccessToken($request);
 
            if($checkToken != false)
            {
@@ -1132,7 +1359,7 @@ class SpotifyAPIController extends Controller
             arsort($artistsCount);
 
             //проверяем токен
-            $checkToken = System::checkSpotifyAccessToken($request);
+            $checkToken = System::setAccessToken($request);
 
             //список всех id исполнителей
             $artistIds = array_keys($artistsCount);
@@ -1210,7 +1437,7 @@ class SpotifyAPIController extends Controller
             arsort($artistsCount);
 
             //проверяем токен
-            $checkToken = System::checkSpotifyAccessToken($request);
+            $checkToken = System::setAccessToken($request);
 
             //список всех id исполнителей
             $artistIds = array_keys($artistsCount);
@@ -1255,330 +1482,330 @@ class SpotifyAPIController extends Controller
     //получить самый прослушиваемый трек за всё время или за месяц
     //возвращает JSON с самым прослушиваемым треком за все время или за месяц
     //параметры: реквест
-    public function getMostListenedTrack(Request $request, $type)
-    {
-        //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+    // public function getMostListenedTrack(Request $request, $type)
+    // {
+    //     //проверка токена
+    //     $checkToken = System::setAccessToken($request);
 
-        //если токен рабочий
-        if($checkToken != false)
-        {
-            //получаем cамый прослушиваемый трек
-            $api = config('spotify_api');
+    //     //если токен рабочий
+    //     if($checkToken != false)
+    //     {
+    //         //получаем cамый прослушиваемый трек
+    //         $api = config('spotify_api');
 
-            $topTrack = "";
+    //         $topTrack = "";
 
-            $timeRange = "";
+    //         $timeRange = "";
 
-            switch($type){
-                case "alltime":
-                    $timeRange = "long_term";
-                    break;
-                case "month":
-                    $timeRange = "short_term";
-                    break;
-                default:
-                    $timeRange = "long_term";
-            }
+    //         switch($type){
+    //             case "alltime":
+    //                 $timeRange = "long_term";
+    //                 break;
+    //             case "month":
+    //                 $timeRange = "short_term";
+    //                 break;
+    //             default:
+    //                 $timeRange = "long_term";
+    //         }
 
-            $tracks = $api->getMyTop('tracks', ['limit' => 1, 'time_range' => $timeRange])->items;
+    //         $tracks = $api->getMyTop('tracks', ['limit' => 1, 'time_range' => $timeRange])->items;
             
-            if(count($tracks) > 0)
-            { 
-                $topTrack = $tracks[0]; 
+    //         if(count($tracks) > 0)
+    //         { 
+    //             $topTrack = $tracks[0]; 
                 
-                $response = [
-                    'title' => Helpers::getFullNameOfItem($topTrack, "fullname"),
-                    'album' => $topTrack->album->name . " - ". Helpers::getItemReleaseDate($topTrack, "track", "short"),
-                    'url' => $topTrack->external_urls->spotify,
-                    'image' => $topTrack->album->images[0]->url,
-                ];
+    //             $response = [
+    //                 'title' => Helpers::getFullNameOfItem($topTrack, "fullname"),
+    //                 'album' => $topTrack->album->name . " - ". Helpers::getItemReleaseDate($topTrack, "track", "short"),
+    //                 'url' => $topTrack->external_urls->spotify,
+    //                 'image' => $topTrack->album->images[0]->url,
+    //             ];
 
-                return response()->json($response);
-            }
-            else
-            { return response()->json('noTracks'); }
-        }
-        else
-        { return response()->json(false); }
-    }
+    //             return response()->json($response);
+    //         }
+    //         else
+    //         { return response()->json('noTracks'); }
+    //     }
+    //     else
+    //     { return response()->json(false); }
+    // }
 
     //getMostPopularTrack
     //получить самый популярный или непопулярный трек из твоей библиотеки
     //возвращает JSON с самым популярным треком
     //параметры: реквест, type - "popular" или "unpopular"
-    public function getTrackByPopularity(Request $request, $type)
-    {
-         //открываем файл с треками
-         $tracks = System::getUserLibraryJson("tracks", $request);
+    // public function getTrackByPopularity(Request $request, $type)
+    // {
+    //      //открываем файл с треками
+    //      $tracks = System::getUserLibraryJson("tracks", $request);
 
-         //если он есть
-         if($tracks != false)
-         {  
-            //получаем все id треков вместе с процентом популярности
-            $trackIds = [];
+    //      //если он есть
+    //      if($tracks != false)
+    //      {  
+    //         //получаем все id треков вместе с процентом популярности
+    //         $trackIds = [];
 
-            foreach($tracks as $track)
-            {
-                array_push($trackIds, ['id' => $track->id, 'popularity' => $track->popularity]);
-            }
+    //         foreach($tracks as $track)
+    //         {
+    //             array_push($trackIds, ['id' => $track->id, 'popularity' => $track->popularity]);
+    //         }
 
-            //сортировка по ключу popularity
-            $tracksSorted = "";
-            $topTrackId = "";
+    //         //сортировка по ключу popularity
+    //         $tracksSorted = "";
+    //         $topTrackId = "";
 
-            if($type == "popular")
-            { 
-                $tracksSorted = Helpers::sortArrayByKey($trackIds, 'popularity', 'desc'); 
+    //         if($type == "popular")
+    //         { 
+    //             $tracksSorted = Helpers::sortArrayByKey($trackIds, 'popularity', 'desc'); 
               
-            }
+    //         }
             
-            if($type == "unpopular")
-            { 
-                $tracksSorted = Helpers::sortArrayByKey($trackIds, 'popularity', 'asc'); 
-            }
+    //         if($type == "unpopular")
+    //         { 
+    //             $tracksSorted = Helpers::sortArrayByKey($trackIds, 'popularity', 'asc'); 
+    //         }
 
-            $topTrackId = $tracksSorted[0]['id'];
+    //         $topTrackId = $tracksSorted[0]['id'];
 
-            $checkToken = System::checkSpotifyAccessToken($request);
+    //         $checkToken = System::setAccessToken($request);
 
-            if($checkToken != false)
-            {
-                $api = config('spotify_api');
+    //         if($checkToken != false)
+    //         {
+    //             $api = config('spotify_api');
 
-                $track = $api->getTrack($topTrackId);
+    //             $track = $api->getTrack($topTrackId);
 
-                $response = [
-                    'title' => Helpers::getFullNameOfItem($track, "fullname"),
-                    'album' => $track->album->name . " - ". Helpers::getItemReleaseDate($track, "track", "short"),
-                    'url' => $track->external_urls->spotify,
-                    'image' => $track->album->images[0]->url,
-                ];
+    //             $response = [
+    //                 'title' => Helpers::getFullNameOfItem($track, "fullname"),
+    //                 'album' => $track->album->name . " - ". Helpers::getItemReleaseDate($track, "track", "short"),
+    //                 'url' => $track->external_urls->spotify,
+    //                 'image' => $track->album->images[0]->url,
+    //             ];
 
-                return response()->json($response);
-            }
-            else
-            { return response()->json(false); }
-         }
-         else
-         { return response()->json(false); }
-    }
+    //             return response()->json($response);
+    //         }
+    //         else
+    //         { return response()->json(false); }
+    //      }
+    //      else
+    //      { return response()->json(false); }
+    // }
 
     //getTrackByDuration
     //получить самый длинный или короткий трек
     //возвращает JSON с самым длинным или коротким треком
     //параметры: реквест, type - "long" или "short"
-    public function getTrackByDuration(Request $request, $type)
-    {
-        //открываем файл с треками
-        $tracks = System::getUserLibraryJson("tracks", $request);
+    // public function getTrackByDuration(Request $request, $type)
+    // {
+    //     //открываем файл с треками
+    //     $tracks = System::getUserLibraryJson("tracks", $request);
 
-        //если он есть
-        if($tracks != false)
-        {  
-            //получаем id треков и их длину, сортируем
-            $trackIds = [];
+    //     //если он есть
+    //     if($tracks != false)
+    //     {  
+    //         //получаем id треков и их длину, сортируем
+    //         $trackIds = [];
 
-            // foreach($tracks as $track)
-            // { array_push($trackIds, ['id' => $track->id, 'duration' => $track->duration_ms]); }
+    //         // foreach($tracks as $track)
+    //         // { array_push($trackIds, ['id' => $track->id, 'duration' => $track->duration_ms]); }
 
-            foreach($tracks as $track)
-            {
-                $id = $track->id;
-                $duration = Helpers::getTrackDuration($track->duration_ms);
-                $cover = $track->album->images[count($track->album->images) - 1]->url;
-                $name = Helpers::getFullNameOfItem($track, "fullname");
-                $url = $track->external_urls->spotify;
-                array_push($trackIds, ['id' => $id, 'duration' => $duration, 'cover' => $cover, 'name' => $name, 'url' => $url]);
-            }
+    //         foreach($tracks as $track)
+    //         {
+    //             $id = $track->id;
+    //             $duration = Helpers::getTrackDuration($track->duration_ms);
+    //             $cover = $track->album->images[count($track->album->images) - 1]->url;
+    //             $name = Helpers::getFullNameOfItem($track, "fullname");
+    //             $url = $track->external_urls->spotify;
+    //             array_push($trackIds, ['id' => $id, 'duration' => $duration, 'cover' => $cover, 'name' => $name, 'url' => $url]);
+    //         }
 
-            $sortType = "desc";
+    //         $sortType = "desc";
 
-            if($type == "long")
-            { $sortType = "desc"; }
+    //         if($type == "long")
+    //         { $sortType = "desc"; }
 
-            if($type == "short")
-            { $sortType = "asc"; }
+    //         if($type == "short")
+    //         { $sortType = "asc"; }
 
-            $trackIdsSorted = Helpers::sortArrayBYKey($trackIds, 'duration', $sortType);
+    //         $trackIdsSorted = Helpers::sortArrayBYKey($trackIds, 'duration', $sortType);
 
-            //проверяем токен
-            $checkToken = System::checkSpotifyAccessToken($request);
+    //         //проверяем токен
+    //         $checkToken = System::setAccessToken($request);
 
-            if($checkToken != false)
-            {
-                $api = config('spotify_api');
+    //         if($checkToken != false)
+    //         {
+    //             $api = config('spotify_api');
 
-                $track = $api->getTrack($trackIdsSorted[0]['id']);
+    //             $track = $api->getTrack($trackIdsSorted[0]['id']);
 
-                $response = [
-                    'title' => Helpers::getFullNameOfItem($track, "fullname"),
-                    'album' => $track->album->name . " - ". Helpers::getItemReleaseDate($track, "track", "short"),
-                    'url' => $track->external_urls->spotify,
-                    'image' => $track->album->images[0]->url,
-                    'additionalInfo' => "Длина - " . Helpers::getTrackDuration($track->duration_ms),
-                ];
+    //             $response = [
+    //                 'title' => Helpers::getFullNameOfItem($track, "fullname"),
+    //                 'album' => $track->album->name . " - ". Helpers::getItemReleaseDate($track, "track", "short"),
+    //                 'url' => $track->external_urls->spotify,
+    //                 'image' => $track->album->images[0]->url,
+    //                 'additionalInfo' => "Длина - " . Helpers::getTrackDuration($track->duration_ms),
+    //             ];
 
-                return response()->json($response);
-            }
-        }
-        else
-        { return response()->json(false); }
-    }
+    //             return response()->json($response);
+    //         }
+    //     }
+    //     else
+    //     { return response()->json(false); }
+    // }
 
     //getMostListenedArtist
     //получить самого слушаемого исполнителя за все время или за месяц
     //возвращает JSON с самым слушаемым исполнителем
     //параметры: реквест, type - "alltime" или "month"
-    public function getMostListenedArtist(Request $request, $type)
-    {
-        //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+    // public function getMostListenedArtist(Request $request, $type)
+    // {
+    //     //проверка токена
+    //     $checkToken = System::setAccessToken($request);
 
-        //если токен действительный
-        if($checkToken != false)
-        {   
-            //получаем api и самого слушаемого исполнителя
-            $api = config('spotify_api');
+    //     //если токен действительный
+    //     if($checkToken != false)
+    //     {   
+    //         //получаем api и самого слушаемого исполнителя
+    //         $api = config('spotify_api');
 
-            $timeRange = "long_term";
+    //         $timeRange = "long_term";
 
-            if($type == "alltime")
-            { $timeRange = "long_term"; }
-            if($type == "month")
-            { $timeRange = "short_term"; }
+    //         if($type == "alltime")
+    //         { $timeRange = "long_term"; }
+    //         if($type == "month")
+    //         { $timeRange = "short_term"; }
 
-            $artists = $api->getMyTop('artists', ['limit' => 1, 'time_range' => $timeRange]);
+    //         $artists = $api->getMyTop('artists', ['limit' => 1, 'time_range' => $timeRange]);
 
-            $topArtist = "";
+    //         $topArtist = "";
 
-            if(count($artists->items) > 0)
-            {
-                $topArtist = $artists->items[0];
+    //         if(count($artists->items) > 0)
+    //         {
+    //             $topArtist = $artists->items[0];
 
-                $response = [
-                    'title' => $topArtist->name,
-                    'url' => $topArtist->external_urls->spotify,
-                    'image' => $topArtist->images[0]->url,
-                    'additionalInfo' => Helpers::getArtistsGenres($topArtist, 5),
-                ];
+    //             $response = [
+    //                 'title' => $topArtist->name,
+    //                 'url' => $topArtist->external_urls->spotify,
+    //                 'image' => $topArtist->images[0]->url,
+    //                 'additionalInfo' => Helpers::getArtistsGenres($topArtist, 5),
+    //             ];
     
-                return response()->json($response);
-            }
-            else
-            {
-                return response()->json('noArtists');
-            }
-        }
-    }
+    //             return response()->json($response);
+    //         }
+    //         else
+    //         {
+    //             return response()->json('noArtists');
+    //         }
+    //     }
+    // }
 
     //getArtistByTracks 
     //получить исполнителя по кол-ву треков в библиотеке
     //возвращает JSON с исполнителем с наибольшим кол-вом треков в библиотеке
     //параметры: реквест
-    public function getArtistByTracks(Request $request)
-    {   
-        //получаем файл с треками
-        $tracks = System::getUserLibraryJson("tracks", $request);
+    // public function getArtistByTracks(Request $request)
+    // {   
+    //     //получаем файл с треками
+    //     $tracks = System::getUserLibraryJson("tracks", $request);
 
-        //если файл существует
-        if($tracks != false)
-        {   
-            //получаем все id артистов из треков и считаем сколько раз встречается каждый из них
-            $artistIds = [];
+    //     //если файл существует
+    //     if($tracks != false)
+    //     {   
+    //         //получаем все id артистов из треков и считаем сколько раз встречается каждый из них
+    //         $artistIds = [];
 
-            foreach($tracks as $track)
-            {   
-                if(array_key_exists($track->artists[0]->id, $artistIds) == false)
-                { $artistIds[$track->artists[0]->id] = 1; }
-                else
-                { $artistIds[$track->artists[0]->id] += 1; }
-            }
+    //         foreach($tracks as $track)
+    //         {   
+    //             if(array_key_exists($track->artists[0]->id, $artistIds) == false)
+    //             { $artistIds[$track->artists[0]->id] = 1; }
+    //             else
+    //             { $artistIds[$track->artists[0]->id] += 1; }
+    //         }
 
-            //сортируем массив по убыванию и получаем id артиста
-            arsort($artistIds);
+    //         //сортируем массив по убыванию и получаем id артиста
+    //         arsort($artistIds);
 
-            $topArtistId = array_keys($artistIds)[0];
+    //         $topArtistId = array_keys($artistIds)[0];
 
-            //провнеряем токен и получаем информацию об артисте
-            $checkToken = System::checkSpotifyAccessToken($request);
+    //         //провнеряем токен и получаем информацию об артисте
+    //         $checkToken = System::setAccessToken($request);
 
-            if($checkToken != false)
-            {
-                $api = config('spotify_api');
+    //         if($checkToken != false)
+    //         {
+    //             $api = config('spotify_api');
 
-                $topArtist = $api->getArtist($topArtistId);
+    //             $topArtist = $api->getArtist($topArtistId);
 
-                $trackCount = $artistIds[array_keys($artistIds)[0]];
+    //             $trackCount = $artistIds[array_keys($artistIds)[0]];
 
-                $response = [
-                    'title' => $topArtist->name,
-                    'url' => $topArtist->external_urls->spotify,
-                    'image' => $topArtist->images[0]->url,
-                    'additionalInfo' => $trackCount . " " . Helpers::pickTheWord($trackCount, "треков", "трек", "трека") . " в библиотеке", 
-                ];
+    //             $response = [
+    //                 'title' => $topArtist->name,
+    //                 'url' => $topArtist->external_urls->spotify,
+    //                 'image' => $topArtist->images[0]->url,
+    //                 'additionalInfo' => $trackCount . " " . Helpers::pickTheWord($trackCount, "треков", "трек", "трека") . " в библиотеке", 
+    //             ];
 
-                return response()->json($response);
-            }
-            else
-            { return response()->json(false); }
-        }
-        else
-        { return response()->json(false); }
-    }
+    //             return response()->json($response);
+    //         }
+    //         else
+    //         { return response()->json(false); }
+    //     }
+    //     else
+    //     { return response()->json(false); }
+    // }
 
     //getArtistByTime
     //получить артиста с наибольшим кол-вом времени треков в библиотеке
     //возвращает JSON с артистом с наибольшим кол-вом времени
     //параметры: реквест
-    public function getArtistByTime(Request $request)
-    {
-        //получаем файл треков
-        $tracks = System::getUserLibraryJson("tracks", $request);
+    // public function getArtistByTime(Request $request)
+    // {
+    //     //получаем файл треков
+    //     $tracks = System::getUserLibraryJson("tracks", $request);
 
-        //если файл существует
-        if($tracks != false)
-        {
-            //получаем id исполнителей вместе с общей длительностью
-            $artistIds = [];
+    //     //если файл существует
+    //     if($tracks != false)
+    //     {
+    //         //получаем id исполнителей вместе с общей длительностью
+    //         $artistIds = [];
 
-            foreach($tracks as $track)
-            {
-                if(array_key_exists($track->artists[0]->id, $artistIds) == false)
-                { $artistIds[$track->artists[0]->id] = $track->duration_ms; }
-                else
-                { $artistIds[$track->artists[0]->id] += $track->duration_ms; }
-            }
+    //         foreach($tracks as $track)
+    //         {
+    //             if(array_key_exists($track->artists[0]->id, $artistIds) == false)
+    //             { $artistIds[$track->artists[0]->id] = $track->duration_ms; }
+    //             else
+    //             { $artistIds[$track->artists[0]->id] += $track->duration_ms; }
+    //         }
 
-            //сортируем массив и получаем id исполнителя и время
-            arsort($artistIds);
+    //         //сортируем массив и получаем id исполнителя и время
+    //         arsort($artistIds);
 
-            $topArtistId = array_keys($artistIds)[0];
+    //         $topArtistId = array_keys($artistIds)[0];
 
-            $time = Helpers::getDurationInHours($artistIds[$topArtistId]);
+    //         $time = Helpers::getDurationInHours($artistIds[$topArtistId]);
 
-            //проверяем токен и получаем инфомацию об исполнителей
-            $checkToken = System::checkSpotifyAccessToken($request);
+    //         //проверяем токен и получаем инфомацию об исполнителей
+    //         $checkToken = System::setAccessToken($request);
 
-            if($checkToken != false)
-            {
-                $api = config('spotify_api');
+    //         if($checkToken != false)
+    //         {
+    //             $api = config('spotify_api');
 
-                $topArtist = $api->getArtist($topArtistId);
+    //             $topArtist = $api->getArtist($topArtistId);
 
-                $response = [
-                    'title' => $topArtist->name,
-                    'url' => $topArtist->external_urls->spotify,
-                    'image' => $topArtist->images[0]->url,
-                    'additionalInfo' => $time, 
-                ];
+    //             $response = [
+    //                 'title' => $topArtist->name,
+    //                 'url' => $topArtist->external_urls->spotify,
+    //                 'image' => $topArtist->images[0]->url,
+    //                 'additionalInfo' => $time, 
+    //             ];
 
-                return response()->json($response);
-            }
-        }
-        else
-        { return response()->json(false); }
-    }
+    //             return response()->json($response);
+    //         }
+    //     }
+    //     else
+    //     { return response()->json(false); }
+    // }
 
     //getArtistByPopularity
     //получить самого популярного или непопулярного артиста из библиотеки
@@ -1619,11 +1846,40 @@ class SpotifyAPIController extends Controller
 
             $topArtist = $artistsSorted[0];
 
+            //находим треки исполнителя
+            $tracks = System::getUserLibraryJson("tracks", $request);
+
+            $allArtists = [];
+            foreach($tracks as $track){
+                array_push($allArtists, ['artist' => $track->artists[0]->name, 
+                                            'track' => $track->name,
+                                            'url' => $track->external_urls->spotify]);
+            }
+
+            $selectedTracks = [];
+
+            foreach($allArtists as $artist){
+                if($artist['artist'] === $topArtist['name']){
+                    array_push($selectedTracks, $artist);
+                }
+            }
+
+            $trackCount = count($selectedTracks) . " " . Helpers::pickTheWord(count($selectedTracks), "треков", "трек", "трека");
+            if(count($selectedTracks) > 0){
+                $selectedTrack = $selectedTracks[rand(0, count($selectedTracks) - 1)];
+            }
+            else{
+                $selectedTrack = null;
+            }
+            
             $response = [
                 'title' => $topArtist['name'],
                 'url' => $topArtist['url'],
                 'image' => $topArtist['image'],
-                'additionalInfo' => $topArtist['genres']
+                'additionalInfo' => $topArtist['genres'],
+                'trackCount' => $trackCount,
+                'selectedTrack' => $selectedTrack['track'],
+                'trackUrl' => $selectedTrack['url'],
             ];
 
             return response()->json($response);
@@ -1640,7 +1896,7 @@ class SpotifyAPIController extends Controller
     public function getLatestTracks(Request $request)
     {   
         //проверка токена
-        $checkToken = System::checkSpotifyAccessToken($request);
+        $checkToken = System::setAccessToken($request);
 
         if($checkToken != false)
         {
@@ -1657,7 +1913,7 @@ class SpotifyAPIController extends Controller
                 $trackInfo['id'] = rand(0,999).rand(0,9999);
                 $trackInfo['artists'] = Helpers::getFullNameOfItem($track, "artist");
                 $trackInfo['trackName'] = $track->name;
-                $trackInfo['albumName'] = $track->album->name . " - " . Helpers::getItemReleaseDate($track->album, "album", "short");
+                $trackInfo['albumName'] = $track->album->name . " (" . Helpers::getItemReleaseDate($track->album, "album", "short") . ")";
                 $trackInfo['trackUrl'] = $track->external_urls->spotify;
                 $trackInfo['albumUrl'] = $track->album->external_urls->spotify;
                 $trackInfo['duration'] = Helpers::getTrackDuration($track->duration_ms);
@@ -1668,12 +1924,103 @@ class SpotifyAPIController extends Controller
 
             $response['tracks'] = $tracks;
 
-            $response['backgroundImage'] = $tracks[rand(0, count($tracks) - 1)]['cover'];
+            if(count($tracks) >= 5){
+                $response['backgroundImage'] = $tracks[rand(0, count($tracks) - 1)]['cover'];
 
-            return response()->json($response);
+                return response()->json($response);
+            } else{
+                return response()->json('noTracks');
+            }            
         }
         else
         { return response()->json(false); }
+    }
+
+    //createPlaylist
+    //создаёт плейлист в соотв. с выбранным типом плейлиста
+    // возвращает ссылку на плейлист
+    // параметры, $request (Request) - реквест, $type (String) - тип плейлиста
+    public function createPlaylist(Request $request, $type){
+        
+        $checkToken = System::setAccessToken($request);
+
+        if($checkToken != false){
+
+            $api = config('spotify_api');
+
+            $playlistName = null;
+            $playlistDesc = null;
+            
+            // устанавливаем русскую локаль чтобы в названии была локализованная дата
+            setlocale(LC_ALL, 'ru_RU.utf8');
+            $date = strftime('%h \'%y');
+            // $date = iconv('windows-1251', 'utf-8',  $date);
+
+
+            // меняем название и описание плейлиста в соотв. с типом
+            switch($type){
+                case 'top50alltime':
+                    $playlistName = "Топ 50 треков за всё время ({$date})";
+                    $playlistDesc = "Твой плейлист для необитаемого острова. К этим песням ты возвращаешься чаще всего 😍";
+                    break;
+                case 'top20month': 
+                    $playlistName = "Топ 20 треков за месяц ({$date})";
+                    $playlistDesc = "Эти песни не покидают тебя весь последний месяц 🥰";
+                    break;
+                case 'top30long': 
+                    $playlistName = "Топ 30 самых длинных ({$date})";
+                    $playlistDesc = "Музыка для усидчивых. Самые длинные песни которые тебе нравятся ⌛";
+                    break;
+                case 'top30short': 
+                        $playlistName = "Топ 30 самых коротких ({$date})";
+                        $playlistDesc = "Краткость - сестра таланта. Твои любимые короткие песни 🤏";
+                        break;
+                case 'top30popular': 
+                    $playlistName = "Топ 30 самых популярных ({$date})";
+                    $playlistDesc = "Популярное - не всегда плохое. Кроме тебя эти песни нравятся еще много кому 😎";
+                    break;
+                case 'top30unpopular': 
+                        $playlistName = "Топ 30 самых непопулярных ({$date})";
+                        $playlistDesc = "Кто все эти люди? Кроме тебя, похоже, эти песни больше никто не слушает 🤓";
+                        break;
+                case 'artistsAlltime':
+                        $playlistName = "Самые любимые артисты ({$date})";
+                        $playlistDesc = "Здесь только те, кого ты слушаешь чаще всего. Эти группы и артисты никогда тебя не покидают 😘";
+                        break;
+                case 'artistsMonth':
+                    $playlistName = "Любимые артисты за месяц ({$date})";
+                    $playlistDesc = "Здесь только треки от артистов которые были с тобой последний месяц 😊";
+                    break;
+                case 'artistsByLikes': 
+                    $playlistName = "Самые любимые артисты по лайкам ({$date})";
+                    $playlistDesc = "Твои любимчики по количеству добавленных треков 💖. Здесь только твои самые любимые от самых любимых.";
+                    break;
+                default: 
+                    return response()->json(false);
+            }
+
+            // получаем треки для плейлиста
+            $result = Helpers::getTracksForPlaylist($request, $type);
+
+            // создаем плейлист
+            $playlist = $api->createPlaylist([
+                'name' => $playlistName,
+                'description' => $playlistDesc,
+            ]);
+
+            // добавляем в плейлист треки
+            $api->addPlaylistTracks($playlist->id, $result['tracks']);
+
+            // устанавливаем обложку
+            $api->updatePlaylistImage($playlist->id, $result['cover']);
+
+            return response()->json(['playlistUrl' => $playlist->external_urls->spotify]);
+
+        } else {
+            return response()->json(false);
+        }
+
+
     }
 
 }

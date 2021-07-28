@@ -56,9 +56,9 @@
                 <li class="nav-item active">
                     <a href="/superuser/control_panel" class="nav-link adminLink">Общие настройки</a>
                 </li>
-                <li class="nav-item active">
+                {{-- <li class="nav-item active">
                     <a href="/superuser/control_panel/logo_and_images" class="nav-link adminLink">Лого и изображения</a>
-                </li>
+                </li> --}}
                 <li class="nav-item active">
                     <a href="/superuser/control_panel/site_info" class="nav-link adminLink">О проекте</a>
                 </li>

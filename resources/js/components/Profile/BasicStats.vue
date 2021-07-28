@@ -1,7 +1,8 @@
 //BasicStats
-<template>
+// раздел "Общее"
+<template id="basic">
     <div>
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" >
             <div class="col-12" v-if="spotifyUserLibrary == -1">
                 <Loader />
                 <h6 class="text-center blinkingAnim" v-if="spotifyUserLibrary == -1">Загружаю библиотеку пользователя...</h6>
@@ -10,27 +11,8 @@
             </div>
             <div v-else-if="spotifyUserLibrary != -1 && spotifyUserLibrary['result'] != false 
                 && spotifyUserLibrary['result'] != 'libraryError'" class="row justify-content-center">
-                <div class="col-12 fadeInAnimSlow">
-                    <h5 class="text-center">
-                        <b>Общая статистика</b>&nbsp;
-                        <i class="fas fa-chart-bar primaryColor"></i>
-                    </h5>
-                </div>
-                <!-- навигация -->
-                <div class="row justify-content-center fadeInAnim font10pt">
-                    <nav class="justify-content-center">
-                        <ul class="breadcrumb text-center">
-                            <li class="breadcrumb-item"><a href="#basic">Общее</a></li>
-                            <li class="breadcrumb-item"><a href="#tracks">Самые длинные и короткие треки</a></li>
-                            <li class="breadcrumb-item"><a href="#genres">Жанры и годы</a></li>
-                        </ul>
-                    </nav>
-                </div>
 
-                <div class="col-12 justify-content-center fadeInAnim">
-                </div>
-            
-                <div class="row justify-content-center" id="basic">
+                <div class="row justify-content-center">
                     <!-- треки -->
                     <LastFive :items="spotifyTracks" type="tracks"/>  
                     <!-- альбомы -->
@@ -43,21 +25,30 @@
                                      :userLibraryTime="userLibraryTime"/>
 
                     <!-- самые длинные и короткие треки -->
-                    <LongestAndShortest v-if="userLibraryTime !== -1" id="tracks"
-                                        :fiveLongest="fiveTracks['fiveLongest']" 
-                                        :fiveShortest="fiveTracks['fiveShortest']" :tracksMode="tracksMode"/>
-                    <!-- любимые жанры -->
-                    <FavoriteGenres v-if="fiveTracks !== -1" :favoriteGenres="favoriteGenres" id="genres"/>
-
+                    <AverageTrackLength v-if="userLibraryTime !== -1" id="tracks"
+                                        :tracksMode="tracksMode"/>
+                    
                     <!-- кол-во исполнителей -->
-                    <ArtistsCount v-if="favoriteGenres != -1" :uniqueArtists="uniqueArtists"/>
+                    <ArtistsCount v-if="tracksMode != -1" :uniqueArtists="uniqueArtists"/>
 
                     <!-- года и десятилетия -->
-                    <YearsAndDecades v-if="uniqueArtists != -1" :yearsAndDecades="yearsAndDecades" type="alltime"/>
+                    <YearsAndDecades :yearsAndDecades="yearsAndDecades" type="alltime" v-if="uniqueArtists != -1"/>
 
                     <!-- года и десятилетия за месяц-->
-                    <YearsAndDecades v-if="yearsAndDecades != -1 && yearsAndDecadesMonth != false" :yearsAndDecades="yearsAndDecadesMonth" type="month"/>
+                    <YearsAndDecades v-if="uniqueArtists != -1" :yearsAndDecades="decadeMonth" type="month"/>
 
+                    <!-- любимые жанры -->
+                    <FavoriteGenres v-if="decadeMonth != -1" :favoriteGenres="favoriteGenres" id="genres"/>
+
+                    <!-- Самый популярный\непопулярный артист -->
+                    <AchievementItem v-if="mostPopularArtist != 'noArtists' && decadeMonth != -1" 
+                                cardTitle="Самый популярный исполнитель" cardSubtitle="На которого ты подписан" 
+                                :item="mostPopularArtist"/>
+
+                    <AchievementItem v-if="mostPopularArtist != -1 && leastPopularArtist != 'noArtists'" 
+                                    cardTitle="Самый непопулярный исполнитель" cardSubtitle="На которого ты подписан" 
+                                    :item="leastPopularArtist" orientation="right"/>
+                                    
                 </div>     
             </div>
             <div v-else-if="spotifyUserLibrary['result'] == false">
@@ -68,24 +59,48 @@
             </div>
         </div>
         <br>
-        <div class="row justify-content-center fadeInAnim" v-if="yearsAndDecadesMonth != -1">
-            
-            <router-link to="/profile/top10#top">
-                <button class="btn btn-primary marginBottomMedium">
-                    Перейти к "Топ-10"
-                    <i class="fas fa-list-ol"></i>
+        <div class="row justify-content-center" style="margin-top: 2rem;" v-scroll="handleScroll" v-bind:class="{'zeroOpacity': visibleButton === false}">
+            <router-link to="/profile/top10">
+                <button class="btn btn-lg btn-primary-n goUpAnimSlow" v-if="visibleButton && leastPopularArtist != -1" @click="scrollMeTo()">
+                    Перейти к <b>Топ-10</b>
                 </button>
             </router-link>
-            <br><br>
+            <br><br><br><br><br><br>
             
         </div>
+        <div class="col-12">&nbsp;&nbsp;&nbsp;</div>
+        <div class="col-12">&nbsp;&nbsp;&nbsp;</div>
     </div>
 
 </template>
 
 <script>
 export default {
-   
+    created(){
+
+        this.checkToken().then(response => {
+            if(response === true)
+            {
+                //получаем библиотеку пользователя, если она еще не загружена
+                if(this.spotifyUserLibrary == -1)
+                {
+                    //если запрос выполнился, то выполняем загружаем остальные данные, если нет, то не делаем ничего
+                    this.$store.dispatch('getSpotifyUserLibrary').then(response => {
+                        if(this.spotifyUserLibrary['result'] == true)
+                        {
+                            this.getAllData();
+                        }
+                    }, error => {
+                        console.log("Error: Couldn't load user's Spotify library.");
+                    })
+                }
+                //загружаем остальные данные
+                else
+                { this.getAllData(); }
+            }
+        });
+    },
+
     mounted()
     {
         //прокручиваем страницу к якорю, если в url есть якорь
@@ -101,29 +116,16 @@ export default {
 
         //устанавливаем текущий таб, для подсветки навигации
         this.$store.dispatch('setCurrentTab', 'basicStats');
-
-        //получаем библиотеку пользователя, если она еще не загружена
-        if(this.spotifyUserLibrary == -1)
-        {
-            //если запрос выполнился, то выполняем загружаем остальные данные, если нет, то не делаем ничего
-            this.$store.dispatch('getSpotifyUserLibrary').then(response => {
-                if(this.spotifyUserLibrary['result'] == true)
-                {
-                    this.getAllData();
-                }
-            }, error => {
-                console.log("Error: Couldn't load user's Spotify library.");
-            })
-        }
-        //загружаем остальные данные
-        else
-        { this.getAllData(); }
     },
 
     methods: {
+        scrollMeTo() {
+            window.scrollTo(0, 0);
+        },
         //получить все необходимые данные для этой страницы
         getAllData: function()
         {
+
             //получить треки
             if(this.spotifyTracks == -1)
             { this.$store.dispatch('getSpotifyTracks'); }
@@ -140,17 +142,9 @@ export default {
             if(this.userLibraryTime == -1)
             { this.$store.dispatch('getUserLibraryTime'); }
 
-            //пять самых длинных и коротких треков
-            if(this.fiveTracks == -1)
-            { this.$store.dispatch('getFiveLongestAndShortestTracks'); }
-
             //средняя длина трека
             if(this.tracksMode == -1)
             { this.$store.dispatch('getAverageLengthOfTrack'); }
-
-            //любимые жанры
-            if(this.favoriteGenres == -1)
-            { this.$store.dispatch('getFavoriteGenres') };
 
             //кол-во исполнителей
             if(this.uniqueArtists == -1)
@@ -158,12 +152,49 @@ export default {
 
             //года и десятилетия
             if(this.yearsAndDecades == -1)
-            { this.$store.dispatch('getYearsAndDecades', 'alltime'); }
+            { this.$store.dispatch('getYearsAndDecades'); }
 
             //года и десятилетия - месяц
-            if(this.yearsAndDecadesMonth == -1)
-            { this.$store.dispatch('getYearsAndDecades', 'month'); }
+            this.checkToken ().then(response => {
+                if(response === true)
+                { 
+                    if(this.decadeMonth == -1)
+                    { this.$store.dispatch('getDecadeMonth'); }
+                }
+            })
+           
+            //любимые жанры
+            this.checkToken ().then(response => {
+                if(response === true)
+                { 
+                    if(this.favoriteGenres == -1)
+                    { this.$store.dispatch('getFavoriteGenres') };
+                }
+            })
+ 
+            //cамый популярный артист, из подписок
+            if(this.mostPopularArtist == -1)
+            { this.$store.dispatch('getArtistByPopularity', 'popular'); }
+
+            //cамый непопулярный артист, из подписок
+            if(this.mostPopularArtist == -1)
+            { this.$store.dispatch('getArtistByPopularity', 'unpopular'); }
         },
+
+        //при скролле страницы показать карточку когда она будет 
+        //в поле видимости
+        handleScroll: function (evt, el){
+            if (el.getBoundingClientRect().top < 900) {
+                this.setVisible = true;
+            }
+            return el.getBoundingClientRect().top < 900;   
+        }
+    },
+
+    data: ()=> {
+        return {
+            visibleButton: false,
+        }
     },
     
     computed: {
@@ -171,6 +202,7 @@ export default {
         //принимает либо true, либо false, если true - то библиотека загружена, false - ошибка, -1 - загружается
         spotifyUserLibrary: function() {
             return this.$store.state.profilePage.spotifyUserLibrary;
+            // return true; 
         },
         //кол-во треков и последние пять
         spotifyTracks: function() {
@@ -187,10 +219,6 @@ export default {
         //время
         userLibraryTime: function(){
             return this.$store.state.profilePage.userLibraryTime;
-        },
-        //пять самых длинных
-        fiveTracks: function(){
-            return this.$store.state.profilePage.fiveTracks;
         },
         //средняя длина трека
         tracksMode: function() {
@@ -209,8 +237,26 @@ export default {
             return this.$store.state.profilePage.yearsAndDecades;
         },
         //года и десятилетия
-        yearsAndDecadesMonth: function(){
-            return this.$store.state.profilePage.yearsAndDecadesMonth;
+        decadeMonth: function(){
+            return this.$store.state.profilePage.decadeMonth;
+        },
+        //самый популярный артист
+        mostPopularArtist: function(){
+            return this.$store.state.profilePage.mostPopularArtist;
+        },
+        //самый непопулярный артист
+        leastPopularArtist: function(){
+            return this.$store.state.profilePage.leastPopularArtist;
+        },
+
+        //видимость карточки
+        setVisible: {
+            get() {
+                this.visibleButton = false;
+            },
+            set(value){
+                this.visibleButton = value;
+            }
         },
     }
 }
