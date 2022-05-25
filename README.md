@@ -1,9 +1,11 @@
 <h1>ShowMySpotify</h1>
-<hr>
-<h6>Statistics and music habits for Spotify</h6>
+<h3>Статистика и генерация плейлистов для Spotify</h3>
 
 <img src="/default_images/logo.png" width="20%">
 
-<p>An open source project for Spotify statistics based on Laravel/Vue.js + Spotify Web API.</p>
+<p>Веб-приложение которое анализирует музыкальные привычки пользователя сервиса Spotify и позволяет генерировать на основе их плейлисты. Например, плейлист только с теми артистами которых пользователь слушает чаще всего. Разработано на Laravel + Vue.js + Spotify Web API.</p>
+<p>В связи с уходом Spotify с российского рынка приложение больше не работает, исходный код открыт для всех желающих.</p>
 
-<p>An actual working copy of project can be viewed <a href="http://spotifyi.ru" target="_blank">here</a>.</p>
+<p>Рабочая версия приложения находилась на <a href="http://showmyspotify.ru" target="_blank">showmyspotify.ru</a>.</p>
+
+<p>Ниже можно увидеть как приложение выглядело в действии.</p>
