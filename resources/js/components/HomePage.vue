@@ -14,7 +14,7 @@
         // хуки
         created(){
             this.checkToken ().then(response => {
-                console.log(response)
+
                 if(response === true || response === false)
                 {
                     if(this.navSettings == -1)
