@@ -11,13 +11,13 @@
 <p>Ниже можно увидеть как приложение выглядело в действии.</p>
 
 <h2>Главная страница</h2>
-<img src="/default_images/1.png" width="50%">
+<img src="/default_images/1.png" width="80%">
 <br>
 <h2>Страница со статистикой пользователя</h2>
-<img src="/default_images/2.png" width="50%">
+<img src="/default_images/2.png" width="80%">
 <br>
 <h2>Страница где можно сгенерировать плейлист</h2>
-<img src="/default_images/3.png" width="50%">
+<img src="/default_images/3.png" width="80%">
 <br>
 <h2>Сгенерированный плейлист в Spotify</h2>
-<img src="/default_images/4.png" width="50%">
+<img src="/default_images/4.png" width="80%">
