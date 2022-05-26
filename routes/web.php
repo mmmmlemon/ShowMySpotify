@@ -44,12 +44,12 @@ Route::group(['prefix' => 'superuser'], function(){
 });
 
 //авторизация и логаут - Spotify
-Route::get('/spotify_login', 'SpotifyAuthController@spotifyAuth'); //авторизация через spotify
-Route::get('/spotify_auth_callback', 'SpotifyAuthController@spotifyAuthCallback'); //callback для авторизации
-Route::get('/spotify_logout', 'SpotifyAuthController@spotifyLogout'); //выход из spotify
+// Route::get('/spotify_login', 'SpotifyAuthController@spotifyAuth'); //авторизация через spotify
+// Route::get('/spotify_auth_callback', 'SpotifyAuthController@spotifyAuthCallback'); //callback для авторизации
+// Route::get('/spotify_logout', 'SpotifyAuthController@spotifyLogout'); //выход из spotify
 
 //token refresh
-Route::get('/refresh_token', 'SpotifyAuthController@refreshToken');
+// Route::get('/refresh_token', 'SpotifyAuthController@refreshToken');
 
 //вывод главной страницыы
 Route::get('/{any}', 'HomeController@index')->where('any', '.*');

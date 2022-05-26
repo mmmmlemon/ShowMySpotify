@@ -37,24 +37,24 @@
             
             <!-- если пользователь незалогинен -->
             <!-- кнопка входа на сайт -->
-            <div v-if="settings['checkToken'] === false" class="form-inline d-none d-lg-flex ml-auto"> 
+            <!-- <div v-if="settings['checkToken'] === false" class="form-inline d-none d-lg-flex ml-auto"> 
                 <a href="/spotify_login" class="btn btn-primary-n btn-rounded">Войти через Spotify</a>
-            </div>
+            </div> -->
             <!-- если залогинен -->
-            <div v-else class="form-inline d-none d-lg-flex ml-auto" style="margin-right:1%;"> 
-                    <!-- юзернейм -->
+            <!-- <div v-else class="form-inline d-none d-lg-flex ml-auto" style="margin-right:1%;"> 
+           
                     <router-link to="/profile" class="">
                         <a class="nav-link">{{settings['spotifyProfile']['displayName']}}</a>
                     </router-link>
-                    <!-- юзерпик -->
+  
                     <router-link to="/profile">
                         <img :src="settings['spotifyProfile']['avatar']" alt="Spotify avatar" class="navSpotifyAvatar rounded-circle">
                     </router-link>
-                    <!-- кнопка выхода -->
+
                     <a class="nav-link" href="/spotify_logout">
                         <i class="fas fa-sign-out-alt"></i>
                     </a>
-            </div>
+            </div> -->
 
             <!-- Меню для мобилок -->
             <div class="navbar-content d-lg-none ml-auto"> 
@@ -86,20 +86,17 @@
 
                         <div class="dropdown-divider"></div>
                         
-                        <!-- если пользователь незалогинен -->
-                        <div v-if="settings['checkToken'] == false" class="dropdown-content">
+                        <!-- <div v-if="settings['checkToken'] == false" class="dropdown-content">
                             <a href="/spotify_login" class="btn btn-primary-n btn-block btn-rounded">Войти через Spotify</a>
-                        </div>    
-                        <div v-else class="dropdown-content">
-                            <!-- юзернейм -->
+                        </div>     -->
+                        <!-- <div v-else class="dropdown-content">
                             <router-link to="/profile" class="">
                                 {{settings['spotifyProfile']['displayName']}}
                             </router-link>
-                            <!-- кнопка выхода -->
                             <a href="/spotify_logout" class="" style="margin-left:20px;">
                                 <i class="fas fa-sign-out-alt"></i>
                             </a>
-                        </div>  
+                        </div>   -->
                     </div>
                 </div> 
             </div>

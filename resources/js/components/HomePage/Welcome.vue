@@ -25,7 +25,7 @@
 
   
                     <div class="row justify-content-center text-center">
-                        <transition name="artist">
+                       <transition name="artist">
                             <div class="col-4" v-if="welcomeMessage != false && spotifyUsername == false">
                                 <h6><b>Кто ваш любимый артист?</b></h6>
                                 <i class="fas fa-guitar homeIcon"></i>
@@ -45,12 +45,15 @@
                         </transition>
                         <transition name="yeahboi">
                             <div class="col-12" v-if="welcomeMessage != false && spotifyUsername == false" style="margin-top:1.5rem;">
-                                   <h5 >Все это, и не только, можно узнать тут!</h5>
+                                   <h5 >Все это, и не только, можно <b>БЫЛО</b> узнать тут!</h5>
+                                   <p>Но, увы, в 2022-ом году Spotify прекратил деятельность в России.
+                                   Всё сломалось и ничего не работает. Но ведь это не навсегда..? 🤔</p>
+                                   <p>Ну а пока всё поломано, проект доступен на <a style="text-decoration: underline;" href="https://github.com/mmmmlemon/ShowMySpotify"><b>GitHub</b></a> для всех желающих.</p>
                             </div>
                          
                         </transition>
                     </div>
-                    <transition name="welcome">
+                    <!-- <transition name="welcome">
                         <hr v-if="welcomeMessage != false && spotifyUsername == false" style="margin-bottom: 3rem;">    
                     </transition>
                     <transition name="enterButton" v-on:after-enter="setLogoAnimation(false)">
@@ -59,7 +62,7 @@
                                 <a href="/spotify_login" class="btn btn-primary-n btn-rounded btn-block">Войти через Spotify</a>
                             </div>
                         </div>
-                    </transition>
+                    </transition> -->
                 </div>
             </div>
             <!-- если пользователь залогинен -->

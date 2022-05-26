@@ -2610,6 +2610,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     this.visible = true;
@@ -2964,9 +2967,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
 //
 //
 //
@@ -80417,7 +80417,35 @@ var render = function() {
                           },
                           [
                             _c("h5", [
-                              _vm._v("Все это, и не только, можно узнать тут!")
+                              _vm._v("Все это, и не только, можно "),
+                              _c("b", [_vm._v("БЫЛО")]),
+                              _vm._v(" узнать тут!")
+                            ]),
+                            _vm._v(" "),
+                            _c("p", [
+                              _vm._v(
+                                "Но, увы, в 2022-ом году Spotify прекратил деятельность в России.\n                               Всё сломалось и ничего не работает. Но ведь это не навсегда..? 🤔"
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("p", [
+                              _vm._v(
+                                "Ну а пока всё поломано, проект доступен на "
+                              ),
+                              _c(
+                                "a",
+                                {
+                                  staticStyle: {
+                                    "text-decoration": "underline"
+                                  },
+                                  attrs: {
+                                    href:
+                                      "https://github.com/mmmmlemon/ShowMySpotify"
+                                  }
+                                },
+                                [_c("b", [_vm._v("GitHub")])]
+                              ),
+                              _vm._v(" для всех желающих.")
                             ])
                           ]
                         )
@@ -80425,48 +80453,6 @@ var render = function() {
                   ])
                 ],
                 1
-              ),
-              _vm._v(" "),
-              _c("transition", { attrs: { name: "welcome" } }, [
-                _vm.welcomeMessage != false && _vm.spotifyUsername == false
-                  ? _c("hr", { staticStyle: { "margin-bottom": "3rem" } })
-                  : _vm._e()
-              ]),
-              _vm._v(" "),
-              _c(
-                "transition",
-                {
-                  attrs: { name: "enterButton" },
-                  on: {
-                    "after-enter": function($event) {
-                      return _vm.setLogoAnimation(false)
-                    }
-                  }
-                },
-                [
-                  _vm.welcomeMessage != false && _vm.spotifyUsername == false
-                    ? _c("div", { staticClass: "row justify-content-center" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass:
-                              "col-md-4 col-10 justify-content-center marginVertical"
-                          },
-                          [
-                            _c(
-                              "a",
-                              {
-                                staticClass:
-                                  "btn btn-primary-n btn-rounded btn-block",
-                                attrs: { href: "/spotify_login" }
-                              },
-                              [_vm._v("Войти через Spotify")]
-                            )
-                          ]
-                        )
-                      ])
-                    : _vm._e()
-                ]
               )
             ],
             1
@@ -81212,50 +81198,9 @@ var render = function() {
             : _vm._e()
         ]),
         _vm._v(" "),
-        _vm.settings["checkToken"] === false
-          ? _c("div", { staticClass: "form-inline d-none d-lg-flex ml-auto" }, [
-              _c(
-                "a",
-                {
-                  staticClass: "btn btn-primary-n btn-rounded",
-                  attrs: { href: "/spotify_login" }
-                },
-                [_vm._v("Войти через Spotify")]
-              )
-            ])
-          : _c(
-              "div",
-              {
-                staticClass: "form-inline d-none d-lg-flex ml-auto",
-                staticStyle: { "margin-right": "1%" }
-              },
-              [
-                _c("router-link", { attrs: { to: "/profile" } }, [
-                  _c("a", { staticClass: "nav-link" }, [
-                    _vm._v(
-                      _vm._s(_vm.settings["spotifyProfile"]["displayName"])
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("router-link", { attrs: { to: "/profile" } }, [
-                  _c("img", {
-                    staticClass: "navSpotifyAvatar rounded-circle",
-                    attrs: {
-                      src: _vm.settings["spotifyProfile"]["avatar"],
-                      alt: "Spotify avatar"
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _vm._m(0)
-              ],
-              1
-            ),
-        _vm._v(" "),
         _c("div", { staticClass: "navbar-content d-lg-none ml-auto" }, [
           _c("div", { staticClass: "dropdown with-arrow" }, [
-            _vm._m(1),
+            _vm._m(0),
             _vm._v(" "),
             _c(
               "div",
@@ -81290,38 +81235,7 @@ var render = function() {
                     ])
                   : _vm._e(),
                 _vm._v(" "),
-                _c("div", { staticClass: "dropdown-divider" }),
-                _vm._v(" "),
-                _vm.settings["checkToken"] == false
-                  ? _c("div", { staticClass: "dropdown-content" }, [
-                      _c(
-                        "a",
-                        {
-                          staticClass:
-                            "btn btn-primary-n btn-block btn-rounded",
-                          attrs: { href: "/spotify_login" }
-                        },
-                        [_vm._v("Войти через Spotify")]
-                      )
-                    ])
-                  : _c(
-                      "div",
-                      { staticClass: "dropdown-content" },
-                      [
-                        _c("router-link", { attrs: { to: "/profile" } }, [
-                          _vm._v(
-                            "\n                            " +
-                              _vm._s(
-                                _vm.settings["spotifyProfile"]["displayName"]
-                              ) +
-                              "\n                        "
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _vm._m(2)
-                      ],
-                      1
-                    )
+                _c("div", { staticClass: "dropdown-divider" })
               ],
               1
             )
@@ -81333,16 +81247,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "a",
-      { staticClass: "nav-link", attrs: { href: "/spotify_logout" } },
-      [_c("i", { staticClass: "fas fa-sign-out-alt" })]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -81364,19 +81268,6 @@ var staticRenderFns = [
           attrs: { "aria-hidden": "true" }
         })
       ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "a",
-      {
-        staticStyle: { "margin-left": "20px" },
-        attrs: { href: "/spotify_logout" }
-      },
-      [_c("i", { staticClass: "fas fa-sign-out-alt" })]
     )
   }
 ]
