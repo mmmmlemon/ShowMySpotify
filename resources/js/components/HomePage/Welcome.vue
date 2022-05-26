@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <!-- если пользователь не залогинен -->
             <div class="col-12 col-sm-12 col-md-10 col-lg-10" width="20%;">
-                <div class="col-12">
+                <div class="col-12" style="margin-top: 7.5vh;">
                     <transition name="siteTitle" v-on:before-enter="setLogoAnimation(true)">
                         <h2 class="text-center siteTitleHome" v-if="siteTitle && spotifyUsername == false">{{siteTitle}}</h2>
                     </transition>
